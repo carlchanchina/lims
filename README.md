@@ -23,9 +23,9 @@ ERPNext
 Frappe Custom App (本 App)
   Testing Entrustment      检测委托单
   Testing Entrustment Item 委托项目(子表)
+  Sample                  样品
+  Test Report             检测报告
 ```
-
-> `Sample` 与 `Test Report` 是下一阶段规划 DocType,字段规格确定后在本仓库继续补充。
 
 ---
 
@@ -57,6 +57,46 @@ Frappe Custom App (本 App)
 | 金额 | `amount` | Currency | `qty × rate`,自动计算 |
 | 检测标准 | `testing_standard` | Data | 例如 GB/T、ISO 标准号 |
 | 备注 | `remarks` | Text | |
+
+---
+
+### DocType 3:Sample(样品)
+
+样品挂在检测委托单下,收样后按委托单继续流转到检测报告。
+
+| 字段 | Fieldname | 类型 | 说明 |
+| --- | --- | --- | --- |
+| 检测委托 | `entrustment` | Link `Testing Entrustment` | 必填 |
+| 样品名称 | `sample_name` | Data | 必填 |
+| 收样日期 | `received_date` | Date | 默认今天 |
+| 样品状态 | `status` | Select | 待收样 / 已收样 / 检测中 / 已检测 / 已退样 |
+| 客户 | `customer` | Link `Customer` | 从委托单自动带出 |
+| 检测项目 | `item` | Link `Item` | 对应委托单中的检测项目 |
+| 样品数量 | `quantity` | Float | 默认 1 |
+| 单位 | `uom` | Link `UOM` | |
+| 备注 | `remarks` | Text | |
+
+编号规则:`SPL-{YYYY}-{#####}`。
+
+### DocType 4:Test Report(检测报告)
+
+| 字段 | Fieldname | 类型 | 说明 |
+| --- | --- | --- | --- |
+| 检测委托 | `entrustment` | Link `Testing Entrustment` | 必填 |
+| 样品 | `sample` | Link `Sample` | 仅显示同一委托单下的样品 |
+| 报告日期 | `report_date` | Date | 默认今天 |
+| 状态 | `status` | Select | 待检测 / 检测中 / 已出具 / 已作废 |
+| 客户 | `customer` | Link `Customer` | 从委托单自动带出 |
+| 检测项目 | `item` | Link `Item` | |
+| 检测标准 | `testing_standard` | Data | |
+| 检测人 | `tested_by` | Link `User` | |
+| 检测结论 | `conclusion` | Text Editor | |
+| 备注 | `remarks` | Text | |
+
+编号规则:`TR-{YYYY}-{#####}`。
+
+在委托单页面可通过 **检测业务 → 新建样品 / 新建报告** 快速创建,创建后自动带回委托单;委托单表单的
+关联面板也会展示这些 Sample / Test Report。
 
 ---
 
@@ -104,7 +144,9 @@ test/
     │   │   ├── testing_entrustment.py # 金额/状态/创建报价
     │   │   ├── testing_entrustment.js # 创建报价按钮/行金额/联系人过滤
     │   │   └── test_testing_entrustment.py
-    │   └── testing_entrustment_item/  # 子表
+    │   ├── testing_entrustment_item/  # 委托项目(子表)
+    │   ├── sample/                    # 样品
+    │   └── test_report/               # 检测报告
     └── workspace/testing/             # Testing 模块首页
 ```
 

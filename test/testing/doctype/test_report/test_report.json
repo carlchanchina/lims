@@ -1,0 +1,160 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:TR-{YYYY}-{#####}",
+	"creation": "2026-09-09 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"section_break_basic",
+		"entrustment",
+		"sample",
+		"report_date",
+		"status",
+		"column_break_basic",
+		"customer",
+		"item",
+		"testing_standard",
+		"tested_by",
+		"section_break_conclusion",
+		"conclusion",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "section_break_basic",
+			"fieldtype": "Section Break",
+			"label": "报告信息"
+		},
+		{
+			"fieldname": "entrustment",
+			"fieldtype": "Link",
+			"in_standard_filter": 1,
+			"label": "检测委托",
+			"options": "Testing Entrustment",
+			"reqd": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "sample",
+			"fieldtype": "Link",
+			"label": "样品",
+			"options": "Sample"
+		},
+		{
+			"default": "Today",
+			"fieldname": "report_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "报告日期"
+		},
+		{
+			"default": "待检测",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "状态",
+			"no_copy": 1,
+			"options": "待检测\n检测中\n已出具\n已作废",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_basic",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fetch_from": "entrustment.customer",
+			"fetch_if_empty": 1,
+			"fieldname": "customer",
+			"fieldtype": "Link",
+			"in_standard_filter": 1,
+			"label": "客户",
+			"options": "Customer",
+			"read_only": 1
+		},
+		{
+			"fieldname": "item",
+			"fieldtype": "Link",
+			"label": "检测项目",
+			"options": "Item"
+		},
+		{
+			"fieldname": "testing_standard",
+			"fieldtype": "Data",
+			"label": "检测标准"
+		},
+		{
+			"fieldname": "tested_by",
+			"fieldtype": "Link",
+			"label": "检测人",
+			"options": "User"
+		},
+		{
+			"fieldname": "section_break_conclusion",
+			"fieldtype": "Section Break",
+			"label": "检测结论"
+		},
+		{
+			"fieldname": "conclusion",
+			"fieldtype": "Text Editor",
+			"label": "检测结论"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-09 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Test Report",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing User",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "entrustment,sample,status",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

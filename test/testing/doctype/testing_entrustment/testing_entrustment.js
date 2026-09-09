@@ -9,6 +9,19 @@ frappe.ui.form.on("Testing Entrustment", {
 		if (frm.doc.docstatus === 1 && !frm.doc.quotation) {
 			frm.add_custom_button(__("创建报价"), () => create_quotation(frm), __("创建"));
 		}
+
+		if (!frm.is_new()) {
+			frm.add_custom_button(
+				__("新建样品"),
+				() => new_linked_document(frm, "Sample"),
+				__("检测业务")
+			);
+			frm.add_custom_button(
+				__("新建报告"),
+				() => new_linked_document(frm, "Test Report"),
+				__("检测业务")
+			);
+		}
 	},
 
 	customer(frm) {
@@ -73,4 +86,9 @@ function create_quotation(frm) {
 		);
 		frappe.set_route("Form", "Quotation", quotation);
 	});
+}
+
+function new_linked_document(frm, doctype) {
+	frappe.route_options = { entrustment: frm.doc.name };
+	frappe.new_doc(doctype);
 }

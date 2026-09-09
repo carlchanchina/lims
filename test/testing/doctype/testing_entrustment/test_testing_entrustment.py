@@ -60,6 +60,38 @@ class TestTestingEntrustment(IntegrationTestCase):
 		with self.assertRaises(frappe.ValidationError):
 			create_quotation(entrustment.name)
 
+	def test_sample_and_test_report_link_to_entrustment(self):
+		entrustment = _create_entrustment(self.customer, self.company, self.item)
+
+		sample = (
+			frappe.get_doc(
+				{
+					"doctype": "Sample",
+					"entrustment": entrustment.name,
+					"sample_name": "样品 A",
+					"item": self.item,
+					"quantity": 2,
+				}
+			)
+			.insert(ignore_permissions=True)
+		)
+		report = (
+			frappe.get_doc(
+				{
+					"doctype": "Test Report",
+					"entrustment": entrustment.name,
+					"sample": sample.name,
+					"item": self.item,
+					"status": "检测中",
+				}
+			)
+			.insert(ignore_permissions=True)
+		)
+
+		self.assertEqual(sample.entrustment, entrustment.name)
+		self.assertEqual(report.entrustment, entrustment.name)
+		self.assertEqual(report.sample, sample.name)
+
 
 def _get_company():
 	company = (
