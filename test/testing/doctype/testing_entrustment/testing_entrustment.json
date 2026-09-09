@@ -1,0 +1,218 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:TE-{YYYY}-{#####}",
+	"creation": "2026-09-09 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"section_break_basic",
+		"customer",
+		"contact",
+		"transaction_date",
+		"column_break_basic",
+		"status",
+		"company",
+		"currency",
+		"section_break_items",
+		"items",
+		"section_break_totals",
+		"estimated_amount",
+		"column_break_totals",
+		"quotation",
+		"project"
+	],
+	"fields": [
+		{
+			"fieldname": "section_break_basic",
+			"fieldtype": "Section Break",
+			"label": "基本信息"
+		},
+		{
+			"fieldname": "customer",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "客户",
+			"options": "Customer",
+			"reqd": 1,
+			"search_index": 1
+		},
+		{
+			"fieldname": "contact",
+			"fieldtype": "Link",
+			"label": "联系人",
+			"options": "Contact"
+		},
+		{
+			"default": "Today",
+			"fieldname": "transaction_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "委托日期",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_basic",
+			"fieldtype": "Column Break"
+		},
+		{
+			"default": "草稿",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "状态",
+			"no_copy": 1,
+			"options": "草稿\n待报价\n已报价\n报价已确认\n检测中\n已完成\n已取消",
+			"reqd": 1
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"label": "公司",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fetch_from": "company.default_currency",
+			"fetch_if_empty": 1,
+			"fieldname": "currency",
+			"fieldtype": "Link",
+			"label": "币种",
+			"options": "Currency",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_break_items",
+			"fieldtype": "Section Break",
+			"label": "委托项目"
+		},
+		{
+			"fieldname": "items",
+			"fieldtype": "Table",
+			"label": "委托项目",
+			"options": "Testing Entrustment Item"
+		},
+		{
+			"fieldname": "section_break_totals",
+			"fieldtype": "Section Break",
+			"label": "金额与关联单据"
+		},
+		{
+			"fieldname": "estimated_amount",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "预计金额",
+			"options": "currency",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_break_totals",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "quotation",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "报价单",
+			"no_copy": 1,
+			"options": "Quotation",
+			"read_only": 1
+		},
+		{
+			"fieldname": "project",
+			"fieldtype": "Link",
+			"label": "项目",
+			"no_copy": 1,
+			"options": "Project"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"is_submittable": 1,
+	"links": [],
+	"modified": "2026-09-09 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Testing Entrustment",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing Manager",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing User",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"amend": 1,
+			"cancel": 1,
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Sales Manager",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Sales User",
+			"share": 1,
+			"submit": 1,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "customer,status,quotation",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "customer",
+	"track_changes": 1
+}

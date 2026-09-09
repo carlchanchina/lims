@@ -1,0 +1,93 @@
+{
+	"actions": [],
+	"autoname": "hash",
+	"creation": "2026-09-09 00:00:00.000000",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"item",
+		"item_name",
+		"qty",
+		"rate",
+		"amount",
+		"column_break_1",
+		"testing_standard",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "item",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "检测项目",
+			"options": "Item",
+			"reqd": 1,
+			"search_index": 1
+		},
+		{
+			"fetch_from": "item.item_name",
+			"fieldname": "item_name",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "项目名称",
+			"read_only": 1
+		},
+		{
+			"columns": 1,
+			"default": "1",
+			"fieldname": "qty",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "数量",
+			"reqd": 1
+		},
+		{
+			"columns": 1,
+			"fieldname": "rate",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "单价",
+			"options": "currency"
+		},
+		{
+			"columns": 1,
+			"fieldname": "amount",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "金额",
+			"options": "currency",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_break_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "testing_standard",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "检测标准"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"istable": 1,
+	"links": [],
+	"modified": "2026-09-09 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Testing Entrustment Item",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [],
+	"row_format": "Dynamic",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

@@ -1,14 +1,16 @@
 app_name = "test"
-app_title = "Test"
+app_title = "Testing"
 app_publisher = "Carl"
-app_description = "检测操作系统OS"
+app_description = "检测委托管理 - 以 ERPNext 为事实源的自定义业务 App"
 app_email = "cowin3332@gmail.com"
 app_license = "mit"
+app_icon = "octicon octicon-checklist"
+app_color = "green"
 
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -85,8 +87,8 @@ app_license = "mit"
 # Installation
 # ------------
 
-# before_install = "test.install.before_install"
-# after_install = "test.install.after_install"
+after_install = "test.setup.install.after_install"
+after_migrate = ["test.setup.install.sync_custom_fields"]
 
 # Uninstallation
 # ------------
@@ -144,13 +146,14 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Quotation": {
+		"on_update": "test.integrations.erpnext_quotation.sync_entrustment_link",
+		"on_submit": "test.integrations.erpnext_quotation.mark_entrustment_accepted",
+		"on_cancel": "test.integrations.erpnext_quotation.unlink_entrustment",
+		"on_trash": "test.integrations.erpnext_quotation.unlink_entrustment",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -261,4 +264,3 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-
