@@ -6,31 +6,27 @@
 	"editable_grid": 1,
 	"engine": "InnoDB",
 	"field_order": [
+		"sample_name",
 		"item",
-		"item_name",
 		"qty",
 		"uom",
-		"column_break_1",
-		"testing_standard",
+		"received_date",
+		"status",
 		"remarks"
 	],
 	"fields": [
 		{
-			"fieldname": "item",
-			"fieldtype": "Link",
-			"in_list_view": 1,
-			"label": "试验/检测项目",
-			"options": "Item",
-			"reqd": 1,
-			"search_index": 1
-		},
-		{
-			"fetch_from": "item.item_name",
-			"fieldname": "item_name",
+			"fieldname": "sample_name",
 			"fieldtype": "Data",
 			"in_list_view": 1,
-			"label": "项目名称",
-			"read_only": 1
+			"label": "样品名称",
+			"reqd": 1
+		},
+		{
+			"fieldname": "item",
+			"fieldtype": "Link",
+			"label": "检测项目",
+			"options": "Item"
 		},
 		{
 			"columns": 1,
@@ -38,13 +34,10 @@
 			"fieldname": "qty",
 			"fieldtype": "Float",
 			"in_list_view": 1,
-			"label": "数量",
-			"reqd": 1
+			"label": "数量"
 		},
 		{
 			"columns": 1,
-			"fetch_from": "item.stock_uom",
-			"fetch_if_empty": 1,
 			"fieldname": "uom",
 			"fieldtype": "Link",
 			"in_list_view": 1,
@@ -52,14 +45,18 @@
 			"options": "UOM"
 		},
 		{
-			"fieldname": "column_break_1",
-			"fieldtype": "Column Break"
+			"default": "Today",
+			"fieldname": "received_date",
+			"fieldtype": "Date",
+			"label": "收样日期"
 		},
 		{
-			"fieldname": "testing_standard",
-			"fieldtype": "Data",
+			"default": "待收样",
+			"fieldname": "status",
+			"fieldtype": "Select",
 			"in_list_view": 1,
-			"label": "检测标准"
+			"label": "样品状态",
+			"options": "待收样\n已收样\n检测中\n已检测\n已退样"
 		},
 		{
 			"fieldname": "remarks",
@@ -73,7 +70,7 @@
 	"modified": "2026-09-09 00:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
-	"name": "Testing Entrustment Item",
+	"name": "Testing Entrustment Sample",
 	"naming_rule": "Random",
 	"owner": "Administrator",
 	"permissions": [],

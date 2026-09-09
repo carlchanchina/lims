@@ -9,6 +9,7 @@
 		"section_break_basic",
 		"entrustment",
 		"sample",
+		"sample_name",
 		"report_date",
 		"status",
 		"column_break_basic",
@@ -39,7 +40,14 @@
 			"fieldname": "sample",
 			"fieldtype": "Link",
 			"label": "样品",
-			"options": "Sample"
+			"options": "Testing Entrustment Sample"
+		},
+		{
+			"fetch_from": "sample.sample_name",
+			"fieldname": "sample_name",
+			"fieldtype": "Data",
+			"label": "样品名称",
+			"read_only": 1
 		},
 		{
 			"default": "Today",
@@ -74,6 +82,8 @@
 			"read_only": 1
 		},
 		{
+			"fetch_from": "sample.item",
+			"fetch_if_empty": 1,
 			"fieldname": "item",
 			"fieldtype": "Link",
 			"label": "检测项目",

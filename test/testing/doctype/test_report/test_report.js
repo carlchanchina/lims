@@ -22,8 +22,9 @@ frappe.ui.form.on("Test Report", {
 });
 
 function setup_sample_query(frm) {
-	if (!frm.doc.entrustment) return;
 	frm.set_query("sample", () => ({
-		filters: { entrustment: frm.doc.entrustment },
+		query:
+			"test.testing.doctype.test_report.test_report.entrustment_sample_query",
+		filters: { entrustment: frm.doc.entrustment || "" },
 	}));
 }

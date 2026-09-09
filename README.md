@@ -2,91 +2,86 @@
 
 一个以 **检测委托单(Testing Entrustment)** 为核心的 ERPNext 自定义 Frappe App。
 
-ERPNext 是事实源(Source of Truth)。本 App 不复制、不同步客户/项目/报价单据,而是直接 `Link` 到
-ERPNext 的 `Customer`、`Item`、`Quotation`、`Project` 等 DocType,只在 ERPNext 的
-`Quotation` 上增加一个回链字段,用于把"委托单 → 报价单"打通。
+ERPNext 是事实源(Source of Truth),本 App **不改动 ERPNext 的 Sales Order**:
+报价、销售定单继续按 ERPNext 标准流程走,委托单从已提交定单的明细中导入试验/检测项目,
+样品作为委托单内部的子表维护,检测报告再关联回委托单。
 
 ---
 
-### 第一层:ERP 核心
+### 业务流转
 
 ```
-ERPNext
-  Customer       客户(事实源)
-  Item           检测项目(事实源)
-  Quotation      报价单(事实源,由委托单生成)
-  Sales Order    销售订单(ERPNext 标准流程)
-  Invoice        发票(ERPNext 标准流程)
-  Project        项目(后续关联)
-  Task           任务(后续关联)
-
-Frappe Custom App (本 App)
-  Testing Entrustment      检测委托单
-  Testing Entrustment Item 委托项目(子表)
-  Sample                  样品
-  Test Report             检测报告
+ERPNext 报价单(Quotation)
+        │
+        ▼
+ERPNext 销售定单(Sales Order)   ← 本 App 不做任何字段/流程改动
+        │
+        ▼  新建检测委托单,点击「从定单导入试验项目」
+检测委托单(Testing Entrustment)
+        ├── 试验/检测项目(Testing Entrustment Item,子表,从定单明细带入)
+        └── 样品信息(Testing Entrustment Sample,子表,一张委托单可有多行)
+                │
+                ▼
+检测报告(Test Report)   ← 关联委托单,可指定委托单下的某个样品
 ```
+
+委托单内**不再包含报价单字段、预计金额、Rate / Amount**,金额信息以 ERPNext 定单为准。
 
 ---
 
-### DocType 1:Testing Entrustment(检测委托单)
+### DocType 列表
+
+#### 1. Testing Entrustment(检测委托单)
 
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
-| 客户 | `customer` | Link `Customer` | 必填 |
+| 客户 | `customer` | Link `Customer` | 必填,可从定单带入 |
 | 联系人 | `contact` | Link `Contact` | 按客户过滤 |
 | 委托日期 | `transaction_date` | Date | 默认今天 |
-| 状态 | `status` | Select | 草稿 / 待报价 / 已报价 / 报价已确认 / 检测中 / 已完成 / 已取消 |
-| 公司 | `company` | Link `Company` | 生成报价单时使用 |
-| 币种 | `currency` | Link `Currency` | 自动带出公司默认币种 |
-| 委托项目 | `items` | Table `Testing Entrustment Item` | 明细 |
-| 预计金额 | `estimated_amount` | Currency | 子表金额合计,只读 |
-| 报价单 | `quotation` | Link `Quotation` | 「创建报价」后自动回填 |
-| 项目 | `project` | Link `Project` | 后续关联项目 |
+| 状态 | `status` | Select | 草稿 / 待检测 / 检测中 / 已完成 / 已取消 |
+| 公司 | `company` | Link `Company` | 可从定单带入 |
+| 销售定单 | `sales_order` | Link `Sales Order` | 只做关联,不改定单 |
+| 项目 | `project` | Link `Project` | 后续关联 |
+| 试验/检测项目 | `items` | Table `Testing Entrustment Item` | 从定单明细导入 |
+| 样品信息 | `samples` | Table `Testing Entrustment Sample` | 一行一个样品 |
 
 编号规则:`TE-{YYYY}-{#####}`。
 
-### DocType 2:Testing Entrustment Item(委托项目,子表)
+#### 2. Testing Entrustment Item(试验/检测项目,子表)
 
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
-| 检测项目 | `item` | Link `Item` | 必填 |
-| 项目名称 | `item_name` | Data | 从 Item 带出 |
-| 数量 | `qty` | Float | 默认 1 |
-| 单价 | `rate` | Currency | |
-| 金额 | `amount` | Currency | `qty × rate`,自动计算 |
-| 检测标准 | `testing_standard` | Data | 例如 GB/T、ISO 标准号 |
+| 试验/检测项目 | `item` | Link `Item` | 从定单明细带入 |
+| 项目名称 | `item_name` | Data | 自动带出 |
+| 数量 | `qty` | Float | |
+| 单位 | `uom` | Link `UOM` | 自动补全 |
+| 检测标准 | `testing_standard` | Data | 如 GB/T、ISO 标准 |
 | 备注 | `remarks` | Text | |
 
----
+> 不含 Rate / Amount。
 
-### DocType 3:Sample(样品)
-
-样品挂在检测委托单下,收样后按委托单继续流转到检测报告。
+#### 3. Testing Entrustment Sample(样品信息,子表)
 
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
-| 检测委托 | `entrustment` | Link `Testing Entrustment` | 必填 |
 | 样品名称 | `sample_name` | Data | 必填 |
-| 收样日期 | `received_date` | Date | 默认今天 |
-| 样品状态 | `status` | Select | 待收样 / 已收样 / 检测中 / 已检测 / 已退样 |
-| 客户 | `customer` | Link `Customer` | 从委托单自动带出 |
-| 检测项目 | `item` | Link `Item` | 对应委托单中的检测项目 |
-| 样品数量 | `quantity` | Float | 默认 1 |
+| 检测项目 | `item` | Link `Item` | 可选 |
+| 数量 | `qty` | Float | |
 | 单位 | `uom` | Link `UOM` | |
+| 收样日期 | `received_date` | Date | |
+| 样品状态 | `status` | Select | 待收样 / 已收样 / 检测中 / 已检测 / 已退样 |
 | 备注 | `remarks` | Text | |
 
-编号规则:`SPL-{YYYY}-{#####}`。
-
-### DocType 4:Test Report(检测报告)
+#### 4. Test Report(检测报告)
 
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
 | 检测委托 | `entrustment` | Link `Testing Entrustment` | 必填 |
-| 样品 | `sample` | Link `Sample` | 仅显示同一委托单下的样品 |
+| 样品 | `sample` | Link `Testing Entrustment Sample` | 只显示当前委托单的样品 |
+| 样品名称 | `sample_name` | Data | 选中样品后带出 |
 | 报告日期 | `report_date` | Date | 默认今天 |
 | 状态 | `status` | Select | 待检测 / 检测中 / 已出具 / 已作废 |
-| 客户 | `customer` | Link `Customer` | 从委托单自动带出 |
+| 客户 | `customer` | Link `Customer` | 从委托单带出 |
 | 检测项目 | `item` | Link `Item` | |
 | 检测标准 | `testing_standard` | Data | |
 | 检测人 | `tested_by` | Link `User` | |
@@ -95,59 +90,34 @@ Frappe Custom App (本 App)
 
 编号规则:`TR-{YYYY}-{#####}`。
 
-在委托单页面可通过 **检测业务 → 新建样品 / 新建报告** 快速创建,创建后自动带回委托单;委托单表单的
-关联面板也会展示这些 Sample / Test Report。
-
 ---
 
-### 创建报价按钮(打通 ERPNext)
+### 操作方式
 
-委托单提交后,工具栏出现 **创建报价**:
-
-```
-Testing Entrustment(已提交)
-        │  创建报价(自动)
-        ▼
-Quotation(Draft)
-        │  Quotation.testing_entrustment 回链
-        ▼
-Testing Entrustment.status = 已报价
-```
-
-自动生成的 Quotation:
-
-- 客户、联系人、日期、公司、币种来自委托单;
-- 明细行逐行转为 Quotation Item(`item/qty/rate/amount/检测标准备注进入描述`);
-- 价目表按客户默认价目表 → Selling Settings 默认价目表 → 同币种启用销售价目表 的顺序自动选取;
-- ERPNext 仍可正常编辑、提交该报价单。
-
-Quotation 提交后,委托单状态自动变为 **报价已确认**;报价单取消/删除后,委托单回到 **待报价** 并可重新创建报价。
+1. 新建检测委托单;
+2. 在「来源与关联」中选择一张**已提交**的销售定单;
+3. 点击 **从定单导入试验项目**,定单明细自动变成委托单的试验/检测项目(定单本身不改变);
+4. 在「样品信息」中维护一行或多行样品;
+5. 保存并提交委托单;
+6. 点击 **新建报告**,报告自动关联当前委托单,并可指定其中的一个样品。
 
 ---
 
 ### 目录结构
 
-参考 frappe/helpdesk 的模块化组织方式:
-
 ```text
 test/
-├── hooks.py                       # required_apps = erpnext, doc_events(Quotation)
+├── hooks.py                       # required_apps = erpnext
 ├── modules.txt                    # Testing
-├── integrations/
-│   └── erpnext_quotation.py       # Quotation ↔ 委托单回写
 ├── setup/
-│   └── install.py                 # 角色 + Quotation 回链字段(幂等)
+│   └── install.py                 # 角色创建 + 清理旧 Quotation 回链字段
 └── testing/
     ├── doctype/
-    │   ├── testing_entrustment/       # 主表
-    │   │   ├── testing_entrustment.json
-    │   │   ├── testing_entrustment.py # 金额/状态/创建报价
-    │   │   ├── testing_entrustment.js # 创建报价按钮/行金额/联系人过滤
-    │   │   └── test_testing_entrustment.py
-    │   ├── testing_entrustment_item/  # 委托项目(子表)
-    │   ├── sample/                    # 样品
-    │   └── test_report/               # 检测报告
-    └── workspace/testing/             # Testing 模块首页
+    │   ├── testing_entrustment/          # 主表(委托单)
+    │   ├── testing_entrustment_item/     # 试验/检测项目子表
+    │   ├── testing_entrustment_sample/   # 样品信息子表
+    │   └── test_report/                  # 检测报告
+    └── workspace/testing/                # Testing 模块工作台
 ```
 
 ---
@@ -162,15 +132,10 @@ bench --site <your-site> install-app test
 bench --site <your-site> migrate
 ```
 
-前置条件:
+用户需要 `Testing Manager` / `Testing User` 角色,并且能从定单导入明细,
+因此还需要对应 `Sales Order` 的读取权限(通常直接授予 ERPNext `Sales User`)。
 
-- 站点已安装 ERPNext;
-- 已配置至少一家 Company 及其默认币种;
-- 已存在适用的销售价目表(Selling Price List);
-- 用户需要 `Testing Manager` / `Testing User` 角色;若要生成/提交报价,还需 ERPNext 的
-  `Sales User` 或 `Sales Manager` 权限(ERPNext 是报价单的事实源)。
-
-### 运行测试
+运行测试:
 
 ```bash
 bench --site <your-site> run-tests --app test

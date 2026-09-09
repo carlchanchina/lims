@@ -2,13 +2,17 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 
 def after_install():
 	"""Runs once after the app is installed on a site."""
+	run_schema_cleanup()
+
+
+def run_schema_cleanup():
+	"""安装与每次 migrate 后执行,保证角色/字段状态与当前版本一致。"""
 	create_roles()
-	sync_custom_fields()
+	remove_legacy_quotation_link_field()
 
 
 def create_roles():
@@ -20,29 +24,16 @@ def create_roles():
 			).insert(ignore_permissions=True)
 
 
-def sync_custom_fields():
+def remove_legacy_quotation_link_field():
 	"""
-	Keep app-owned fields on ERPNext DocTypes in sync.
+	清理早期版本加在 Quotation 上的回链字段。
 
-	ERPNext remains the source of truth. This app only adds a back-reference
-	field on Quotation so that a generated quote points back to the Testing
-	Entrustment document.
+	当前版本改为「定单 → 委托单」方向,委托单不再与 Quotation 双向打通,
+	Sales Order 也保持 ERPNext 原样。
 	"""
-	create_custom_fields(
-		{
-			"Quotation": [
-				{
-					"fieldname": "testing_entrustment",
-					"label": "检测委托",
-					"fieldtype": "Link",
-					"options": "Testing Entrustment",
-					"insert_after": "transaction_date",
-					"no_copy": 1,
-					"in_list_view": 0,
-					"print_hide": 1,
-					"description": "由「创建报价」按钮自动关联的检测委托单",
-				}
-			]
-		},
-		ignore_validate=True,
+	field_name = frappe.db.exists(
+		"Custom Field",
+		{"dt": "Quotation", "fieldname": "testing_entrustment"},
 	)
+	if field_name:
+		frappe.delete_doc("Custom Field", field_name, force=1)

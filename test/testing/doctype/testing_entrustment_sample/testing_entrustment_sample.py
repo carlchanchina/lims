@@ -4,5 +4,5 @@
 from frappe.model.document import Document
 
 
-class Sample(Document):
+class TestingEntrustmentSample(Document):
 	pass

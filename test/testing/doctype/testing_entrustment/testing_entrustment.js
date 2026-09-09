@@ -5,20 +5,29 @@ frappe.ui.form.on("Testing Entrustment", {
 	refresh(frm) {
 		setup_contact_query(frm);
 
-		frm.remove_custom_button(__("创建报价"));
-		if (frm.doc.docstatus === 1 && !frm.doc.quotation) {
-			frm.add_custom_button(__("创建报价"), () => create_quotation(frm), __("创建"));
+		if (frm.doc.docstatus === 0 && frm.doc.sales_order) {
+			frm.add_custom_button(
+				__("从定单导入试验项目"),
+				() => import_items_from_sales_order(frm),
+				__("来源")
+			);
+		}
+
+		if (frm.doc.sales_order) {
+			frm.add_custom_button(
+				__("打开销售定单"),
+				() => frappe.set_route("Form", "Sales Order", frm.doc.sales_order),
+				__("关联")
+			);
 		}
 
 		if (!frm.is_new()) {
 			frm.add_custom_button(
-				__("新建样品"),
-				() => new_linked_document(frm, "Sample"),
-				__("检测业务")
-			);
-			frm.add_custom_button(
 				__("新建报告"),
-				() => new_linked_document(frm, "Test Report"),
+				() => {
+					frappe.route_options = { entrustment: frm.doc.name };
+					frappe.new_doc("Test Report");
+				},
 				__("检测业务")
 			);
 		}
@@ -29,20 +38,6 @@ frappe.ui.form.on("Testing Entrustment", {
 		if (frm.doc.contact) {
 			frm.set_value("contact", null);
 		}
-	},
-});
-
-frappe.ui.form.on("Testing Entrustment Item", {
-	qty(frm, cdt, cdn) {
-		recalculate_row_amount(frm, cdt, cdn);
-	},
-
-	rate(frm, cdt, cdn) {
-		recalculate_row_amount(frm, cdt, cdn);
-	},
-
-	items_remove(frm) {
-		recalculate_total(frm);
 	},
 });
 
@@ -57,38 +52,55 @@ function setup_contact_query(frm) {
 	}));
 }
 
-function recalculate_row_amount(frm, cdt, cdn) {
-	const row = frappe.get_doc(cdt, cdn);
-	row.amount = flt(row.qty) * flt(row.rate);
-	frm.refresh_field("items");
-	recalculate_total(frm);
-}
-
-function recalculate_total(frm) {
-	let total = 0;
-	(frm.doc.items || []).forEach((row) => {
-		total += flt(row.amount);
-	});
-	frm.set_value("estimated_amount", flt(total));
-}
-
-function create_quotation(frm) {
-	frappe.xcall(
-		"test.testing.doctype.testing_entrustment.testing_entrustment.create_quotation",
-		{ name: frm.doc.name }
-	).then((quotation) => {
-		frappe.show_alert(
-			{
-				message: __("报价单 {0} 已创建", [quotation]),
-				indicator: "green",
-			},
-			5
+function import_items_from_sales_order(frm) {
+	if (!frm.doc.sales_order) {
+		frappe.msgprint(__("请先在「来源与关联」中选择销售定单"));
+		return;
+	}
+	if (frm.doc.items && frm.doc.items.length) {
+		frappe.confirm(
+			__("导入会覆盖当前试验/检测项目,是否继续?"),
+			() => call_sales_order_import(frm)
 		);
-		frappe.set_route("Form", "Quotation", quotation);
-	});
+		return;
+	}
+	call_sales_order_import(frm);
 }
 
-function new_linked_document(frm, doctype) {
-	frappe.route_options = { entrustment: frm.doc.name };
-	frappe.new_doc(doctype);
+function call_sales_order_import(frm) {
+	frappe.call({
+		method:
+			"test.testing.doctype.testing_entrustment.testing_entrustment.get_sales_order_items",
+		args: { sales_order: frm.doc.sales_order },
+		callback(r) {
+			if (!r.message) return;
+
+			frm.clear_table("items");
+			(r.message.items || []).forEach((row) => {
+				frm.add_child("items", row);
+			});
+
+			if (r.message.customer && !frm.doc.customer) {
+				frm.set_value("customer", r.message.customer);
+			}
+			if (r.message.contact && !frm.doc.contact) {
+				frm.set_value("contact", r.message.contact);
+			}
+			if (r.message.company && !frm.doc.company) {
+				frm.set_value("company", r.message.company);
+			}
+			if (r.message.transaction_date) {
+				frm.set_value("transaction_date", r.message.transaction_date);
+			}
+
+			frm.refresh_field("items");
+			frappe.show_alert({
+				message: __("已从定单 {0} 导入 {1} 个试验/检测项目", [
+					frm.doc.sales_order,
+					r.message.items.length,
+				]),
+				indicator: "green",
+			});
+		},
+	});
 }

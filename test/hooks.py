@@ -88,7 +88,7 @@ required_apps = ["erpnext"]
 # ------------
 
 after_install = "test.setup.install.after_install"
-after_migrate = ["test.setup.install.sync_custom_fields"]
+after_migrate = ["test.setup.install.run_schema_cleanup"]
 
 # Uninstallation
 # ------------
@@ -141,19 +141,6 @@ after_migrate = ["test.setup.install.sync_custom_fields"]
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
 # }
-
-# Document Events
-# ---------------
-# Hook on document methods and events
-
-doc_events = {
-	"Quotation": {
-		"on_update": "test.integrations.erpnext_quotation.sync_entrustment_link",
-		"on_submit": "test.integrations.erpnext_quotation.mark_entrustment_accepted",
-		"on_cancel": "test.integrations.erpnext_quotation.unlink_entrustment",
-		"on_trash": "test.integrations.erpnext_quotation.unlink_entrustment",
-	}
-}
 
 # Scheduled Tasks
 # ---------------
