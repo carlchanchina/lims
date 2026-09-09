@@ -4,16 +4,16 @@
 frappe.ui.form.on("Test Report", {
 	refresh(frm) {
 		setup_sample_query(frm);
-		if (!frm.is_new() && frm.doc.entrustment) {
+		if (!frm.is_new() && frm.doc.test_request) {
 			frm.add_custom_button(
-				__("打开检测委托"),
-				() => frappe.set_route("Form", "Testing Entrustment", frm.doc.entrustment),
+				__("打开检测请求"),
+				() => frappe.set_route("Form", "Test Request", frm.doc.test_request),
 				__("关联")
 			);
 		}
 	},
 
-	entrustment(frm) {
+	test_request(frm) {
 		setup_sample_query(frm);
 		if (frm.doc.sample) {
 			frm.set_value("sample", null);
@@ -23,8 +23,7 @@ frappe.ui.form.on("Test Report", {
 
 function setup_sample_query(frm) {
 	frm.set_query("sample", () => ({
-		query:
-			"test.testing.doctype.test_report.test_report.entrustment_sample_query",
-		filters: { entrustment: frm.doc.entrustment || "" },
+		query: "test.testing.doctype.test_report.test_report.request_sample_query",
+		filters: { test_request: frm.doc.test_request || "" },
 	}));
 }

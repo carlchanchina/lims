@@ -1,0 +1,149 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:TC-{#####}",
+	"creation": "2026-09-09 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"catalog_code",
+		"catalog_name",
+		"item",
+		"standard",
+		"equipment",
+		"price",
+		"uom",
+		"tat_days",
+		"is_default",
+		"enabled",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "catalog_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "目录编码",
+			"reqd": 1,
+			"unique": 1
+		},
+		{
+			"fieldname": "catalog_name",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "目录名称",
+			"reqd": 1
+		},
+		{
+			"fieldname": "item",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "检测项目",
+			"options": "Item",
+			"reqd": 1
+		},
+		{
+			"fieldname": "standard",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "检测标准",
+			"options": "Test Standard",
+			"reqd": 1
+		},
+		{
+			"fieldname": "equipment",
+			"fieldtype": "Link",
+			"label": "设备",
+			"options": "Equipment"
+		},
+		{
+			"fieldname": "price",
+			"fieldtype": "Currency",
+			"in_list_view": 1,
+			"label": "价格",
+			"reqd": 1
+		},
+		{
+			"fieldname": "uom",
+			"fieldtype": "Link",
+			"label": "单位",
+			"options": "UOM"
+		},
+		{
+			"fieldname": "tat_days",
+			"fieldtype": "Float",
+			"label": "周期(天)"
+		},
+		{
+			"default": "0",
+			"fieldname": "is_default",
+			"fieldtype": "Check",
+			"label": "默认报价项"
+		},
+		{
+			"default": "1",
+			"fieldname": "enabled",
+			"fieldtype": "Check",
+			"in_standard_filter": 1,
+			"label": "启用"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-09 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Test Catalog",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing User",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "catalog_code,catalog_name,item,standard",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "catalog_code",
+	"track_changes": 1
+}

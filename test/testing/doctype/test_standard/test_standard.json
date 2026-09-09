@@ -1,0 +1,103 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:TS-{#####}",
+	"creation": "2026-09-09 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"standard_code",
+		"standard_name",
+		"organization",
+		"status",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "standard_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "标准编码",
+			"reqd": 1,
+			"unique": 1
+		},
+		{
+			"fieldname": "standard_name",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "标准名称",
+			"reqd": 1
+		},
+		{
+			"fieldname": "organization",
+			"fieldtype": "Data",
+			"label": "发布/归口单位"
+		},
+		{
+			"default": "现行",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"label": "标准状态",
+			"options": "现行\n废止",
+			"reqd": 1
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-09 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Test Standard",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing User",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "standard_code,standard_name",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "standard_code",
+	"track_changes": 1
+}

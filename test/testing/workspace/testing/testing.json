@@ -1,6 +1,6 @@
 {
 	"charts": [],
-	"content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">检测委托管理</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"核心单据\",\"col\":6}},{\"type\":\"card\",\"data\":{\"card_name\":\"ERPNext 联动\",\"col\":6}}]",
+	"content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">环境试验 LIMS</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"LIMS 单据\",\"col\":6}},{\"type\":\"card\",\"data\":{\"card_name\":\"ERPNext 联动\",\"col\":6}}]",
 	"creation": "2026-09-09 00:00:00.000000",
 	"docstatus": 0,
 	"doctype": "Workspace",
@@ -14,17 +14,57 @@
 		{
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "核心单据",
-			"link_count": 2,
+			"label": "LIMS 单据",
+			"link_count": 6,
 			"onboard": 0,
 			"type": "Card Break"
 		},
 		{
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "Testing Entrustment",
+			"label": "Test Request",
 			"link_count": 0,
-			"link_to": "Testing Entrustment",
+			"link_to": "Test Request",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "Sample",
+			"link_count": 0,
+			"link_to": "Sample",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "Test Standard",
+			"link_count": 0,
+			"link_to": "Test Standard",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "Equipment",
+			"link_count": 0,
+			"link_to": "Equipment",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "Test Catalog",
+			"link_count": 0,
+			"link_to": "Test Catalog",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -43,7 +83,7 @@
 			"hidden": 0,
 			"is_query_report": 0,
 			"label": "ERPNext 联动",
-			"link_count": 5,
+			"link_count": 4,
 			"onboard": 0,
 			"type": "Card Break"
 		},
@@ -83,16 +123,6 @@
 			"label": "Sales Order",
 			"link_count": 0,
 			"link_to": "Sales Order",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Project",
-			"link_count": 0,
-			"link_to": "Project",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"

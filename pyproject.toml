@@ -3,7 +3,7 @@ name = "test"
 authors = [
     { name = "Carl", email = "cowin3332@gmail.com"}
 ]
-description = "检测委托管理:以 ERPNext 为事实源的 Frappe 自定义业务 App"
+description = "环境试验 LIMS:以 ERPNext 为事实源的 Frappe 自定义业务 App"
 requires-python = ">=3.14"
 readme = "README.md"
 dynamic = ["version"]

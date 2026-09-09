@@ -1,7 +1,7 @@
 app_name = "test"
 app_title = "Testing"
 app_publisher = "Carl"
-app_description = "检测委托管理 - 以 ERPNext 为事实源的自定义业务 App"
+app_description = "环境试验 LIMS - 以 ERPNext 为事实源的自定义业务 App"
 app_email = "cowin3332@gmail.com"
 app_license = "mit"
 app_icon = "octicon octicon-checklist"

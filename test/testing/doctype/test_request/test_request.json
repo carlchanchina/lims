@@ -1,7 +1,7 @@
 {
 	"actions": [],
 	"allow_import": 1,
-	"autoname": "format:TE-{YYYY}-{#####}",
+	"autoname": "format:RQ-{YYYY}-{#####}",
 	"creation": "2026-09-09 00:00:00.000000",
 	"doctype": "DocType",
 	"engine": "InnoDB",
@@ -13,14 +13,12 @@
 		"column_break_basic",
 		"status",
 		"company",
-		"section_break_source",
+		"section_break_reference",
+		"quotation",
+		"column_break_reference",
 		"sales_order",
-		"column_break_source",
-		"project",
 		"section_break_items",
-		"items",
-		"section_break_samples",
-		"samples"
+		"items"
 	],
 	"fields": [
 		{
@@ -49,7 +47,7 @@
 			"fieldname": "transaction_date",
 			"fieldtype": "Date",
 			"in_list_view": 1,
-			"label": "委托日期",
+			"label": "请求日期",
 			"reqd": 1
 		},
 		{
@@ -64,7 +62,7 @@
 			"in_standard_filter": 1,
 			"label": "状态",
 			"no_copy": 1,
-			"options": "草稿\n待检测\n检测中\n已完成\n已取消",
+			"options": "草稿\n已报价\n待检测\n检测中\n已完成\n已取消",
 			"reqd": 1
 		},
 		{
@@ -75,73 +73,63 @@
 			"reqd": 1
 		},
 		{
-			"fieldname": "section_break_source",
+			"fieldname": "section_break_reference",
 			"fieldtype": "Section Break",
-			"label": "来源与关联"
+			"label": "关联单据"
+		},
+		{
+			"fieldname": "quotation",
+			"fieldtype": "Link",
+			"label": "报价单",
+			"no_copy": 1,
+			"options": "Quotation",
+			"read_only": 1
+		},
+		{
+			"fieldname": "column_break_reference",
+			"fieldtype": "Column Break"
 		},
 		{
 			"fieldname": "sales_order",
 			"fieldtype": "Link",
-			"in_list_view": 1,
 			"in_standard_filter": 1,
 			"label": "销售定单",
 			"no_copy": 1,
-			"options": "Sales Order",
-			"search_index": 1
-		},
-		{
-			"fieldname": "column_break_source",
-			"fieldtype": "Column Break"
-		},
-		{
-			"fieldname": "project",
-			"fieldtype": "Link",
-			"label": "项目",
-			"no_copy": 1,
-			"options": "Project"
+			"options": "Sales Order"
 		},
 		{
 			"fieldname": "section_break_items",
 			"fieldtype": "Section Break",
-			"label": "试验/检测项目"
+			"label": "测试项"
 		},
 		{
 			"fieldname": "items",
 			"fieldtype": "Table",
-			"label": "试验/检测项目",
-			"options": "Testing Entrustment Item"
-		},
-		{
-			"fieldname": "section_break_samples",
-			"fieldtype": "Section Break",
-			"label": "样品信息"
-		},
-		{
-			"fieldname": "samples",
-			"fieldtype": "Table",
-			"label": "样品信息",
-			"options": "Testing Entrustment Sample"
+			"label": "测试项",
+			"options": "Test Request Item"
 		}
 	],
 	"index_web_pages_for_search": 1,
-	"is_submittable": 1,
 	"links": [
 		{
 			"group": "检测业务",
+			"link_doctype": "Sample",
+			"link_fieldname": "test_request"
+		},
+		{
+			"group": "检测业务",
 			"link_doctype": "Test Report",
-			"link_fieldname": "entrustment"
+			"link_fieldname": "test_request"
 		}
 	],
 	"modified": "2026-09-09 00:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
-	"name": "Testing Entrustment",
+	"name": "Test Request",
 	"naming_rule": "Expression",
 	"owner": "Administrator",
 	"permissions": [
 		{
-			"amend": 1,
-			"cancel": 1,
 			"create": 1,
 			"delete": 1,
 			"email": 1,
@@ -151,12 +139,9 @@
 			"report": 1,
 			"role": "System Manager",
 			"share": 1,
-			"submit": 1,
 			"write": 1
 		},
 		{
-			"amend": 1,
-			"cancel": 1,
 			"create": 1,
 			"delete": 1,
 			"email": 1,
@@ -166,7 +151,6 @@
 			"report": 1,
 			"role": "Testing Manager",
 			"share": 1,
-			"submit": 1,
 			"write": 1
 		},
 		{
@@ -178,12 +162,11 @@
 			"report": 1,
 			"role": "Testing User",
 			"share": 1,
-			"submit": 1,
 			"write": 1
 		}
 	],
 	"row_format": "Dynamic",
-	"search_fields": "customer,status,sales_order",
+	"search_fields": "customer,status,quotation,sales_order",
 	"sort_field": "modified",
 	"sort_order": "DESC",
 	"states": [],

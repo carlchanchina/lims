@@ -1,33 +1,22 @@
 {
 	"actions": [],
 	"allow_import": 1,
-	"autoname": "format:TR-{YYYY}-{#####}",
+	"autoname": "format:SPL-{YYYY}-{#####}",
 	"creation": "2026-09-09 00:00:00.000000",
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
-		"section_break_basic",
 		"test_request",
-		"sample",
 		"sample_name",
-		"report_date",
+		"received_date",
 		"status",
-		"column_break_basic",
+		"column_break_1",
 		"customer",
-		"item",
-		"standard",
-		"equipment",
-		"tested_by",
-		"section_break_conclusion",
-		"conclusion",
+		"qty",
+		"uom",
 		"remarks"
 	],
 	"fields": [
-		{
-			"fieldname": "section_break_basic",
-			"fieldtype": "Section Break",
-			"label": "报告信息"
-		},
 		{
 			"fieldname": "test_request",
 			"fieldtype": "Link",
@@ -39,38 +28,32 @@
 			"search_index": 1
 		},
 		{
-			"fieldname": "sample",
-			"fieldtype": "Link",
-			"label": "样品",
-			"options": "Sample"
-		},
-		{
-			"fetch_from": "sample.sample_name",
 			"fieldname": "sample_name",
 			"fieldtype": "Data",
+			"in_list_view": 1,
 			"label": "样品名称",
-			"read_only": 1
+			"reqd": 1
 		},
 		{
 			"default": "Today",
-			"fieldname": "report_date",
+			"fieldname": "received_date",
 			"fieldtype": "Date",
 			"in_list_view": 1,
-			"label": "报告日期"
+			"label": "收样日期"
 		},
 		{
-			"default": "待检测",
+			"default": "待收样",
 			"fieldname": "status",
 			"fieldtype": "Select",
 			"in_list_view": 1,
 			"in_standard_filter": 1,
-			"label": "状态",
+			"label": "样品状态",
 			"no_copy": 1,
-			"options": "待检测\n检测中\n已出具\n已作废",
+			"options": "待收样\n已收样\n检测中\n已检测\n已退样",
 			"reqd": 1
 		},
 		{
-			"fieldname": "column_break_basic",
+			"fieldname": "column_break_1",
 			"fieldtype": "Column Break"
 		},
 		{
@@ -84,38 +67,16 @@
 			"read_only": 1
 		},
 		{
-			"fieldname": "item",
+			"default": "1",
+			"fieldname": "qty",
+			"fieldtype": "Float",
+			"label": "数量"
+		},
+		{
+			"fieldname": "uom",
 			"fieldtype": "Link",
-			"label": "检测项目",
-			"options": "Item"
-		},
-		{
-			"fieldname": "standard",
-			"fieldtype": "Link",
-			"label": "检测标准",
-			"options": "Test Standard"
-		},
-		{
-			"fieldname": "equipment",
-			"fieldtype": "Link",
-			"label": "设备",
-			"options": "Equipment"
-		},
-		{
-			"fieldname": "tested_by",
-			"fieldtype": "Link",
-			"label": "检测人",
-			"options": "User"
-		},
-		{
-			"fieldname": "section_break_conclusion",
-			"fieldtype": "Section Break",
-			"label": "检测结论"
-		},
-		{
-			"fieldname": "conclusion",
-			"fieldtype": "Text Editor",
-			"label": "检测结论"
+			"label": "单位",
+			"options": "UOM"
 		},
 		{
 			"fieldname": "remarks",
@@ -128,7 +89,7 @@
 	"modified": "2026-09-09 00:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
-	"name": "Test Report",
+	"name": "Sample",
 	"naming_rule": "Expression",
 	"owner": "Administrator",
 	"permissions": [
@@ -169,9 +130,10 @@
 		}
 	],
 	"row_format": "Dynamic",
-	"search_fields": "test_request,sample,status",
+	"search_fields": "sample_name,test_request,status",
 	"sort_field": "modified",
 	"sort_order": "DESC",
 	"states": [],
+	"title_field": "sample_name",
 	"track_changes": 1
 }
