@@ -1,0 +1,24 @@
+{
+	"name": "lims-ui",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"frappe-ui": "1.0.0-beta.24",
+		"pinia": "^2.0.36",
+		"vue": "^3.5.14",
+		"vue-router": "^4.4.0"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^4.2.3",
+		"autoprefixer": "^10.4.13",
+		"postcss": "^8.4.5",
+		"tailwindcss": "^3.4.15",
+		"vite": "^4.4.9"
+	}
+}

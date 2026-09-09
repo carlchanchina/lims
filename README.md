@@ -143,6 +143,18 @@ bench --site <your-site> run-tests --app test
 用户需要 `Testing Manager` / `Testing User` 角色;生成报价依赖 ERPNext 的
 Customer/Company/币种/Selling Price List 等标准配置。
 
+### Vue 前端(/lims)
+
+前端源码位于仓库根目录 `desk/`,详见 `desk/README.md`。
+
+```bash
+cd desk
+yarn install
+yarn build
+```
+
+构建后访问 `https://<your-site>/lims`,使用内部 Frappe 账号登录。
+
 ### License
 
 mit

@@ -9,6 +9,7 @@ from test.testing.doctype.test_request.test_request import (
 	STATUS_QUOTED,
 	create_quotation,
 )
+from test.api.requests import request_action
 
 
 class TestTestRequest(IntegrationTestCase):
@@ -103,6 +104,30 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(report.test_request, request.name)
 		self.assertEqual(report.sample, sample)
 		self.assertEqual(report.standard, self.standard)
+
+	def test_request_action_guardrails(self):
+		_create_catalog(self.item, self.standard, self.equipment, price=100)
+		request = _create_request(
+			self.customer,
+			self.company,
+			self.item,
+			[{"sample": "样品 A", "standard": self.standard, "qty": 1}],
+		)
+
+		request_action(request.name, "generate_quotation")
+		request.reload()
+		self.assertEqual(request.status, STATUS_QUOTED)
+
+		with self.assertRaises(frappe.ValidationError):
+			request_action(request.name, "mark_ready")
+
+		frappe.db.set_value("Test Request", request.name, "sales_order", "SO-TEST-001")
+		request_action(request.name, "mark_ready")
+		request_action(request.name, "start")
+		request_action(request.name, "complete")
+
+		request.reload()
+		self.assertEqual(request.status, "已完成")
 
 
 def _get_company():
