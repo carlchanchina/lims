@@ -1,7 +1,6 @@
 <template>
 	<div class="p-6 max-w-6xl">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-xl font-semibold">检测报告</h1>
+		<div class="flex items-center justify-end mb-4">
 			<button class="px-3 py-2 rounded-lg bg-gray-900 text-white text-sm" @click="openNew()">
 				新建报告
 			</button>
@@ -107,12 +106,13 @@
 
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 import Modal from "../components/Modal.vue";
 import StatusBadge from "../components/StatusBadge.vue";
 import { apiMethods } from "../api";
 
 const rows = ref([]);
+const route = useRoute();
 const showModal = ref(false);
 const form = reactive({});
 const requests = ref([]);
@@ -131,6 +131,11 @@ onMounted(async () => {
 	if (presetRequest) {
 		sessionStorage.removeItem("lims_new_report_request");
 		openNew(presetRequest);
+		return;
+	}
+	if (route.query.report) {
+		const report = await apiMethods.reportGet(route.query.report);
+		await openEdit(report);
 	}
 });
 

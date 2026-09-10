@@ -54,4 +54,6 @@ export const apiMethods = {
 	reportsList: (filters = {}) => api("test.api.reports.list_reports", { filters }),
 	reportGet: (name) => api("test.api.reports.get_report", { name }),
 	reportSave: (data) => api("test.api.reports.save_report", { data }),
+	globalSearch: (txt) => api("test.api.search.global_search", { txt }),
+	notifications: () => api("test.api.notifications.list_notifications"),
 };

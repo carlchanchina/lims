@@ -1,7 +1,6 @@
 <template>
 	<div class="p-6 max-w-6xl">
-		<div class="flex items-center justify-between mb-4">
-			<h1 class="text-xl font-semibold">检测请求</h1>
+		<div class="flex items-center justify-end mb-4">
 			<button
 				class="px-3 py-2 rounded-lg bg-gray-900 text-white text-sm"
 				@click="openNew = true"

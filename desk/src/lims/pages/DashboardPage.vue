@@ -1,6 +1,5 @@
 <template>
 	<div class="p-6 max-w-6xl">
-		<h1 class="text-xl font-semibold text-gray-900 mb-4">仪表盘</h1>
 		<div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-6">
 			<div v-for="item in statusItems" :key="item.status" class="bg-white border border-gray-200 rounded-xl p-4">
 				<div class="text-2xl font-semibold">{{ summary[item.status] || 0 }}</div>
