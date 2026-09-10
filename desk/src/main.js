@@ -8,10 +8,10 @@ import { initBoot } from "./boot";
 
 setConfig("resourceFetcher", frappeRequest);
 
-await initBoot();
-
-const app = createApp(App);
-app.use(FrappeUI);
-app.use(createPinia());
-app.use(router);
-app.mount("#app");
+initBoot().then(() => {
+	const app = createApp(App);
+	app.use(FrappeUI);
+	app.use(createPinia());
+	app.use(router);
+	app.mount("#app");
+});
