@@ -132,6 +132,8 @@
 						<th>样品</th>
 						<th>检测项目</th>
 						<th>标准</th>
+						<th>设备(Asset)</th>
+						<th>时长/循环</th>
 						<th>数量</th>
 						<th></th>
 					</tr>
@@ -141,6 +143,8 @@
 						<td class="py-2">{{ sampleName(row.sample) }}</td>
 						<td>{{ row.item }}</td>
 						<td>{{ row.standard }}</td>
+						<td>{{ row.equipment || "—" }}</td>
+						<td>{{ row.hours || "—" }}h / {{ row.cycles || "—" }}</td>
 						<td>{{ row.qty }} {{ row.uom }}</td>
 						<td class="text-right">
 							<button v-if="editable" class="text-red-600" @click="removeItem(index)">移除</button>
@@ -187,6 +191,16 @@
 			<select v-model="itemDraft.standard" class="w-full border rounded-lg px-3 py-2 mb-2">
 				<option v-for="s in standards" :key="s.name" :value="s.name">{{ s.standard_code }}</option>
 			</select>
+			<select v-model="itemDraft.equipment" class="w-full border rounded-lg px-3 py-2 mb-2">
+				<option value="">设备(Asset) —</option>
+				<option v-for="asset in assets" :key="asset.name" :value="asset.name">
+					{{ asset.name }} {{ asset.asset_name }}
+				</option>
+			</select>
+			<div class="mb-2 flex gap-2">
+				<input v-model="itemDraft.hours" type="number" placeholder="试验时长(h)" class="w-1/2 border rounded-lg px-3 py-2" />
+				<input v-model="itemDraft.cycles" type="number" placeholder="循环次数" class="w-1/2 border rounded-lg px-3 py-2" />
+			</div>
 			<input v-model="itemDraft.qty" type="number" placeholder="数量" class="w-full border rounded-lg px-3 py-2 mb-2" />
 			<button class="px-3 py-2 rounded-lg bg-gray-900 text-white" @click="addItem">添加</button>
 		</Modal>
@@ -218,11 +232,20 @@ const items = ref([]);
 const itemDirty = ref(false);
 const itemOptions = ref([]);
 const standards = ref([]);
+const assets = ref([]);
 const showSampleDialog = ref(false);
 const showItemDialog = ref(false);
 const openReport = ref(false);
 const sampleEditor = reactive({});
-const itemDraft = reactive({ sample: "", item: "", standard: "", qty: 1 });
+const itemDraft = reactive({
+	sample: "",
+	item: "",
+	standard: "",
+	equipment: "",
+	hours: null,
+	cycles: null,
+	qty: 1,
+});
 const salesOrderInput = ref("");
 
 const editable = computed(() => request.value.status === "草稿");
@@ -246,6 +269,7 @@ async function load() {
 	items.value = request.value.items || [];
 	salesOrderInput.value = request.value.sales_order || "";
 	standards.value = (await apiMethods.standardsList({})) || [];
+	assets.value = (await apiMethods.assetsList("")) || [];
 	itemOptions.value = (await apiMethods.itemSearch("")) || [];
 }
 
@@ -295,7 +319,15 @@ async function removeSample(sample) {
 
 function addItem() {
 	items.value.push({ ...itemDraft });
-	Object.assign(itemDraft, { sample: "", item: "", standard: "", qty: 1 });
+	Object.assign(itemDraft, {
+		sample: "",
+		item: "",
+		standard: "",
+		equipment: "",
+		hours: null,
+		cycles: null,
+		qty: 1,
+	});
 	itemDirty.value = true;
 	showItemDialog.value = false;
 }

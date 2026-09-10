@@ -251,6 +251,10 @@ def create_quotation(name):
 				"conversion_factor": 1.0,
 				"rate": flt(catalog.price),
 				"amount": flt(row.qty) * flt(catalog.price),
+				"test_catalog": catalog.name,
+				"equipment": row.equipment or catalog.equipment,
+				"hours": row.hours,
+				"cycles": row.cycles,
 			},
 		)
 

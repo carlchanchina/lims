@@ -1,18 +1,9 @@
 <template>
-	<span ref="target" class="relative">
-		<span
-			v-if="unreadCount"
-			class="pointer-events-none absolute right-1 top-1 z-10 size-1.5 rounded-full bg-surface-blue-5"
-		/>
-		<Button
-			variant="ghost"
-			icon="lucide-bell"
-			class="!text-ink-gray-7"
-			@click="toggle"
-		/>
+	<span ref="target">
 		<span
 			v-if="open"
-			class="absolute right-0 top-10 z-30 w-[360px] overflow-hidden rounded-xl border border-outline-gray-1 bg-surface-base shadow-lg"
+			class="fixed top-2 z-40 w-[360px] overflow-hidden rounded-xl border border-outline-gray-1 bg-surface-base shadow-lg"
+			:style="{ insetInlineStart: collapsed ? '64px' : '248px' }"
 		>
 			<div class="flex items-center justify-between border-b px-4 py-2.5">
 				<span class="text-lg-medium text-ink-gray-9">通知</span>
@@ -53,10 +44,13 @@
 <script setup>
 import { Button } from "frappe-ui";
 import { onClickOutside } from "@vueuse/core";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import BellIcon from "~icons/lucide/bell";
 import { apiMethods } from "../api";
+
+defineProps({ collapsed: { type: Boolean, default: false } });
+const emit = defineEmits(["unread"]);
 
 const router = useRouter();
 const target = ref(null);
@@ -67,7 +61,10 @@ const readIds = ref(new Set(JSON.parse(localStorage.getItem("lims_notifications_
 const unreadCount = computed(() => items.value.filter((item) => !isRead(item)).length);
 
 onMounted(refresh);
-onClickOutside(target, () => (open.value = false));
+onClickOutside(target, () => (open.value = false), {
+	ignore: ["#notifications-btn"],
+});
+watch(unreadCount, (value) => emit("unread", value), { immediate: true });
 
 async function refresh() {
 	items.value = (await apiMethods.notifications()) || [];
@@ -100,4 +97,6 @@ function markAllRead() {
 	items.value.forEach((item) => readIds.value.add(item.id));
 	saveRead();
 }
+
+defineExpose({ toggle, unreadCount });
 </script>

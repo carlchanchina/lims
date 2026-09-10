@@ -14,9 +14,19 @@ const routes = [
 		meta: { title: "测试标准" },
 	},
 	{
-		path: "/lims/equipment",
-		component: () => import("./pages/EquipmentPage.vue"),
-		meta: { title: "设备" },
+		path: "/lims/assets",
+		component: () => import("./pages/AssetsPage.vue"),
+		meta: { title: "设备(Asset)" },
+	},
+	{
+		path: "/lims/customers",
+		component: () => import("./pages/CustomersPage.vue"),
+		meta: { title: "客户" },
+	},
+	{
+		path: "/lims/plans",
+		component: () => import("./pages/TestPlansPage.vue"),
+		meta: { title: "试验计划" },
 	},
 	{
 		path: "/lims/catalog",

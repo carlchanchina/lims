@@ -142,6 +142,24 @@ after_migrate = ["test.setup.install.run_schema_cleanup"]
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
 # }
 
+# Document Events
+# ---------------
+
+doc_events = {
+	"Customer": {
+		"after_insert": "test.integrations.erpnext_party.sync_customer",
+		"on_update": "test.integrations.erpnext_party.sync_customer",
+		"after_rename": "test.integrations.erpnext_party.rename_customer",
+		"on_trash": "test.integrations.erpnext_party.delete_customer",
+	},
+	"Contact": {
+		"after_insert": "test.integrations.erpnext_party.sync_contact",
+		"on_update": "test.integrations.erpnext_party.sync_contact",
+		"after_rename": "test.integrations.erpnext_party.rename_contact",
+		"on_trash": "test.integrations.erpnext_party.delete_contact",
+	},
+}
+
 # Scheduled Tasks
 # ---------------
 

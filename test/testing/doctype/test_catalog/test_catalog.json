@@ -54,8 +54,8 @@
 		{
 			"fieldname": "equipment",
 			"fieldtype": "Link",
-			"label": "设备",
-			"options": "Equipment"
+			"label": "设备(Asset)",
+			"options": "Asset"
 		},
 		{
 			"fieldname": "price",

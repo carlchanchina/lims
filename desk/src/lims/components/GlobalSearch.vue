@@ -1,10 +1,4 @@
 <template>
-	<Button
-		variant="ghost"
-		icon="lucide-search"
-		class="!text-ink-gray-7"
-		@click="open = true"
-	/>
 	<Modal v-if="open" title="搜索" @close="close">
 		<input
 			ref="input"
@@ -38,7 +32,7 @@
 </template>
 
 <script setup>
-import { Badge, Button } from "frappe-ui";
+import { Badge } from "frappe-ui";
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { apiMethods } from "../api";
@@ -91,4 +85,11 @@ function close() {
 	query.value = "";
 	results.value = [];
 }
+
+function openSearch() {
+	open.value = true;
+	nextTick(() => input.value?.focus());
+}
+
+defineExpose({ openSearch });
 </script>

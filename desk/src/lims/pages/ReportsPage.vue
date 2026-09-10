@@ -80,7 +80,7 @@
 					<label class="text-sm text-gray-700">设备</label>
 					<select v-model="form.equipment" class="w-full border rounded-lg px-3 py-2">
 						<option value="">—</option>
-						<option v-for="e in equipment" :key="e.name" :value="e.name">{{ e.equipment_name }}</option>
+						<option v-for="e in equipment" :key="e.name" :value="e.name">{{ e.name }} {{ e.asset_name }}</option>
 					</select>
 				</div>
 				<div>
@@ -125,7 +125,7 @@ onMounted(async () => {
 	await load();
 	requests.value = (await apiMethods.requestsList({})) || [];
 	standards.value = (await apiMethods.standardsList({})) || [];
-	equipment.value = (await apiMethods.equipmentList({})) || [];
+	equipment.value = (await apiMethods.assetsList("")) || [];
 
 	const presetRequest = sessionStorage.getItem("lims_new_report_request");
 	if (presetRequest) {

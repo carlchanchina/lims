@@ -8,9 +8,8 @@
 			/>
 			<div class="truncate text-lg-medium text-ink-gray-9">{{ title }}</div>
 		</div>
-		<div class="flex shrink-0 items-center gap-1">
-			<GlobalSearch />
-			<NotificationsPanel />
+		<div class="flex shrink-0 items-center gap-2">
+			<slot name="actions" />
 		</div>
 	</header>
 </template>
@@ -19,8 +18,6 @@
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import BackButton from "./BackButton.vue";
-import GlobalSearch from "./GlobalSearch.vue";
-import NotificationsPanel from "./NotificationsPanel.vue";
 
 const route = useRoute();
 const router = useRouter();

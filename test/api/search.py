@@ -47,12 +47,12 @@ SEARCH_TARGETS = [
 		"subtitle_fields": ["standard_name"],
 	},
 	{
-		"doctype": "Equipment",
-		"fields": ["name", "equipment_code", "equipment_name", "model"],
-		"search_fields": ["name", "equipment_code", "equipment_name"],
-		"route": "/lims/equipment",
-		"title_field": "equipment_name",
-		"subtitle_fields": ["equipment_code", "model"],
+		"doctype": "Asset",
+		"fields": ["name", "asset_name", "item_code", "location"],
+		"search_fields": ["name", "asset_name", "item_code", "location"],
+		"route": "/lims/assets",
+		"title_field": "asset_name",
+		"subtitle_fields": ["name", "location"],
 	},
 ]
 

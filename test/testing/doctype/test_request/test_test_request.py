@@ -28,19 +28,18 @@ class TestTestRequest(IntegrationTestCase):
 
 		self.standard = _create_standard("GB/T 2423.1", "低温试验")
 		self.standard_2 = _create_standard("GJB 150.4A", "低温试验(军标)")
-		self.equipment = _create_equipment()
 
 	def tearDown(self):
 		frappe.db.rollback()
 
 	def test_catalog_requires_single_default(self):
-		_create_catalog(self.item, self.standard, self.equipment, price=100)
+		_create_catalog(self.item, self.standard, price=100)
 		with self.assertRaises(frappe.ValidationError):
 			_create_catalog(self.item, self.standard, None, price=80, is_default=1)
 
 	def test_create_quotation_from_request(self):
-		_create_catalog(self.item, self.standard, self.equipment, price=100)
-		_create_catalog(self.item, self.standard_2, self.equipment, price=150)
+		_create_catalog(self.item, self.standard, price=100)
+		_create_catalog(self.item, self.standard_2, price=150)
 
 		request = _create_request(
 			self.customer,
@@ -95,7 +94,6 @@ class TestTestRequest(IntegrationTestCase):
 				"sample_name": "样品 A",
 				"item": self.item,
 				"standard": self.standard,
-				"equipment": self.equipment,
 				"status": "检测中",
 				"conclusion": "符合要求",
 			}
@@ -106,7 +104,7 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(report.standard, self.standard)
 
 	def test_request_action_guardrails(self):
-		_create_catalog(self.item, self.standard, self.equipment, price=100)
+		_create_catalog(self.item, self.standard, price=100)
 		request = _create_request(
 			self.customer,
 			self.company,
@@ -206,21 +204,6 @@ def _create_standard(code, name):
 				"doctype": "Test Standard",
 				"standard_code": code,
 				"standard_name": name,
-			}
-		)
-		.insert(ignore_permissions=True)
-		.name
-	)
-
-
-def _create_equipment():
-	return (
-		frappe.get_doc(
-			{
-				"doctype": "Equipment",
-				"equipment_code": f"EQ-{frappe.generate_hash(length=4)}",
-				"equipment_name": "低温试验箱",
-				"model": "LTD-100",
 			}
 		)
 		.insert(ignore_permissions=True)

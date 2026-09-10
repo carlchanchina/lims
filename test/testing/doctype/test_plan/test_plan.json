@@ -1,0 +1,129 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:TP-{YYYY}-{#####}",
+	"creation": "2026-09-10 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"test_request",
+		"status",
+		"column_break_1",
+		"project",
+		"start_date",
+		"end_date",
+		"section_break_tasks",
+		"tasks",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "test_request",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "检测请求",
+			"options": "Test Request",
+			"reqd": 1,
+			"search_index": 1
+		},
+		{
+			"default": "草稿",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "状态",
+			"options": "草稿\n待执行\n执行中\n已完成\n已取消",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "project",
+			"fieldtype": "Link",
+			"label": "项目",
+			"options": "Project"
+		},
+		{
+			"fieldname": "start_date",
+			"fieldtype": "Date",
+			"label": "计划开始"
+		},
+		{
+			"fieldname": "end_date",
+			"fieldtype": "Date",
+			"label": "计划结束"
+		},
+		{
+			"fieldname": "section_break_tasks",
+			"fieldtype": "Section Break",
+			"label": "试验任务"
+		},
+		{
+			"fieldname": "tasks",
+			"fieldtype": "Table",
+			"label": "试验任务",
+			"options": "Test Task"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-10 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Test Plan",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing User",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "test_request,status,project",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "test_request",
+	"track_changes": 1
+}

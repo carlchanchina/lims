@@ -28,9 +28,9 @@ onMounted(async () => {
 		value: d.name,
 		label: d.standard_code,
 	}));
-	equipment.value = ((await apiMethods.equipmentList({})) || []).map((d) => ({
+	equipment.value = ((await apiMethods.assetsList("")) || []).map((d) => ({
 		value: d.name,
-		label: `${d.equipment_code} - ${d.equipment_name}`,
+		label: `${d.name} - ${d.asset_name || d.item_code || ""}`,
 	}));
 	fields.value = fields.value.map((field) => {
 		if (field.fieldname === "item") return { ...field, options: items.value };
@@ -45,7 +45,7 @@ const fields = ref([
 	{ fieldname: "catalog_name", label: "目录名称", type: "text" },
 	{ fieldname: "item", label: "检测项目", type: "datalist", options: [] },
 	{ fieldname: "standard", label: "检测标准", type: "select", options: [] },
-	{ fieldname: "equipment", label: "设备", type: "select", options: [] },
+	{ fieldname: "equipment", label: "设备(Asset)", type: "select", options: [] },
 	{ fieldname: "price", label: "价格", type: "number" },
 	{ fieldname: "uom", label: "单位", type: "text" },
 	{ fieldname: "tat_days", label: "周期(天)", type: "number" },

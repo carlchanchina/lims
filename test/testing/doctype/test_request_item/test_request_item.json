@@ -12,6 +12,9 @@
 		"standard",
 		"qty",
 		"uom",
+		"equipment",
+		"hours",
+		"cycles",
 		"remarks"
 	],
 	"fields": [
@@ -67,6 +70,26 @@
 			"in_list_view": 1,
 			"label": "单位",
 			"options": "UOM"
+		},
+		{
+			"fieldname": "equipment",
+			"fieldtype": "Link",
+			"label": "设备(Asset)",
+			"options": "Asset"
+		},
+		{
+			"columns": 1,
+			"fieldname": "hours",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "试验时长(h)"
+		},
+		{
+			"columns": 1,
+			"fieldname": "cycles",
+			"fieldtype": "Float",
+			"in_list_view": 1,
+			"label": "循环次数"
 		},
 		{
 			"fieldname": "remarks",

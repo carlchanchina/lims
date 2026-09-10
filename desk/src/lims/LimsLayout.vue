@@ -9,6 +9,7 @@
 
 				<ScrollArea class="mt-3 min-h-0 flex-1 -mx-2" viewport-class="px-2">
 					<nav class="flex flex-col gap-0.5">
+						<LimsTools :collapsed="collapsed" />
 						<SidebarItem
 							v-for="item in items"
 							:key="item.to"
@@ -44,9 +45,12 @@ import ClipboardList from "~icons/lucide/clipboard-list";
 import FolderKanban from "~icons/lucide/folder-kanban";
 import BookOpen from "~icons/lucide/book-open";
 import LayoutDashboard from "~icons/lucide/layout-dashboard";
+import CalendarClock from "~icons/lucide/calendar-clock";
+import Users from "~icons/lucide/users";
 import Wrench from "~icons/lucide/wrench";
 import FileText from "~icons/lucide/file-text";
 import LimsHeader from "./components/LimsHeader.vue";
+import LimsTools from "./components/LimsTools.vue";
 import UserMenu from "./components/UserMenu.vue";
 
 const route = useRoute();
@@ -56,9 +60,11 @@ const collapsed = ref(false);
 const items = [
 	{ label: "仪表盘", to: "/lims/dashboard", icon: LayoutDashboard },
 	{ label: "检测请求", to: "/lims/requests", icon: ClipboardList },
+	{ label: "试验计划", to: "/lims/plans", icon: CalendarClock },
 	{ label: "检测报告", to: "/lims/reports", icon: FileText },
+	{ label: "客户", to: "/lims/customers", icon: Users },
 	{ label: "测试标准", to: "/lims/standards", icon: BookOpen },
-	{ label: "设备", to: "/lims/equipment", icon: Wrench },
+	{ label: "设备(Asset)", to: "/lims/assets", icon: Wrench },
 	{ label: "报价目录", to: "/lims/catalog", icon: FolderKanban },
 ];
 

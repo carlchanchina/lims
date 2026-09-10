@@ -20,11 +20,6 @@ export const apiMethods = {
 	standardGet: (name) => api("test.api.master.get_standard", { name }),
 	standardSave: (data) => api("test.api.master.save_standard", { data }),
 	standardDelete: (name) => api("test.api.master.delete_standard", { name }),
-	equipmentList: (filters = {}) =>
-		api("test.api.master.get_equipment_list", { filters }),
-	equipmentGet: (name) => api("test.api.master.get_equipment", { name }),
-	equipmentSave: (data) => api("test.api.master.save_equipment", { data }),
-	equipmentDelete: (name) => api("test.api.master.delete_equipment", { name }),
 	catalogList: (filters = {}) => api("test.api.master.get_catalog_list", { filters }),
 	catalogGet: (name) => api("test.api.master.get_catalog", { name }),
 	catalogSave: (data) => api("test.api.master.save_catalog", { data }),
@@ -56,4 +51,13 @@ export const apiMethods = {
 	reportSave: (data) => api("test.api.reports.save_report", { data }),
 	globalSearch: (txt) => api("test.api.search.global_search", { txt }),
 	notifications: () => api("test.api.notifications.list_notifications"),
+	assetsList: (txt) => api("test.api.assets.list_assets", { txt }),
+	customersList: (txt) => api("test.api.parties.list_customers", { txt }),
+	customerGet: (name) => api("test.api.parties.get_customer", { name }),
+	contactsList: (customer) => api("test.api.parties.list_contacts", { customer }),
+	plansList: (filters = {}) => api("test.api.plans.list_plans", { filters }),
+	planGet: (name) => api("test.api.plans.get_plan", { name }),
+	planSave: (data) => api("test.api.plans.save_plan", { data }),
+	planGenerate: (test_request) =>
+		api("test.api.plans.generate_plan_from_request", { test_request }),
 };

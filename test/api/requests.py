@@ -98,6 +98,9 @@ def save_request(data):
 					"standard": row.get("standard"),
 					"qty": row.get("qty") or 1,
 					"uom": row.get("uom"),
+					"equipment": row.get("equipment"),
+					"hours": row.get("hours"),
+					"cycles": row.get("cycles"),
 					"remarks": row.get("remarks"),
 				},
 			)

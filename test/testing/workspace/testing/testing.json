@@ -1,7 +1,7 @@
 {
 	"charts": [],
 	"content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\">环境试验 LIMS</span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"LIMS 单据\",\"col\":6}},{\"type\":\"card\",\"data\":{\"card_name\":\"ERPNext 联动\",\"col\":6}}]",
-	"creation": "2026-09-09 00:00:00.000000",
+	"creation": "2026-09-10 00:00:00.000000",
 	"docstatus": 0,
 	"doctype": "Workspace",
 	"for_user": "",
@@ -42,29 +42,9 @@
 		{
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "Test Standard",
+			"label": "Test Plan",
 			"link_count": 0,
-			"link_to": "Test Standard",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Equipment",
-			"link_count": 0,
-			"link_to": "Equipment",
-			"link_type": "DocType",
-			"onboard": 0,
-			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "Test Catalog",
-			"link_count": 0,
-			"link_to": "Test Catalog",
+			"link_to": "Test Plan",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -82,8 +62,28 @@
 		{
 			"hidden": 0,
 			"is_query_report": 0,
+			"label": "LIMS Customer",
+			"link_count": 0,
+			"link_to": "LIMS Customer",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "LIMS Contact",
+			"link_count": 0,
+			"link_to": "LIMS Contact",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
 			"label": "ERPNext 联动",
-			"link_count": 4,
+			"link_count": 7,
 			"onboard": 0,
 			"type": "Card Break"
 		},
@@ -100,9 +100,29 @@
 		{
 			"hidden": 0,
 			"is_query_report": 0,
+			"label": "Contact",
+			"link_count": 0,
+			"link_to": "Contact",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
 			"label": "Item",
 			"link_count": 0,
 			"link_to": "Item",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "Asset",
+			"link_count": 0,
+			"link_to": "Asset",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -126,9 +146,19 @@
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "Project",
+			"link_count": 0,
+			"link_to": "Project",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
 		}
 	],
-	"modified": "2026-09-09 00:00:00.000000",
+	"modified": "2026-09-10 00:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
 	"name": "Testing",
