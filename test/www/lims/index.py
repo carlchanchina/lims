@@ -11,7 +11,7 @@ def get_context(context):
 
 	if frappe.session.user == "Guest":
 		frappe.local.flags.redirect_location = "/login?redirect-to=/lims"
-		return
+		raise frappe.Redirect
 
 	context.lims_boot = frappe.as_json(get_boot())
 	return context
