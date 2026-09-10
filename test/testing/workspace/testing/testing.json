@@ -138,6 +138,14 @@
 	"quick_lists": [],
 	"roles": [],
 	"sequence_id": 1,
-	"shortcuts": [],
+	"shortcuts": [
+		{
+			"color": "Green",
+			"icon": "quality",
+			"label": "进入 LIMS 界面",
+			"type": "URL",
+			"url": "/lims"
+		}
+	],
 	"title": "Testing"
 }

@@ -13,8 +13,7 @@ def get_context(context):
 		frappe.local.flags.redirect_location = "/login?redirect-to=/lims"
 		return
 
-	context.csrf_token = frappe.sessions.get_csrf_token()
-	context.boot_json = frappe.as_json(get_boot())
+	context.boot = get_boot()
 	return context
 
 

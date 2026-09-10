@@ -13,15 +13,15 @@ app_color = "green"
 required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "test",
-# 		"logo": "/assets/test/logo.png",
-# 		"title": "Test",
-# 		"route": "/test",
-# 		"has_permission": "test.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "lims",
+		"logo": "/assets/test/images/lims.svg",
+		"title": "环境试验 LIMS",
+		"route": "/lims",
+		"has_permission": "test.api.permission.has_app_permission",
+	}
+]
 
 # Includes in <head>
 # ------------------
