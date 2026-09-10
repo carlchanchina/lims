@@ -13,7 +13,7 @@ def get_context(context):
 		frappe.local.flags.redirect_location = "/login?redirect-to=/lims"
 		return
 
-	context.boot = get_boot()
+	context.lims_boot = frappe.as_json(get_boot())
 	return context
 
 
@@ -21,6 +21,14 @@ def get_context(context):
 def get_context_for_dev():
 	if not frappe.conf.developer_mode:
 		frappe.throw("仅限 developer mode 使用")
+	return get_boot()
+
+
+@frappe.whitelist(methods=["GET"])
+def get_boot_data():
+	"""登录用户读取 LIMS boot(生产环境 fallback)。"""
+	if frappe.session.user == "Guest":
+		frappe.throw("请先登录", frappe.PermissionError)
 	return get_boot()
 
 

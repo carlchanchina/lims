@@ -13,6 +13,9 @@
 			window["{{ key }}"] = {{ boot[key] | tojson }};
 			{% endfor %}
 		</script>
+		<script>
+			window.__boot = {% if lims_boot %}{{ lims_boot | safe }}{% else %}null{% endif %};
+		</script>
 		<script type="module" src="/assets/test/lims/index.js"></script>
 	</body>
 </html>
