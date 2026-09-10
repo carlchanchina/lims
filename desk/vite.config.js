@@ -1,6 +1,11 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import { defineConfig } from "vite";
 import frappeUI from "frappe-ui/vite";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function limsBootTemplate() {
 	return {
@@ -20,6 +25,7 @@ export default defineConfig({
 		frappeUI({
 			frappeProxy: true,
 			lucideIcons: true,
+			jinjaBootData: false,
 			buildConfig: {
 				outDir: "../test/public/lims",
 				emptyOutDir: true,
@@ -27,9 +33,19 @@ export default defineConfig({
 			},
 		}),
 		vue(),
+		vueJsx(),
 		limsBootTemplate(),
 	],
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "src"),
+		},
+		dedupe: ["vue", "vue-router", "frappe-ui", "reka-ui"],
+	},
 	server: {
-		port: 5173,
+		allowedHosts: true,
+		fs: {
+			allow: [".."],
+		},
 	},
 });
