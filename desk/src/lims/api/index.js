@@ -24,10 +24,13 @@ export const apiMethods = {
 	catalogGet: (name) => api("test.api.master.get_catalog", { name }),
 	catalogSave: (data) => api("test.api.master.save_catalog", { data }),
 	catalogDelete: (name) => api("test.api.master.delete_catalog", { name }),
-	catalogSetDefault: (name) =>
-		api("test.api.master.set_default_catalog", { name }),
+	industryList: () => api("test.api.master.get_industries"),
+	industryCreate: (data) => api("test.api.parties.create_industry", { data }),
 	customerSearch: (txt) => api("test.api.reference.customer_search", { txt }),
 	itemSearch: (txt) => api("test.api.reference.item_search", { txt }),
+	itemsList: (txt) => api("test.api.items.list_items", { txt }),
+	itemCreate: (data) => api("test.api.items.create_item", { data }),
+	itemFormOptions: () => api("test.api.items.get_item_form_options"),
 	companyOptions: () => api("test.api.reference.company_options"),
 	erpnextUrl: (doctype, name) =>
 		api("test.api.reference.get_erpnext_url", { doctype, name }),
@@ -52,9 +55,27 @@ export const apiMethods = {
 	globalSearch: (txt) => api("test.api.search.global_search", { txt }),
 	notifications: () => api("test.api.notifications.list_notifications"),
 	assetsList: (txt) => api("test.api.assets.list_assets", { txt }),
+	assetCreate: (data) => api("test.api.assets.create_asset", { data }),
+	assetFormOptions: () => api("test.api.assets.asset_form_options"),
 	customersList: (txt) => api("test.api.parties.list_customers", { txt }),
 	customerGet: (name) => api("test.api.parties.get_customer", { name }),
+	customerCreate: (data) => api("test.api.parties.create_customer", { data }),
 	contactsList: (customer) => api("test.api.parties.list_contacts", { customer }),
+	contactsSearch: (txt, customer) =>
+		api("test.api.parties.search_contacts", { txt, customer }),
+	contactCreate: (data) => api("test.api.parties.create_contact", { data }),
+	partyFormOptions: () => api("test.api.parties.party_form_options"),
+	quotationSearch: (txt, customer) =>
+		api("test.api.orders.search_quotations", { txt, customer }),
+	salesOrderSearch: (txt, customer) =>
+		api("test.api.orders.search_sales_orders", { txt, customer }),
+	quotationLink: (name, quotation) =>
+		api("test.api.orders.link_quotation", { name, quotation }),
+	salesOrderLink: (name, sales_order) =>
+		api("test.api.orders.link_sales_order", { name, sales_order }),
+	salesOrderCreate: (name) => api("test.api.orders.create_sales_order", { name }),
+	requestFromSalesOrder: (data) =>
+		api("test.api.orders.create_request_from_sales_order", { data }),
 	plansList: (filters = {}) => api("test.api.plans.list_plans", { filters }),
 	planGet: (name) => api("test.api.plans.get_plan", { name }),
 	planSave: (data) => api("test.api.plans.save_plan", { data }),

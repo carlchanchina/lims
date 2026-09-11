@@ -45,12 +45,12 @@
 			"read_only": 1
 		},
 		{
+			"description": "协议价不再按标准定价,标准只用于报告与报价单说明",
 			"fieldname": "standard",
 			"fieldtype": "Link",
 			"in_list_view": 1,
 			"label": "检测标准",
-			"options": "Test Standard",
-			"reqd": 1
+			"options": "Test Standard"
 		},
 		{
 			"columns": 1,

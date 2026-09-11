@@ -63,7 +63,17 @@
 				<h2 class="text-lg font-semibold mb-4">{{ editing.name ? "编辑" : "新建" }} {{ singular }}</h2>
 				<div class="space-y-3">
 					<div v-for="field in fields" :key="field.fieldname">
-						<label class="block text-sm text-gray-700 mb-1">{{ field.label }}</label>
+						<div class="mb-1 flex items-center justify-between">
+							<label class="block text-sm text-gray-700">{{ field.label }}</label>
+							<InlineCreate
+								v-if="field.create"
+								:label="field.create.label || '+ 新建'"
+								:title="field.create.title || '新建'"
+								:fields="field.create.fields || []"
+								:save="field.create.save"
+								@created="onFieldCreated(field, $event)"
+							/>
+						</div>
 						<input
 							v-if="field.type === 'datalist'"
 							:list="'dl-' + field.fieldname"
@@ -126,6 +136,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+import InlineCreate from "./InlineCreate.vue";
 import StatusBadge from "./StatusBadge.vue";
 
 const props = defineProps({
@@ -166,6 +177,13 @@ function labelOf(fieldname) {
 
 function optionObject(option) {
 	return typeof option === "object" && option !== null;
+}
+
+function onFieldCreated(field, option) {
+	if (editing.value) {
+		editing.value[field.fieldname] = option.value;
+	}
+	field.create?.onCreated?.(option);
 }
 
 async function save() {

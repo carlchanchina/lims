@@ -8,6 +8,13 @@
 				@input="load"
 			/>
 			<span class="text-sm text-ink-gray-5">来自 ERPNext Asset</span>
+			<InlineCreate
+				label="+ 新建设备"
+				title="新建设备(写入 ERPNext Asset)"
+				:fields="assetFields"
+				:save="saveAsset"
+				@created="load()"
+			/>
 		</div>
 		<div class="overflow-hidden rounded-xl border border-outline-gray-1 bg-surface-base">
 			<table class="w-full text-sm">
@@ -42,13 +49,25 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
+import InlineCreate from "../components/InlineCreate.vue";
+import { assetFields as buildAssetFields } from "../masterForms";
 import { apiMethods } from "../api";
 
 const rows = ref([]);
 const query = ref("");
+const options = ref({ items: [], locations: [], custodians: [], companies: [], defaults: {} });
 
 onMounted(load);
+onMounted(async () => {
+	options.value = (await apiMethods.assetFormOptions()) || options.value;
+});
+
+const assetFields = computed(() => buildAssetFields(options.value));
+
+async function saveAsset(payload) {
+	return await apiMethods.assetCreate(payload);
+}
 
 async function load() {
 	rows.value = (await apiMethods.assetsList(query.value)) || [];

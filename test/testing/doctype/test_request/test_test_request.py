@@ -28,18 +28,22 @@ class TestTestRequest(IntegrationTestCase):
 
 		self.standard = _create_standard("GB/T 2423.1", "低温试验")
 		self.standard_2 = _create_standard("GJB 150.4A", "低温试验(军标)")
+		self.industry = _create_industry("军工")
 
 	def tearDown(self):
 		frappe.db.rollback()
 
-	def test_catalog_requires_single_default(self):
-		_create_catalog(self.item, self.standard, price=100)
+	def test_catalog_scope_must_be_unique(self):
+		_create_catalog(self.item, price=100)
 		with self.assertRaises(frappe.ValidationError):
-			_create_catalog(self.item, self.standard, None, price=80, is_default=1)
+			_create_catalog(self.item, price=80)
+
+	def test_catalog_rejects_customer_and_industry_together(self):
+		with self.assertRaises(frappe.ValidationError):
+			_create_catalog(self.item, price=100, customer=self.customer, industry=self.industry)
 
 	def test_create_quotation_from_request(self):
-		_create_catalog(self.item, self.standard, price=100)
-		_create_catalog(self.item, self.standard_2, price=150)
+		_create_catalog(self.item, price=100, customer=self.customer)
 
 		request = _create_request(
 			self.customer,
@@ -60,12 +64,51 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(quotation.party_name, self.customer)
 		self.assertEqual(len(quotation.items), 2)
 		self.assertEqual(flt(quotation.items[0].rate), 100)
-		self.assertEqual(flt(quotation.items[1].rate), 150)
+		self.assertEqual(flt(quotation.items[1].rate), 100)
 		self.assertIn("GB/T 2423.1", quotation.items[0].description)
 
 		request.reload()
 		self.assertEqual(request.quotation, quotation_name)
 		self.assertEqual(request.status, STATUS_QUOTED)
+
+	def test_industry_price_used_when_customer_has_no_own_price(self):
+		frappe.db.set_value("LIMS Customer", self.customer, "industry", self.industry)
+		_create_catalog(self.item, price=150, industry=self.industry)
+
+		request = _create_request(
+			self.customer,
+			self.company,
+			self.item,
+			[{"sample": "样品 A", "standard": self.standard, "qty": 1}],
+		)
+		quotation = frappe.get_doc("Quotation", create_quotation(request.name))
+		self.assertEqual(flt(quotation.items[0].rate), 150)
+
+	def test_customer_price_wins_over_industry_price(self):
+		frappe.db.set_value("LIMS Customer", self.customer, "industry", self.industry)
+		_create_catalog(self.item, price=90, customer=self.customer)
+		_create_catalog(self.item, price=150, industry=self.industry)
+
+		request = _create_request(
+			self.customer,
+			self.company,
+			self.item,
+			[{"sample": "样品 A", "standard": self.standard, "qty": 1}],
+		)
+		quotation = frappe.get_doc("Quotation", create_quotation(request.name))
+		self.assertEqual(flt(quotation.items[0].rate), 90)
+
+	def test_generic_price_used_as_fallback(self):
+		_create_catalog(self.item, price=200)
+
+		request = _create_request(
+			self.customer,
+			self.company,
+			self.item,
+			[{"sample": "样品 A", "standard": self.standard, "qty": 1}],
+		)
+		quotation = frappe.get_doc("Quotation", create_quotation(request.name))
+		self.assertEqual(flt(quotation.items[0].rate), 200)
 
 	def test_quotation_fails_when_catalog_missing(self):
 		request = _create_request(
@@ -104,7 +147,7 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(report.standard, self.standard)
 
 	def test_request_action_guardrails(self):
-		_create_catalog(self.item, self.standard, price=100)
+		_create_catalog(self.item, price=100, customer=self.customer)
 		request = _create_request(
 			self.customer,
 			self.company,
@@ -211,19 +254,27 @@ def _create_standard(code, name):
 	)
 
 
-def _create_catalog(item, standard, equipment=None, price=100, is_default=1):
+def _create_industry(name):
+	return (
+		frappe.get_doc({"doctype": "Industry", "industry_name": name})
+		.insert(ignore_permissions=True)
+		.name
+	)
+
+
+def _create_catalog(item, price=100, customer=None, industry=None):
+	"""协议价:范围要么是客户,要么是行业,要么都留空(通用价)。"""
 	return (
 		frappe.get_doc(
 			{
 				"doctype": "Test Catalog",
 				"catalog_code": f"TC-{frappe.generate_hash(length=5)}",
-				"catalog_name": f"{standard} 试验",
+				"catalog_name": "试验协议价",
 				"item": item,
-				"standard": standard,
-				"equipment": equipment,
+				"customer": customer,
+				"industry": industry,
 				"price": price,
 				"uom": "Nos",
-				"is_default": is_default,
 				"enabled": 1,
 			}
 		)

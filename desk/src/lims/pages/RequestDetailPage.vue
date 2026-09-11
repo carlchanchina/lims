@@ -14,19 +14,55 @@
 			<div class="bg-white border rounded-lg p-3">
 				<div class="text-xs text-gray-500">报价单</div>
 				<a v-if="request.quotation" :href="quotationUrl" target="_blank" class="text-blue-600">{{ request.quotation }}</a>
-				<span v-else class="text-sm text-gray-400">—</span>
+				<template v-else>
+					<input
+						v-model="quotationQuery"
+						list="quotation-options"
+						class="w-full text-sm border rounded px-2 py-1"
+						placeholder="关联已有报价单"
+						@input="searchQuotations"
+					/>
+					<datalist id="quotation-options">
+						<option v-for="q in quotations" :key="q.value" :value="q.value">{{ q.label }}</option>
+					</datalist>
+					<button
+						v-if="quotationQuery"
+						class="mt-1 text-xs text-blue-600 hover:underline"
+						@click="linkQuotation"
+					>
+						关联这张报价单
+					</button>
+				</template>
 			</div>
 			<div class="bg-white border rounded-lg p-3">
 				<div class="text-xs text-gray-500">销售定单</div>
-				<input
-					v-if="request.status === '已报价' || request.status === '待检测'"
-					v-model="salesOrderInput"
-					class="w-full text-sm border rounded px-2 py-1"
-					placeholder="填写定单号"
-					@change="saveSalesOrder"
-				/>
-				<a v-else-if="request.sales_order" :href="salesOrderUrl" target="_blank" class="text-blue-600 text-sm">{{ request.sales_order }}</a>
-				<span v-else class="text-sm text-gray-400">—</span>
+				<a v-if="request.sales_order" :href="salesOrderUrl" target="_blank" class="text-blue-600 text-sm">{{ request.sales_order }}</a>
+				<template v-else>
+					<input
+						v-model="salesOrderQuery"
+						list="sales-order-options"
+						class="w-full text-sm border rounded px-2 py-1"
+						placeholder="关联已有订单"
+						@input="searchSalesOrders"
+					/>
+					<datalist id="sales-order-options">
+						<option v-for="o in salesOrders" :key="o.value" :value="o.value">{{ o.label }}</option>
+					</datalist>
+					<button
+						v-if="salesOrderQuery"
+						class="mt-1 text-xs text-blue-600 hover:underline"
+						@click="linkSalesOrder"
+					>
+						关联这张订单
+					</button>
+					<button
+						v-else-if="request.quotation"
+						class="mt-1 text-xs text-blue-600 hover:underline"
+						@click="createSalesOrder"
+					>
+						从报价单生成订单
+					</button>
+				</template>
 			</div>
 			<div class="bg-white border rounded-lg p-3">
 				<div class="text-xs text-gray-500">样品数</div>
@@ -37,6 +73,13 @@
 				<div class="text-lg">{{ request.report_count || 0 }}</div>
 			</div>
 		</div>
+
+		<p
+			v-if="error"
+			class="mb-4 whitespace-pre-line rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600"
+		>
+			{{ error }}
+		</p>
 
 		<div class="flex gap-2 mb-6">
 			<button
@@ -178,25 +221,49 @@
 			<select v-model="itemDraft.sample" class="w-full border rounded-lg px-3 py-2 mb-2">
 				<option v-for="s in samples" :key="s.name" :value="s.name">{{ s.sample_name }}</option>
 			</select>
-			<input
-				v-model="itemDraft.item"
-				list="item-options"
-				placeholder="检测项目"
-				class="w-full border rounded-lg px-3 py-2 mb-2"
-				@input="searchItems"
-			/>
-			<datalist id="item-options">
-				<option v-for="o in itemOptions" :key="o.value" :value="o.value">{{ o.label }}</option>
-			</datalist>
+			<div class="mb-2">
+				<div class="flex items-center justify-between">
+					<span class="text-sm text-gray-600">检测项目</span>
+					<InlineCreate
+						label="+ 新建检测项目"
+						title="新建检测项目(写入 ERPNext Item)"
+						:fields="itemFormFields"
+						:save="saveItem"
+						@created="onItemCreated"
+					/>
+				</div>
+				<input
+					v-model="itemDraft.item"
+					list="item-options"
+					placeholder="检测项目"
+					class="w-full border rounded-lg px-3 py-2"
+					@input="searchItems"
+				/>
+				<datalist id="item-options">
+					<option v-for="o in itemOptions" :key="o.value" :value="o.value">{{ o.label }}</option>
+				</datalist>
+			</div>
 			<select v-model="itemDraft.standard" class="w-full border rounded-lg px-3 py-2 mb-2">
 				<option v-for="s in standards" :key="s.name" :value="s.name">{{ s.standard_code }}</option>
 			</select>
-			<select v-model="itemDraft.equipment" class="w-full border rounded-lg px-3 py-2 mb-2">
-				<option value="">设备(Asset) —</option>
-				<option v-for="asset in assets" :key="asset.name" :value="asset.name">
-					{{ asset.name }} {{ asset.asset_name }}
-				</option>
-			</select>
+			<div class="mb-2">
+				<div class="flex items-center justify-between">
+					<span class="text-sm text-gray-600">设备(Asset)</span>
+					<InlineCreate
+						label="+ 新建设备"
+						title="新建设备(写入 ERPNext Asset)"
+						:fields="assetFields"
+						:save="saveAsset"
+						@created="onAssetCreated"
+					/>
+				</div>
+				<select v-model="itemDraft.equipment" class="w-full border rounded-lg px-3 py-2">
+					<option value="">设备(Asset) —</option>
+					<option v-for="asset in assets" :key="asset.name" :value="asset.name">
+						{{ asset.name }} {{ asset.asset_name }}
+					</option>
+				</select>
+			</div>
 			<div class="mb-2 flex gap-2">
 				<input v-model="itemDraft.hours" type="number" placeholder="试验时长(h)" class="w-1/2 border rounded-lg px-3 py-2" />
 				<input v-model="itemDraft.cycles" type="number" placeholder="循环次数" class="w-1/2 border rounded-lg px-3 py-2" />
@@ -220,8 +287,11 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import InlineCreate from "../components/InlineCreate.vue";
 import Modal from "../components/Modal.vue";
 import StatusBadge from "../components/StatusBadge.vue";
+import { extractFrappeError } from "../errors";
+import { assetFields as buildAssetFields, itemFields } from "../masterForms";
 import { apiMethods } from "../api";
 
 const route = useRoute();
@@ -233,6 +303,12 @@ const itemDirty = ref(false);
 const itemOptions = ref([]);
 const standards = ref([]);
 const assets = ref([]);
+const assetOptions = ref({ items: [], locations: [], custodians: [], companies: [], defaults: {} });
+const itemFormOptions = ref({ item_groups: [], uoms: [], defaults: {} });
+const quotations = ref([]);
+const salesOrders = ref([]);
+const quotationQuery = ref("");
+const salesOrderQuery = ref("");
 const showSampleDialog = ref(false);
 const showItemDialog = ref(false);
 const openReport = ref(false);
@@ -246,7 +322,7 @@ const itemDraft = reactive({
 	cycles: null,
 	qty: 1,
 });
-const salesOrderInput = ref("");
+const error = ref("");
 
 const editable = computed(() => request.value.status === "草稿");
 const quotationUrl = computed(() =>
@@ -260,25 +336,82 @@ const salesOrderUrl = computed(() =>
 		: ""
 );
 
-onMounted(load);
+onMounted(async () => {
+	await load();
+	const [assetOpts, itemOpts] = await Promise.all([
+		apiMethods.assetFormOptions(),
+		apiMethods.itemFormOptions(),
+	]);
+	assetOptions.value = assetOpts || assetOptions.value;
+	itemFormOptions.value = itemOpts || itemFormOptions.value;
+});
 
 async function load() {
 	const name = route.params.name;
 	request.value = await apiMethods.requestGet(name);
 	samples.value = request.value.samples || [];
 	items.value = request.value.items || [];
-	salesOrderInput.value = request.value.sales_order || "";
 	standards.value = (await apiMethods.standardsList({})) || [];
 	assets.value = (await apiMethods.assetsList("")) || [];
 	itemOptions.value = (await apiMethods.itemSearch("")) || [];
 }
 
-async function saveSalesOrder() {
-	await apiMethods.requestSave({
-		name: request.value.name,
-		sales_order: salesOrderInput.value,
-	});
-	await load();
+const assetFields = computed(() => buildAssetFields(assetOptions.value));
+
+const itemFormFields = computed(() => itemFields(itemFormOptions.value));
+
+async function saveAsset(payload) {
+	return await apiMethods.assetCreate(payload);
+}
+
+async function onAssetCreated(option) {
+	assets.value = [...assets.value, { name: option.value, asset_name: option.label }];
+	itemDraft.equipment = option.value;
+}
+
+async function saveItem(payload) {
+	return await apiMethods.itemCreate(payload);
+}
+
+async function onItemCreated(option) {
+	itemOptions.value = [...itemOptions.value, option];
+	itemDraft.item = option.value;
+}
+
+async function searchQuotations(event) {
+	quotations.value = (await apiMethods.quotationSearch(event.target.value)) || [];
+}
+
+async function searchSalesOrders(event) {
+	salesOrders.value = (await apiMethods.salesOrderSearch(event.target.value)) || [];
+}
+
+async function withError(action) {
+	error.value = "";
+	try {
+		await action();
+		await load();
+	} catch (caught) {
+		error.value = extractFrappeError(caught);
+	}
+}
+
+async function linkQuotation() {
+	await withError(() =>
+		apiMethods.quotationLink(request.value.name, quotationQuery.value)
+	);
+	quotationQuery.value = "";
+}
+
+async function linkSalesOrder() {
+	await withError(() =>
+		apiMethods.salesOrderLink(request.value.name, salesOrderQuery.value)
+	);
+	salesOrderQuery.value = "";
+}
+
+async function createSalesOrder() {
+	await withError(() => apiMethods.salesOrderCreate(request.value.name));
 }
 
 async function runAction(action) {

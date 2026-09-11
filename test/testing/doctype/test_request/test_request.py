@@ -94,46 +94,47 @@ def _get_conversion_rate(from_currency, to_currency, transaction_date=None):
 	return flt(get_exchange_rate(from_currency, to_currency, transaction_date), 6) or 1.0
 
 
-def _get_default_catalog(item, standard):
-	"""返回 item + standard 的默认启用 Test Catalog,并处理缺失/歧义。"""
-	filters = {
-		"item": item,
-		"standard": standard,
-		"enabled": 1,
-		"is_default": 1,
-	}
-	catalogs = frappe.get_all(
+def get_customer_industry(customer):
+	"""客户所属行业,用来匹配行业协议价(取 LIMS 客户镜像上的设置)。"""
+	if not customer:
+		return None
+	return frappe.db.get_value("LIMS Customer", customer, "industry")
+
+
+def _get_agreement_price(item, customer):
+	"""按 客户协议价 -> 行业协议价 -> 通用协议价 的顺序取价。
+
+	三种范围在 Test Catalog 上互斥(客户/行业二选一,都留空即通用),所以
+	只要按优先级取第一条命中的记录即可。
+	"""
+	rows = frappe.get_all(
 		"Test Catalog",
-		filters=filters,
-		fields=["name", "catalog_name", "price", "uom", "equipment", "is_default"],
+		filters={"item": item, "enabled": 1},
+		fields=["name", "catalog_name", "price", "uom", "tat_days", "customer", "industry"],
 	)
-	if not catalogs:
-		matches = frappe.get_all(
-			"Test Catalog",
-			filters={"item": item, "standard": standard, "enabled": 1},
-			pluck="name",
-		)
-		if not matches:
-			frappe.throw(
-				_("未找到检测项目 {0} + 标准 {1} 的报价目录,请先在 Test Catalog 中配置价格").format(
-					item, standard
-				),
-				title=_("缺少报价目录"),
-			)
+	if not rows:
 		frappe.throw(
-			_("检测项目 {0} + 标准 {1} 有启用目录但未设置默认项,请先在 Test Catalog 中勾选 is_default").format(
-				item, standard
-			),
-			title=_("未设置默认报价目录"),
+			_("检测项目 {0} 还没有协议价,请先在「协议价」里配置").format(item),
+			title=_("缺少协议价"),
 		)
-	if len(catalogs) > 1:
+
+	industry = get_customer_industry(customer)
+	match = None
+	if customer:
+		match = next((row for row in rows if row.customer == customer), None)
+	if match is None and industry:
+		match = next((row for row in rows if row.industry == industry), None)
+	if match is None:
+		match = next((row for row in rows if not row.customer and not row.industry), None)
+
+	if match is None:
 		frappe.throw(
-			_("检测项目 {0} + 标准 {1} 存在多个默认报价目录,请保留一个 is_default").format(
-				item, standard
+			_("检测项目 {0} 没有适用于该客户的协议价(客户 {1} / 行业 {2} / 通用 都没有)").format(
+				item, customer or "-", industry or "-"
 			),
-			title=_("默认报价目录冲突"),
+			title=_("缺少协议价"),
 		)
-	return frappe._dict(catalogs[0])
+	return frappe._dict(match)
 
 
 @frappe.whitelist()
@@ -172,7 +173,7 @@ def create_quotation(name):
 	request.check_permission("write")
 
 	if not request.get("items"):
-		frappe.throw(_("请先添加测试项(样品 + 检测项目 + 标准)"), title=_("缺少测试项"))
+		frappe.throw(_("请先添加测试项(样品 + 检测项目)"), title=_("缺少测试项"))
 
 	if request.quotation:
 		quotation_status = frappe.db.get_value(
@@ -220,8 +221,7 @@ def create_quotation(name):
 	)
 
 	for row in request.get("items"):
-		catalog = _get_default_catalog(row.item, row.standard)
-		standard_code = frappe.db.get_value("Test Standard", row.standard, "standard_code")
+		catalog = _get_agreement_price(row.item, request.customer)
 		sample_name = frappe.db.get_value("Sample", row.sample, "sample_name") or ""
 
 		item_details = frappe.db.get_value("Item", row.item, ["item_name", "stock_uom"])
@@ -234,8 +234,13 @@ def create_quotation(name):
 
 		description_lines = [
 			catalog.catalog_name or row.item_name or item_name,
-			_("标准: {0}").format(standard_code or row.standard),
 		]
+		if row.standard:
+			standard_code = (
+				frappe.db.get_value("Test Standard", row.standard, "standard_code")
+				or row.standard
+			)
+			description_lines.append(_("标准: {0}").format(standard_code))
 		if sample_name:
 			description_lines.append(_("样品: {0}").format(sample_name))
 
@@ -252,7 +257,7 @@ def create_quotation(name):
 				"rate": flt(catalog.price),
 				"amount": flt(row.qty) * flt(catalog.price),
 				"test_catalog": catalog.name,
-				"equipment": row.equipment or catalog.equipment,
+				"equipment": row.equipment,
 				"hours": row.hours,
 				"cycles": row.cycles,
 			},

@@ -4,24 +4,24 @@
 **GJB 150 / GB/T 2423** 环境试验场景优先跑通主流程:
 
 ```text
-Test Request
+Test Request(可直接新建,也可从 ERPNext Sales Order 带出客户与明细)
   ├─ Sample(独立样品 DocType,一个请求可有多个样品)
-  └─ Test Request Item(测试项:样品 + ERPNext Item + Test Standard)
-          │ 点击「生成报价」
+  └─ Test Request Item(测试项:样品 + 检测项目 Item + Test Standard[可选])
+          │ 生成报价
           ▼
-Test Catalog 匹配 item + standard 的默认价格
+协议价(Test Catalog)按 item 取价:客户协议价 → 行业协议价 → 通用协议价
           ▼
 ERPNext Quotation(草稿,含价格但不暴露设备)
-          ▼ 客户确认
-ERPNext Sales Order(人工回填到 Test Request)
+          ▼ 提交报价单后转单(也可关联ERPNext里已有的报价单/订单)
+ERPNext Sales Order
           ▼
 Test Report(人工填写结论,关联 Test Request / Sample)
 ```
 
 **分工原则**
 
-- ERPNext 只负责粗粒度 `Item`(如“环境试验服务”)、Customer、Quotation、Sales Order 等商务数据;
-- LIMS 侧 `Test Standard + Equipment + Test Catalog` 负责“什么项目配什么标准、用什么设备、报什么价、周期多久”;
+- ERPNext 负责 `Item`(检测项目,如“低温试验”)、Customer、Contact、Asset、Quotation、Sales Order 等主数据与商务单据;
+- LIMS 侧只额外维护 `Test Standard`、`Industry`(行业)、`Test Catalog`(协议价)。客户/联系人/设备/检测项目都支持“选 ERPNext 里已有的,或从 LIMS 新建并写回 ERPNext”;
 - Test Request 内不保存 Rate/Amount,也不向客户展示设备;
 - Sales Order 保持 ERPNext 原样,不做任何字段/流程改动。
 
@@ -49,20 +49,22 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | 型号/规格 | `model` | Data |
 | 设备状态 | `status` | 可用 / 维修中 / 停用 |
 
-**Test Catalog(报价目录)**
+**Test Catalog(协议价)**
 
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
-| 目录编码 | `catalog_code` | Data | 如 `ENV-GJB150.4A` |
-| 目录名称 | `catalog_name` | Data | 如 `低温试验` |
-| 检测项目 | `item` | Link `Item` | ERPNext 粗粒度项目 |
-| 检测标准 | `standard` | Link `Test Standard` | |
-| 设备 | `equipment` | Link `Equipment` | 可空 |
-| 价格 | `price` | Currency | 报价取该值 |
+| 协议编号 | `catalog_code` | Data | 如 `JG-2026-001` |
+| 协议价名称 | `catalog_name` | Data | 如 `军工低温试验协议价` |
+| 检测项目 | `item` | Link `Item` | 必填,ERPNext 检测项目 |
+| 客户 | `customer` | Link `Customer` | 与行业二选一,针对单个客户 |
+| 行业 | `industry` | Link `Industry` | 与客户二选一,如 `军工` |
+| 协议价 | `price` | Currency | 必填,报价取该值 |
 | 单位 | `uom` | Link `UOM` | |
 | 周期(天) | `tat_days` | Float | |
-| 默认报价项 | `is_default` | Check | 同一 item+standard 只能有一个启用默认项 |
 | 启用 | `enabled` | Check | |
+
+> 同一 `item` + 范围(客户/行业/通用)只允许一条启用的协议价。取价顺序:
+> **客户协议价 → 客户所属行业的协议价 → 通用协议价**。
 
 #### 业务单据
 
@@ -122,14 +124,16 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 
 `Test Request` 工具栏提供 **生成报价**:
 
-1. 服务端逐行校验是否存在启用中的默认 `Test Catalog`(`item + standard + is_default + enabled`);
-2. 缺失时明确报错并指出需要补目录的 `item + standard`,不会生成半张报价单;
-3. 匹配成功后将 Quotation 明细写为:
+1. 服务端逐行按 `item` 取协议价:先找该客户的协议价,再找客户所属行业的协议价,最后找通用协议价;三条都没有就明确报错,不会生成半张报价单;
+2. 匹配成功后把 Quotation 明细写为:
    - `item_code = Test Request Item.item`
-   - `description = Catalog 名称 + 标准 + 样品`
-   - `rate = Catalog.price`
+   - `description = 协议价名称 + 标准(填了才带) + 样品`
+   - `rate = 协议价.price`
    - `qty = Test Request Item.qty`
-4. 报价单只保留在 ERPNext,回填 `Test Request.quotation`,状态自动变为 **已报价**。
+3. 报价单只保留在 ERPNext,回填 `Test Request.quotation`,状态自动变为 **已报价**;
+4. 报价单/订单除了在 LIMS 里生成,也可以**关联 ERPNext 中已有的**:详情页填单号即可挂上,客户不一致会拦下;
+5. **从报价单生成销售订单**:ERPNext 要求报价单已提交,草稿报价单会先提交再转单,LIMS 回收 `sales_order`;
+6. **从销售订单建检测请求**:新建请求时选"从销售订单建立",会带出客户与订单明细(每条明细生成一个样品和一个测试项,标准可稍后补)。
 
 ### Installation
 

@@ -40,13 +40,13 @@ def _save_doc(doctype, data):
 		"catalog_code",
 		"catalog_name",
 		"item",
-		"standard",
-		"equipment",
+		"customer",
+		"industry",
 		"price",
 		"uom",
 		"tat_days",
-		"is_default",
 		"enabled",
+		"industry_name",
 	}
 	for field in fields & set(data or {}):
 		doc.set(field, data[field])
@@ -77,8 +77,6 @@ def save_standard(data):
 @frappe.whitelist()
 def delete_standard(name):
 	require_manager()
-	if frappe.db.exists("Test Catalog", {"standard": name}):
-		frappe.throw("该标准已被 Test Catalog 引用,请先停用/移除引用")
 	if _request_item_uses(name):
 		frappe.throw("该标准已被检测请求引用,不能删除")
 	frappe.delete_doc("Test Standard", name)
@@ -108,9 +106,34 @@ def save_equipment(data):
 @frappe.whitelist()
 def delete_equipment(name):
 	require_manager()
-	if frappe.db.exists("Test Catalog", {"equipment": name}):
-		frappe.throw("该设备已被 Test Catalog 引用,不能删除")
+	# 检测设备已改为 ERPNext Asset(见 api/assets.py),这张表只留历史数据。
 	frappe.delete_doc("Equipment", name)
+	return {"name": name}
+
+
+@frappe.whitelist()
+def get_industries(filters=None, page=0):
+	return _list_doctype(
+		"Industry",
+		filters,
+		page,
+		fields=["name", "industry_name", "remarks"],
+	)
+
+
+@frappe.whitelist()
+def save_industry(data):
+	return _save_doc("Industry", data)
+
+
+@frappe.whitelist()
+def delete_industry(name):
+	require_manager()
+	if frappe.db.exists("Test Catalog", {"industry": name}):
+		frappe.throw("该行业已被协议价引用,不能删除")
+	if frappe.db.exists("LIMS Customer", {"industry": name}):
+		frappe.throw("该行业已被客户引用,不能删除")
+	frappe.delete_doc("Industry", name)
 	return {"name": name}
 
 
@@ -125,12 +148,11 @@ def get_catalog_list(filters=None, page=0):
 			"catalog_code",
 			"catalog_name",
 			"item",
-			"standard",
-			"equipment",
+			"customer",
+			"industry",
 			"price",
 			"uom",
 			"tat_days",
-			"is_default",
 			"enabled",
 			"remarks",
 		],
@@ -148,25 +170,12 @@ def save_catalog(data):
 
 
 @frappe.whitelist()
-def set_default_catalog(name):
-	require_manager()
-	catalog = frappe.get_doc("Test Catalog", name)
-	frappe.db.set_value(
-		"Test Catalog",
-		{"item": catalog.item, "standard": catalog.standard, "enabled": 1},
-		"is_default",
-		0,
-	)
-	frappe.db.set_value("Test Catalog", name, "is_default", 1)
-	return {"name": name}
-
-
-@frappe.whitelist()
 def delete_catalog(name):
 	require_manager()
-	catalog = frappe.get_doc("Test Catalog", name)
-	if _request_item_uses(catalog.standard):
-		frappe.throw("该目录对应的 item+standard 已被检测请求引用,不能删除")
+	if frappe.db.has_column("Quotation Item", "test_catalog") and frappe.db.exists(
+		"Quotation Item", {"test_catalog": name}
+	):
+		frappe.throw("该协议价已被报价单引用,不能删除,请改为停用(取消勾选启用)")
 	frappe.delete_doc("Test Catalog", name)
 	return {"name": name}
 

@@ -1,70 +1,150 @@
 <template>
-	<MasterCrud
-		title="报价目录"
-		singular="目录"
-		:columns="['catalog_code', 'catalog_name', 'item', 'standard', 'equipment', 'price', 'tat_days', 'enabled']"
-		:fields="fields"
-		:load="apiMethods.catalogList"
-		:save="apiMethods.catalogSave"
-		:remove="apiMethods.catalogDelete"
-		:new-row="newRow"
-		action-label="设为默认"
-		:action="apiMethods.catalogSetDefault"
-	/>
+	<div class="p-6">
+		<p class="mb-4 text-sm text-ink-gray-5">
+			协议价 = 检测项目的约定价格,按 <b>客户</b> 或 <b>行业</b> 约定(都留空即通用价)。
+			生成报价时按 客户协议价 → 行业协议价 → 通用协议价 的顺序取价。
+		</p>
+		<MasterCrud
+			title="协议价"
+			singular="协议价"
+			:columns="[
+				'catalog_code',
+				'catalog_name',
+				'item',
+				'customer',
+				'industry',
+				'price',
+				'tat_days',
+				'enabled',
+			]"
+			:fields="fields"
+			:load="apiMethods.catalogList"
+			:save="apiMethods.catalogSave"
+			:remove="apiMethods.catalogDelete"
+			:new-row="newRow"
+		/>
+	</div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import MasterCrud from "../components/MasterCrud.vue";
+import {
+	customerFields,
+	customerPayload,
+	industryFields,
+	itemFields,
+} from "../masterForms";
 import { apiMethods } from "../api";
 
 const items = ref([]);
-const standards = ref([]);
-const equipment = ref([]);
-
-onMounted(async () => {
-	items.value = (await apiMethods.itemSearch("")) || [];
-	standards.value = ((await apiMethods.standardsList({})) || []).map((d) => ({
-		value: d.name,
-		label: d.standard_code,
-	}));
-	equipment.value = ((await apiMethods.assetsList("")) || []).map((d) => ({
-		value: d.name,
-		label: `${d.name} - ${d.asset_name || d.item_code || ""}`,
-	}));
-	fields.value = fields.value.map((field) => {
-		if (field.fieldname === "item") return { ...field, options: items.value };
-		if (field.fieldname === "standard") return { ...field, options: standards.value };
-		if (field.fieldname === "equipment") return { ...field, options: equipment.value };
-		return field;
-	});
+const customers = ref([]);
+const industries = ref([]);
+const itemOptions = ref({ item_groups: [], uoms: [], defaults: {} });
+const partyOptions = ref({
+	customer_types: [],
+	customer_groups: [],
+	territories: [],
+	industries: [],
+	defaults: {},
 });
 
-const fields = ref([
-	{ fieldname: "catalog_code", label: "目录编码", type: "text" },
-	{ fieldname: "catalog_name", label: "目录名称", type: "text" },
-	{ fieldname: "item", label: "检测项目", type: "datalist", options: [] },
-	{ fieldname: "standard", label: "检测标准", type: "select", options: [] },
-	{ fieldname: "equipment", label: "设备(Asset)", type: "select", options: [] },
-	{ fieldname: "price", label: "价格", type: "number" },
+const fields = computed(() => [
+	{ fieldname: "catalog_code", label: "协议编号", type: "text" },
+	{ fieldname: "catalog_name", label: "协议价名称", type: "text" },
+	{
+		fieldname: "item",
+		label: "检测项目",
+		type: "datalist",
+		options: items.value,
+		create: {
+			label: "+ 新建",
+			title: "新建检测项目(写入 ERPNext Item)",
+			fields: itemFields(itemOptions.value),
+			save: (payload) => apiMethods.itemCreate(payload),
+			onCreated: loadItems,
+		},
+	},
+	{
+		fieldname: "customer",
+		label: "客户",
+		type: "select",
+		options: customers.value,
+		create: {
+			label: "+ 新建",
+			title: "新建客户(写入 ERPNext)",
+			fields: customerFields(partyOptions.value),
+			save: (payload) => apiMethods.customerCreate(customerPayload(payload)),
+			onCreated: loadCustomers,
+		},
+	},
+	{
+		fieldname: "industry",
+		label: "行业",
+		type: "select",
+		options: industries.value,
+		create: {
+			label: "+ 新建",
+			title: "新建行业",
+			fields: industryFields(),
+			save: (payload) => apiMethods.industryCreate(payload),
+			onCreated: loadIndustries,
+		},
+	},
+	{ fieldname: "price", label: "协议价", type: "number" },
 	{ fieldname: "uom", label: "单位", type: "text" },
 	{ fieldname: "tat_days", label: "周期(天)", type: "number" },
-	{ fieldname: "is_default", label: "默认报价项", type: "checkbox", help: "设为该 item+standard 的默认目录" },
 	{ fieldname: "enabled", label: "启用", type: "checkbox", help: "启用" },
 	{ fieldname: "remarks", label: "备注", type: "textarea" },
 ]);
+
+onMounted(loadOptions);
+
+async function loadOptions() {
+	const [itemList, customerList, industryList, iOptions, pOptions] =
+		await Promise.all([
+			apiMethods.itemSearch(""),
+			apiMethods.customerSearch(""),
+			apiMethods.industryList(),
+			apiMethods.itemFormOptions(),
+			apiMethods.partyFormOptions(),
+		]);
+	items.value = itemList || [];
+	customers.value = customerList || [];
+	industries.value = toOptions(industryList);
+	itemOptions.value = iOptions || itemOptions.value;
+	partyOptions.value = pOptions || partyOptions.value;
+}
+
+function toOptions(rows) {
+	return (rows || []).map((row) => ({
+		value: row.name,
+		label: row.industry_name || row.name,
+	}));
+}
+
+async function loadItems() {
+	items.value = (await apiMethods.itemSearch("")) || [];
+}
+
+async function loadCustomers() {
+	customers.value = (await apiMethods.customerSearch("")) || [];
+}
+
+async function loadIndustries() {
+	industries.value = toOptions(await apiMethods.industryList());
+}
 
 function newRow() {
 	return {
 		catalog_code: "",
 		catalog_name: "",
 		item: "",
-		standard: "",
-		equipment: "",
+		customer: "",
+		industry: "",
 		price: 0,
 		uom: "次",
 		tat_days: 1,
-		is_default: 0,
 		enabled: 1,
 		remarks: "",
 	};

@@ -19,6 +19,11 @@ const routes = [
 		meta: { title: "设备(Asset)" },
 	},
 	{
+		path: "/lims/items",
+		component: () => import("./pages/ItemsPage.vue"),
+		meta: { title: "检测项目" },
+	},
+	{
 		path: "/lims/customers",
 		component: () => import("./pages/CustomersPage.vue"),
 		meta: { title: "客户" },
@@ -31,7 +36,7 @@ const routes = [
 	{
 		path: "/lims/catalog",
 		component: () => import("./pages/CatalogPage.vue"),
-		meta: { title: "报价目录" },
+		meta: { title: "协议价" },
 	},
 	{
 		path: "/lims/requests",

@@ -57,10 +57,58 @@
 			@click.self="openNew = false"
 		>
 			<div class="bg-white rounded-xl w-full max-w-lg p-5">
-				<h2 class="text-lg font-semibold mb-4">新建检测请求</h2>
-				<div class="space-y-3">
+				<h2 class="text-lg font-semibold mb-3">新建检测请求</h2>
+
+				<div class="mb-4 flex gap-2">
+					<button
+						class="px-3 py-1.5 rounded-lg border text-sm"
+						:class="mode === 'manual' ? 'bg-gray-900 text-white border-gray-900' : 'text-gray-600'"
+						@click="switchMode('manual')"
+					>
+						手工填写
+					</button>
+					<button
+						class="px-3 py-1.5 rounded-lg border text-sm"
+						:class="mode === 'sales_order' ? 'bg-gray-900 text-white border-gray-900' : 'text-gray-600'"
+						@click="switchMode('sales_order')"
+					>
+						从销售订单建立
+					</button>
+				</div>
+
+				<div v-if="mode === 'sales_order'" class="space-y-3">
 					<div>
-						<label class="text-sm">客户</label>
+						<label class="text-sm">销售订单</label>
+						<input
+							v-model="salesOrderQuery"
+							list="sales-order-options"
+							placeholder="输入订单号或客户搜索"
+							class="w-full border rounded-lg px-3 py-2 mt-1"
+							@input="searchSalesOrders"
+						/>
+						<datalist id="sales-order-options">
+							<option v-for="order in salesOrders" :key="order.value" :value="order.value">
+								{{ order.label }}
+							</option>
+						</datalist>
+						<p class="mt-1 text-xs text-gray-500">
+							客户与明细从订单带出:每条订单明细生成一个样品和一个测试项(标准可稍后补)。
+						</p>
+					</div>
+				</div>
+
+				<div v-else class="space-y-3">
+					<div>
+						<div class="flex items-center justify-between">
+							<label class="text-sm">客户</label>
+							<InlineCreate
+								label="+ 新建客户"
+								title="新建客户(写入 ERPNext)"
+								:fields="customerFormFields"
+								:save="saveCustomer"
+								@created="onCustomerCreated"
+							/>
+						</div>
 						<input
 							v-model="form.customer"
 							list="customer-options"
@@ -82,10 +130,13 @@
 						<input type="date" v-model="form.transaction_date" class="w-full border rounded-lg px-3 py-2 mt-1" />
 					</div>
 				</div>
+
+				<p v-if="error" class="mt-3 text-sm text-red-600 whitespace-pre-line">{{ error }}</p>
+
 				<div class="flex justify-end gap-2 mt-5">
 					<button class="px-3 py-2 rounded-lg border" @click="openNew = false">取消</button>
 					<button class="px-3 py-2 rounded-lg bg-gray-900 text-white" :disabled="saving" @click="create()">
-						创建
+						{{ mode === "sales_order" ? "从订单创建" : "创建" }}
 					</button>
 				</div>
 			</div>
@@ -94,9 +145,12 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
+import InlineCreate from "../components/InlineCreate.vue";
 import StatusBadge from "../components/StatusBadge.vue";
+import { extractFrappeError } from "../errors";
+import { customerFields, customerPayload } from "../masterForms";
 import { apiMethods } from "../api";
 
 const router = useRouter();
@@ -105,18 +159,37 @@ const statusFilter = ref("");
 const statuses = ["草稿", "已报价", "待检测", "检测中", "已完成", "已取消"];
 const openNew = ref(false);
 const saving = ref(false);
+const error = ref("");
+const mode = ref("manual");
 const customers = ref([]);
 const companies = ref([]);
+const salesOrders = ref([]);
+const salesOrderQuery = ref("");
+const partyOptions = ref({
+	customer_types: [],
+	customer_groups: [],
+	territories: [],
+	industries: [],
+	defaults: {},
+});
 const form = reactive({
 	customer: "",
 	company: "",
 	transaction_date: new Date().toISOString().slice(0, 10),
 });
 
+const customerFormFields = computed(() => customerFields(partyOptions.value));
+
 onMounted(async () => {
 	await load();
-	companies.value = (await apiMethods.companyOptions()) || [];
-	customers.value = (await apiMethods.customerSearch("")) || [];
+	const [companyList, customerList, options] = await Promise.all([
+		apiMethods.companyOptions(),
+		apiMethods.customerSearch(""),
+		apiMethods.partyFormOptions(),
+	]);
+	companies.value = companyList || [];
+	customers.value = customerList || [];
+	partyOptions.value = options || partyOptions.value;
 });
 
 async function load() {
@@ -128,16 +201,58 @@ async function searchCustomers(event) {
 	customers.value = (await apiMethods.customerSearch(event.target.value)) || [];
 }
 
+async function searchSalesOrders(event) {
+	salesOrders.value = (await apiMethods.salesOrderSearch(event.target.value)) || [];
+}
+
+async function switchMode(next) {
+	mode.value = next;
+	error.value = "";
+	if (next === "sales_order" && !salesOrders.value.length) {
+		salesOrders.value = (await apiMethods.salesOrderSearch("")) || [];
+	}
+	if (next === "manual" && !customers.value.length) {
+		customers.value = (await apiMethods.customerSearch("")) || [];
+	}
+}
+
+async function saveCustomer(payload) {
+	return await apiMethods.customerCreate(customerPayload(payload));
+}
+
+async function onCustomerCreated(option) {
+	form.customer = option.value;
+	customers.value = [option, ...customers.value.filter((c) => c.value !== option.value)];
+}
+
 function open(row) {
 	router.push(`/lims/requests/${row.name}`);
 }
 
 async function create() {
+	error.value = "";
 	saving.value = true;
 	try {
-		const res = await apiMethods.requestSave({ ...form });
+		let result;
+		if (mode.value === "sales_order") {
+			if (!salesOrderQuery.value) {
+				error.value = "请先选择销售订单";
+				return;
+			}
+			result = await apiMethods.requestFromSalesOrder({
+				sales_order: salesOrderQuery.value,
+			});
+		} else {
+			if (!form.customer) {
+				error.value = "请先选择客户";
+				return;
+			}
+			result = await apiMethods.requestSave({ ...form });
+		}
 		openNew.value = false;
-		router.push(`/lims/requests/${res.name}`);
+		router.push(`/lims/requests/${result.name}`);
+	} catch (caught) {
+		error.value = extractFrappeError(caught, "创建失败");
 	} finally {
 		saving.value = false;
 	}

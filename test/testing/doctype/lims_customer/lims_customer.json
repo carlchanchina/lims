@@ -12,6 +12,7 @@
 		"column_break_1",
 		"customer_group",
 		"territory",
+		"industry",
 		"customer_type",
 		"default_price_list",
 		"last_synced",
@@ -59,6 +60,14 @@
 			"fieldtype": "Link",
 			"label": "地区",
 			"options": "Territory"
+		},
+		{
+			"description": "用于匹配行业协议价",
+			"fieldname": "industry",
+			"fieldtype": "Link",
+			"in_standard_filter": 1,
+			"label": "行业",
+			"options": "Industry"
 		},
 		{
 			"fieldname": "customer_type",

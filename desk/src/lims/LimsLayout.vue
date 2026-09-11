@@ -46,6 +46,7 @@ import FolderKanban from "~icons/lucide/folder-kanban";
 import BookOpen from "~icons/lucide/book-open";
 import LayoutDashboard from "~icons/lucide/layout-dashboard";
 import CalendarClock from "~icons/lucide/calendar-clock";
+import Package from "~icons/lucide/package";
 import Users from "~icons/lucide/users";
 import Wrench from "~icons/lucide/wrench";
 import FileText from "~icons/lucide/file-text";
@@ -64,8 +65,9 @@ const items = [
 	{ label: "检测报告", to: "/lims/reports", icon: FileText },
 	{ label: "客户", to: "/lims/customers", icon: Users },
 	{ label: "测试标准", to: "/lims/standards", icon: BookOpen },
+	{ label: "检测项目", to: "/lims/items", icon: Package },
 	{ label: "设备(Asset)", to: "/lims/assets", icon: Wrench },
-	{ label: "报价目录", to: "/lims/catalog", icon: FolderKanban },
+	{ label: "协议价", to: "/lims/catalog", icon: FolderKanban },
 ];
 
 const active = computed(() => route.path);
