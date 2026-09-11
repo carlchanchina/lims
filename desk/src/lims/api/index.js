@@ -87,8 +87,12 @@ export const apiMethods = {
 	partyFormOptions: () => api("lims.api.parties.party_form_options"),
 	quotationSearch: (txt, customer) =>
 		api("lims.api.orders.search_quotations", { txt, customer }),
+	quotationList: (txt, customer) =>
+		api("lims.api.orders.list_quotations", { txt, customer }),
 	salesOrderSearch: (txt, customer) =>
 		api("lims.api.orders.search_sales_orders", { txt, customer }),
+	salesOrderList: (txt, customer) =>
+		api("lims.api.orders.list_sales_orders", { txt, customer }),
 	quotationLink: (name, quotation) =>
 		api("lims.api.orders.link_quotation", { name, quotation }),
 	salesOrderLink: (name, sales_order) =>

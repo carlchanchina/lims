@@ -7,7 +7,6 @@ from lims.api.security import ALL_STAFF_ROLES, require_roles
 from lims.integrations.erpnext_masters import create_contact as create_erpnext_contact
 from lims.integrations.erpnext_masters import create_customer as create_erpnext_customer
 from lims.integrations.erpnext_masters import default_customer_group, default_territory
-from lims.integrations.erpnext_party import upsert_lims_contact, upsert_lims_customer
 
 
 def _as_dict(value):
@@ -18,7 +17,7 @@ def _as_dict(value):
 
 def _customer_option(name):
 	row = frappe.db.get_value(
-		"LIMS Customer", name, ["name", "customer", "customer_name"], as_dict=True
+		"Customer", name, ["name", "customer_name"], as_dict=True
 	)
 	if not row:
 		return {"name": name, "value": name, "label": name}
@@ -31,30 +30,35 @@ def _customer_option(name):
 
 def _contact_option(name):
 	row = frappe.db.get_value(
-		"LIMS Contact", name, ["name", "full_name", "email_id"], as_dict=True
+		"Contact", name, ["name", "first_name", "last_name", "email_id"], as_dict=True
 	)
 	if not row:
 		return {"name": name, "value": name, "label": name}
-	label = row.full_name or row.email_id or row.name
-	if row.email_id and row.full_name:
-		label = f"{row.full_name} ({row.email_id})"
+	full_name = " ".join(filter(None, [row.first_name, row.last_name]))
+	label = full_name or row.email_id or row.name
+	if row.email_id and full_name:
+		label = f"{full_name} ({row.email_id})"
 	return {"name": row.name, "value": row.name, "label": label}
 
 
 @frappe.whitelist()
 def list_customers(txt=None):
-	"""读取同步自 ERPNext 的 LIMS Customer 镜像。"""
+	"""直接读 ERPNext Customer(LIMS 不维护镜像,ERPNext 为唯一事实源)。"""
 	require_roles(ALL_STAFF_ROLES)
-	or_filters = None
+	filters = {}
 	if txt:
-		or_filters = [
-			["customer", "like", f"%{txt}%"],
-			["customer_name", "like", f"%{txt}%"],
-		]
+		filters["customer_name"] = ["like", f"%{txt}%"]
 	return frappe.get_list(
-		"LIMS Customer",
-		or_filters=or_filters,
-		fields=["name", "customer", "customer_name", "status", "default_price_list"],
+		"Customer",
+		filters=filters,
+		fields=[
+			"name",
+			"customer_name",
+			"customer_group",
+			"territory",
+			"default_price_list",
+			"disabled",
+		],
 		order_by="customer_name asc",
 		limit_page_length=50,
 	)
@@ -63,30 +67,43 @@ def list_customers(txt=None):
 @frappe.whitelist()
 def get_customer(name):
 	require_roles(ALL_STAFF_ROLES)
-	return frappe.get_doc("LIMS Customer", name).as_dict()
+	return frappe.get_doc("Customer", name).as_dict()
 
 
 @frappe.whitelist()
 def list_contacts(customer=None):
+	"""直接读 ERPNext Contact;可按客户过滤(通过 Contact 的 Dynamic Link)。"""
 	require_roles(ALL_STAFF_ROLES)
+	fields = [
+		"name",
+		"full_name",
+		"email_id",
+		"mobile_no",
+		"designation",
+	]
 	if customer:
 		names = frappe.get_all(
-			"LIMS Contact Customer",
-			filters={"customer": customer},
+			"Dynamic Link",
+			filters={
+				"parenttype": "Contact",
+				"link_doctype": "Customer",
+				"link_name": customer,
+			},
 			pluck="parent",
 		)
 		if not names:
 			return []
 		return frappe.get_all(
-			"LIMS Contact",
+			"Contact",
 			filters={"name": ["in", names]},
-			fields=["name", "contact", "full_name", "email_id", "mobile_no", "designation"],
-			order_by="full_name asc",
+			fields=fields,
+			order_by="name asc",
+			limit_page_length=100,
 		)
 	return frappe.get_all(
-		"LIMS Contact",
-		fields=["name", "contact", "full_name", "email_id", "mobile_no", "designation"],
-		order_by="full_name asc",
+		"Contact",
+		fields=fields,
+		order_by="name asc",
 		limit_page_length=100,
 	)
 
@@ -137,24 +154,13 @@ def search_contacts(txt=None, customer=None):
 
 @frappe.whitelist()
 def create_customer(data=None):
-	"""新建客户:先写 ERPNext Customer,再刷新 LIMS 镜像,返回可直接选中的值。"""
+	"""新建客户:直接写 ERPNext Customer;行业写在 ERPNext 定制字段 lims_industry 上。"""
 	require_roles(ALL_STAFF_ROLES)
 	payload = _as_dict(data)
 	name = create_erpnext_customer(payload)
-	upsert_lims_customer(name)
-	if payload.get("industry"):
-		# 行业是 LIMS 侧的维度(用于匹配行业协议价),不写回 ERPNext。
-		frappe.db.set_value("LIMS Customer", name, "industry", payload["industry"])
-	for contact in frappe.get_all(
-		"Dynamic Link",
-		filters={
-			"parenttype": "Contact",
-			"link_doctype": "Customer",
-			"link_name": name,
-		},
-		pluck="parent",
-	):
-		upsert_lims_contact(contact)
+	industry = payload.get("industry")
+	if industry and frappe.db.has_column("Customer", "lims_industry"):
+		frappe.db.set_value("Customer", name, "lims_industry", industry)
 	return _customer_option(name)
 
 
@@ -178,14 +184,9 @@ def create_industry(data=None):
 
 @frappe.whitelist()
 def create_contact(data=None):
-	"""新建联系人:先写 ERPNext Contact,再刷新 LIMS 镜像。"""
+	"""新建联系人:直接写 ERPNext Contact(可挂到客户)。"""
 	require_roles(ALL_STAFF_ROLES)
-	name = create_erpnext_contact(_as_dict(data))
-	upsert_lims_contact(name)
-	customer = _as_dict(data).get("customer")
-	if customer:
-		upsert_lims_customer(customer)
-	return _contact_option(name)
+	return _contact_option(create_erpnext_contact(_as_dict(data)))
 
 
 @frappe.whitelist()

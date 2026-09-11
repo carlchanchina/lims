@@ -146,34 +146,81 @@ after_migrate = ["lims.setup.install.run_schema_cleanup"]
 # ---------------
 
 doc_events = {
-	"Customer": {
-		"after_insert": "lims.integrations.erpnext_party.sync_customer",
-		"on_update": "lims.integrations.erpnext_party.sync_customer",
-		"after_rename": "lims.integrations.erpnext_party.rename_customer",
-		"on_trash": "lims.integrations.erpnext_party.delete_customer",
+	# 方向约定:单向 LIMS → ERPNext。LIMS 不反向同步 ERPNext 主数据,
+	# 客户/联系人/报价/订单都直接以 ERPNext 为事实源(LIMS 只读 + 定制字段)。
+	# 委托请求保存后自动生成 ERPNext Project,测试项同步为 Project Task。
+	"Test Request": {
+		"after_insert": "lims.integrations.erpnext_projects.create_project_from_request",
+		"on_update": "lims.integrations.erpnext_projects.sync_tasks",
 	},
-	"Contact": {
-		"after_insert": "lims.integrations.erpnext_party.sync_contact",
-		"on_update": "lims.integrations.erpnext_party.sync_contact",
-		"after_rename": "lims.integrations.erpnext_party.rename_contact",
-		"on_trash": "lims.integrations.erpnext_party.delete_contact",
-	},
-	# 请求上的"报价/订单/报告"三个派生状态,跟着源单据动。
-	"Quotation": {
-		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
-		"on_submit": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
-		"on_cancel": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
-	},
-	"Sales Order": {
-		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
-		"on_submit": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
-		"on_cancel": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
-	},
+	# Test Report 是 LIMS 自己的单据,报告状态联动委托请求(LIMS 内部,非 ERPNext 回写)。
 	"Test Report": {
 		"after_insert": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
 		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
 		"on_trash": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
 	},
+}
+
+# Custom Fields
+# -------------
+# LIMS 与 ERPNext 共用同一张表:ERPNext DocType 上加 lims_* 定制字段,
+# 安装/migrate 时由 Frappe 自动同步,不需要镜像表。
+
+custom_fields = {
+	"Customer": [
+		{
+			"fieldname": "lims_industry",
+			"label": "LIMS 行业",
+			"fieldtype": "Link",
+			"options": "Industry",
+			"insert_after": "customer_group",
+			"no_copy": 1,
+		},
+	],
+	"Quotation": [
+		{
+			"fieldname": "lims_test_request",
+			"label": "LIMS 委托请求",
+			"fieldtype": "Link",
+			"options": "Test Request",
+			"insert_after": "transaction_date",
+			"read_only": 1,
+			"no_copy": 1,
+		},
+	],
+	"Sales Order": [
+		{
+			"fieldname": "lims_test_request",
+			"label": "LIMS 委托请求",
+			"fieldtype": "Link",
+			"options": "Test Request",
+			"insert_after": "transaction_date",
+			"read_only": 1,
+			"no_copy": 1,
+		},
+	],
+	"Project": [
+		{
+			"fieldname": "lims_test_request",
+			"label": "LIMS 委托请求",
+			"fieldtype": "Link",
+			"options": "Test Request",
+			"insert_after": "project_name",
+			"read_only": 1,
+			"no_copy": 1,
+		},
+	],
+	"Task": [
+		{
+			"fieldname": "lims_test_request_item",
+			"label": "LIMS 测试项",
+			"fieldtype": "Link",
+			"options": "Test Request Item",
+			"insert_after": "subject",
+			"read_only": 1,
+			"no_copy": 1,
+		},
+	],
 }
 
 # Scheduled Tasks

@@ -7,7 +7,7 @@
 				class="w-72 rounded-lg border border-outline-gray-2 px-3 py-2"
 				@input="load"
 			/>
-			<span class="text-sm text-ink-gray-5">由 ERPNext Customer / Contact 自动同步</span>
+			<span class="text-sm text-ink-gray-5">直接读 ERPNext Customer(单向)</span>
 			<InlineCreate
 				label="+ 新建客户"
 				title="新建客户(写入 ERPNext)"
@@ -29,11 +29,9 @@
 				</thead>
 				<tbody>
 					<tr v-for="row in rows" :key="row.name" class="border-t border-outline-gray-1">
-						<td class="px-4 py-2">{{ row.customer }}</td>
+						<td class="px-4 py-2">{{ row.name }}</td>
 						<td class="px-4 py-2">{{ row.customer_name }}</td>
-						<td class="px-4 py-2">
-							<StatusBadge :status="row.status" />
-						</td>
+						<td class="px-4 py-2">{{ row.disabled ? "停用" : "启用" }}</td>
 						<td class="px-4 py-2">{{ row.default_price_list }}</td>
 						<td class="px-4 py-2 text-end">
 							<Button variant="ghost" @click="openCustomer(row)">联系人</Button>
@@ -74,7 +72,6 @@ import { Button } from "frappe-ui";
 import { computed, onMounted, ref } from "vue";
 import InlineCreate from "../components/InlineCreate.vue";
 import Modal from "../components/Modal.vue";
-import StatusBadge from "../components/StatusBadge.vue";
 import { customerFields as buildCustomerFields, customerPayload } from "../masterForms";
 import { apiMethods } from "../api";
 
@@ -121,7 +118,7 @@ async function onCustomerCreated(option) {
 async function saveContact(payload) {
 	return await apiMethods.contactCreate({
 		...payload,
-		customer: active.value?.customer,
+		customer: active.value?.name,
 	});
 }
 

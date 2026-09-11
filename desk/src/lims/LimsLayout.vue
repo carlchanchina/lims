@@ -50,6 +50,8 @@ import Package from "~icons/lucide/package";
 import Users from "~icons/lucide/users";
 import Wrench from "~icons/lucide/wrench";
 import FileText from "~icons/lucide/file-text";
+import Receipt from "~icons/lucide/receipt";
+import ShoppingCart from "~icons/lucide/shopping-cart";
 import LimsHeader from "./components/LimsHeader.vue";
 import LimsTools from "./components/LimsTools.vue";
 import UserMenu from "./components/UserMenu.vue";
@@ -61,6 +63,8 @@ const collapsed = ref(false);
 const items = [
 	{ label: "仪表盘", to: "/lims/dashboard", icon: LayoutDashboard },
 	{ label: "检测请求", to: "/lims/requests", icon: ClipboardList },
+	{ label: "报价", to: "/lims/quotations", icon: Receipt },
+	{ label: "订单", to: "/lims/orders", icon: ShoppingCart },
 	{ label: "试验计划", to: "/lims/plans", icon: CalendarClock },
 	{ label: "检测报告", to: "/lims/reports", icon: FileText },
 	{ label: "客户", to: "/lims/customers", icon: Users },

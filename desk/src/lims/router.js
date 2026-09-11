@@ -29,6 +29,16 @@ const routes = [
 		meta: { title: "客户" },
 	},
 	{
+		path: "/lims/quotations",
+		component: () => import("./pages/QuotationsPage.vue"),
+		meta: { title: "报价" },
+	},
+	{
+		path: "/lims/orders",
+		component: () => import("./pages/SalesOrdersPage.vue"),
+		meta: { title: "订单" },
+	},
+	{
 		path: "/lims/plans",
 		component: () => import("./pages/TestPlansPage.vue"),
 		meta: { title: "试验计划" },

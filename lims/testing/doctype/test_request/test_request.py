@@ -283,7 +283,13 @@ def create_quotation(name):
 	)
 
 	for row in request.get("items"):
-		catalog = _get_agreement_price(row.item, request.customer)
+		# 协议价仅作参考:配了按协议价带出,没配也不阻断,价格留 0 由业务在 ERPNext 手填。
+		catalog = None
+		try:
+			catalog = _get_agreement_price(row.item, request.customer)
+		except frappe.ValidationError:
+			catalog = None
+		rate = flt(catalog.price) if catalog else 0.0
 		sample_name = frappe.db.get_value("Sample", row.sample, "sample_name") or ""
 
 		item_details = frappe.db.get_value("Item", row.item, ["item_name", "stock_uom"])
@@ -295,7 +301,9 @@ def create_quotation(name):
 		item_name, stock_uom = item_details
 
 		description_lines = [
-			catalog.catalog_name or row.item_name or item_name,
+			(catalog.catalog_name if catalog else None)
+			or row.item_name
+			or item_name,
 		]
 		if row.standard:
 			standard_code = (
@@ -316,14 +324,17 @@ def create_quotation(name):
 				"uom": row.uom or stock_uom,
 				"stock_uom": stock_uom,
 				"conversion_factor": 1.0,
-				"rate": flt(catalog.price),
-				"amount": flt(row.qty) * flt(catalog.price),
-				"agreement_price": catalog.name,
+				"rate": rate,
+				"amount": flt(row.qty) * rate,
+				"agreement_price": catalog.name if catalog else None,
 				"equipment": row.equipment,
 				"hours": row.hours,
 				"cycles": row.cycles,
 			},
 		)
+
+	if frappe.db.has_column("Quotation", "lims_test_request"):
+		quotation.lims_test_request = request.name
 
 	quotation.insert()
 

@@ -17,6 +17,56 @@ def _as_dict(value):
 
 
 @frappe.whitelist()
+def list_quotations(txt=None, customer=None):
+	"""报价列表:直接读 ERPNext Quotation(事实源),供侧边栏「报价」页。"""
+	require_roles(ALL_STAFF_ROLES)
+	out = []
+	for row in erpnext_orders.search_quotations(txt, customer):
+		out.append(
+			{
+				"name": row.name,
+				"customer": row.party_name,
+				"transaction_date": row.transaction_date,
+				"grand_total": row.grand_total,
+				"currency": row.currency,
+				"status": row.status,
+				"docstatus": row.docstatus,
+				"lims_test_request": _lims_ref("Quotation", row.name),
+			}
+		)
+	return out
+
+
+@frappe.whitelist()
+def list_sales_orders(txt=None, customer=None):
+	"""订单列表:直接读 ERPNext Sales Order(事实源),供侧边栏「订单」页。"""
+	require_roles(ALL_STAFF_ROLES)
+	out = []
+	for row in erpnext_orders.search_sales_orders(txt, customer):
+		out.append(
+			{
+				"name": row.name,
+				"customer": row.customer,
+				"customer_name": row.customer_name,
+				"transaction_date": row.transaction_date,
+				"grand_total": row.grand_total,
+				"currency": row.currency,
+				"status": row.status,
+				"docstatus": row.docstatus,
+				"lims_test_request": _lims_ref("Sales Order", row.name),
+			}
+		)
+	return out
+
+
+def _lims_ref(doctype, name):
+	"""定制字段未 migrate 前优雅降级,返回 None。"""
+	if frappe.db.has_column(doctype, "lims_test_request"):
+		return frappe.db.get_value(doctype, name, "lims_test_request")
+	return None
+
+
+@frappe.whitelist()
 def search_quotations(txt=None, customer=None):
 	require_roles(ALL_STAFF_ROLES)
 	return [

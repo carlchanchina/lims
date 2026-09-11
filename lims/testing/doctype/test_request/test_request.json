@@ -109,6 +109,14 @@
 			"options": "Sales Order"
 		},
 		{
+			"fieldname": "project",
+			"fieldtype": "Link",
+			"label": "项目(Project)",
+			"options": "Project",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
 			"fieldname": "section_break_items",
 			"fieldtype": "Section Break",
 			"label": "测试项"
