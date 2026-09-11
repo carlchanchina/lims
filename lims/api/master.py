@@ -3,7 +3,7 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES, require_manager, require_roles
+from lims.api.security import ALL_STAFF_ROLES, require_manager, require_roles
 
 
 def _list_doctype(doctype, filters=None, page=0, page_length=50, fields=None):

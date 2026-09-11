@@ -3,7 +3,7 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES, require_roles
+from lims.api.security import ALL_STAFF_ROLES, require_roles
 
 
 def _require_editable_request(test_request):

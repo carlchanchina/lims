@@ -5,11 +5,11 @@ import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import flt, today
 
-from test.testing.doctype.test_request.test_request import (
+from lims.testing.doctype.test_request.test_request import (
 	STATUS_QUOTED,
 	create_quotation,
 )
-from test.api.requests import request_action
+from lims.api.requests import request_action
 
 
 class TestTestRequest(IntegrationTestCase):

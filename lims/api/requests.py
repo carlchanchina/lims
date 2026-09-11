@@ -3,9 +3,9 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES, require_roles
-from test.api.samples import list_by_request
-from test.testing.doctype.test_request.test_request import create_quotation
+from lims.api.security import ALL_STAFF_ROLES, require_roles
+from lims.api.samples import list_by_request
+from lims.testing.doctype.test_request.test_request import create_quotation
 
 EDITABLE_STATUSES = ("草稿", "已报价")
 

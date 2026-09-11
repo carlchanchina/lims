@@ -5,8 +5,8 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES, require_roles
-from test.integrations.erpnext_masters import (
+from lims.api.security import ALL_STAFF_ROLES, require_roles
+from lims.integrations.erpnext_masters import (
 	create_item as create_erpnext_item,
 	item_form_options,
 )

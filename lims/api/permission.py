@@ -3,7 +3,7 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES
+from lims.api.security import ALL_STAFF_ROLES
 
 
 def has_app_permission():

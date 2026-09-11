@@ -1,4 +1,4 @@
-app_name = "test"
+app_name = "lims"
 app_title = "Testing"
 app_publisher = "Carl"
 app_description = "环境试验 LIMS - 以 ERPNext 为事实源的自定义业务 App"
@@ -16,10 +16,10 @@ required_apps = ["erpnext"]
 add_to_apps_screen = [
 	{
 		"name": "lims",
-		"logo": "/assets/test/images/lims.svg",
+		"logo": "/assets/lims/images/lims.svg",
 		"title": "环境试验 LIMS",
 		"route": "/lims",
-		"has_permission": "test.api.permission.has_app_permission",
+		"has_permission": "lims.api.permission.has_app_permission",
 	}
 ]
 
@@ -27,15 +27,15 @@ add_to_apps_screen = [
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/test/css/test.css"
-# app_include_js = "/assets/test/js/test.js"
+# app_include_css = "/assets/lims/css/lims.css"
+# app_include_js = "/assets/lims/js/lims.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/test/css/test.css"
-# web_include_js = "/assets/test/js/test.js"
+# web_include_css = "/assets/lims/css/lims.css"
+# web_include_js = "/assets/lims/js/lims.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "test/public/scss/website"
+# website_theme_scss = "lims/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -53,7 +53,7 @@ add_to_apps_screen = [
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "test/public/icons.svg"
+# app_include_icons = "lims/public/icons.svg"
 
 # Home Pages
 # ----------
@@ -80,55 +80,55 @@ add_to_apps_screen = [
 
 # add methods and filters to jinja environment
 # jinja = {
-# 	"methods": "test.utils.jinja_methods",
-# 	"filters": "test.utils.jinja_filters"
+# 	"methods": "lims.utils.jinja_methods",
+# 	"filters": "lims.utils.jinja_filters"
 # }
 
 # Installation
 # ------------
 
-after_install = "test.setup.install.after_install"
-after_migrate = ["test.setup.install.run_schema_cleanup"]
+after_install = "lims.setup.install.after_install"
+after_migrate = ["lims.setup.install.run_schema_cleanup"]
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "test.uninstall.before_uninstall"
-# after_uninstall = "test.uninstall.after_uninstall"
+# before_uninstall = "lims.uninstall.before_uninstall"
+# after_uninstall = "lims.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "test.utils.before_app_install"
-# after_app_install = "test.utils.after_app_install"
+# before_app_install = "lims.utils.before_app_install"
+# after_app_install = "lims.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "test.utils.before_app_uninstall"
-# after_app_uninstall = "test.utils.after_app_uninstall"
+# before_app_uninstall = "lims.utils.before_app_uninstall"
+# after_app_uninstall = "lims.utils.after_app_uninstall"
 
 # Build
 # ------------------
 # To hook into the build process
 
-# after_build = "test.build.after_build"
+# after_build = "lims.build.after_build"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "test.notifications.get_notification_config"
+# notification_config = "lims.notifications.get_notification_config"
 
 # Awesome Bar
 # -----------
 # Extra search results: list of dicts with label, description, route, index.
 # route: ["List", "ToDo"], "/desk/docs/some/page", or "https://example.com"
-# awesomebar_search = ["test.search.awesomebar_results"]
+# awesomebar_search = ["lims.search.awesomebar_results"]
 
 # Permissions
 # -----------
@@ -147,32 +147,32 @@ after_migrate = ["test.setup.install.run_schema_cleanup"]
 
 doc_events = {
 	"Customer": {
-		"after_insert": "test.integrations.erpnext_party.sync_customer",
-		"on_update": "test.integrations.erpnext_party.sync_customer",
-		"after_rename": "test.integrations.erpnext_party.rename_customer",
-		"on_trash": "test.integrations.erpnext_party.delete_customer",
+		"after_insert": "lims.integrations.erpnext_party.sync_customer",
+		"on_update": "lims.integrations.erpnext_party.sync_customer",
+		"after_rename": "lims.integrations.erpnext_party.rename_customer",
+		"on_trash": "lims.integrations.erpnext_party.delete_customer",
 	},
 	"Contact": {
-		"after_insert": "test.integrations.erpnext_party.sync_contact",
-		"on_update": "test.integrations.erpnext_party.sync_contact",
-		"after_rename": "test.integrations.erpnext_party.rename_contact",
-		"on_trash": "test.integrations.erpnext_party.delete_contact",
+		"after_insert": "lims.integrations.erpnext_party.sync_contact",
+		"on_update": "lims.integrations.erpnext_party.sync_contact",
+		"after_rename": "lims.integrations.erpnext_party.rename_contact",
+		"on_trash": "lims.integrations.erpnext_party.delete_contact",
 	},
 	# 请求上的"报价/订单/报告"三个派生状态,跟着源单据动。
 	"Quotation": {
-		"on_update": "test.testing.doctype.test_request.test_request.sync_request_quotation_status",
-		"on_submit": "test.testing.doctype.test_request.test_request.sync_request_quotation_status",
-		"on_cancel": "test.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_submit": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_cancel": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
 	},
 	"Sales Order": {
-		"on_update": "test.testing.doctype.test_request.test_request.sync_request_sales_order_status",
-		"on_submit": "test.testing.doctype.test_request.test_request.sync_request_sales_order_status",
-		"on_cancel": "test.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_submit": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_cancel": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
 	},
 	"Test Report": {
-		"after_insert": "test.testing.doctype.test_request.test_request.sync_request_report_status",
-		"on_update": "test.testing.doctype.test_request.test_request.sync_request_report_status",
-		"on_trash": "test.testing.doctype.test_request.test_request.sync_request_report_status",
+		"after_insert": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
+		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
+		"on_trash": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
 	},
 }
 
@@ -181,47 +181,47 @@ doc_events = {
 
 # scheduler_events = {
 # 	"all": [
-# 		"test.tasks.all"
+# 		"lims.tasks.all"
 # 	],
 # 	"daily": [
-# 		"test.tasks.daily"
+# 		"lims.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"test.tasks.hourly"
+# 		"lims.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"test.tasks.weekly"
+# 		"lims.tasks.weekly"
 # 	],
 # 	"monthly": [
-# 		"test.tasks.monthly"
+# 		"lims.tasks.monthly"
 # 	],
 # }
 
 # Testing
 # -------
 
-# before_tests = "test.install.before_tests"
+# before_tests = "lims.install.before_tests"
 
 # Extend DocType Class
 # ------------------------------
 #
 # Specify custom mixins to extend the standard doctype controller.
 # extend_doctype_class = {
-# 	"Task": "test.custom.task.CustomTaskMixin"
+# 	"Task": "lims.custom.task.CustomTaskMixin"
 # }
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "test.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "lims.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "test.task.get_dashboard_data"
+# 	"Task": "lims.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -235,13 +235,13 @@ doc_events = {
 
 # Request Events
 # ----------------
-# before_request = ["test.utils.before_request"]
-# after_request = ["test.utils.after_request"]
+# before_request = ["lims.utils.before_request"]
+# after_request = ["lims.utils.after_request"]
 
 # Job Events
 # ----------
-# before_job = ["test.utils.before_job"]
-# after_job = ["test.utils.after_job"]
+# before_job = ["lims.utils.before_job"]
+# after_job = ["lims.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -271,7 +271,7 @@ doc_events = {
 # --------------------------------
 
 # auth_hooks = [
-# 	"test.auth.validate"
+# 	"lims.auth.validate"
 # ]
 
 # Automatically update python controller files with type annotations for this app.

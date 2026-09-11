@@ -188,7 +188,7 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 ### Installation
 
 ```bash
-bench get-app https://github.com/<your-org>/test --branch <branch>
+bench get-app https://github.com/<your-org>/lims --branch <branch>
 bench --site <your-site> install-app test
 bench --site <your-site> migrate
 bench --site <your-site> run-tests --app test

@@ -172,11 +172,11 @@ cd <bench>/apps
 git clone <repo> test
 
 # 2) 安装 App 与站点
-bench get-app test --from-path /path/to/test
+bench get-app lims --from-path /path/to/lims
 bench --site <site> install-app test
 
 # 3) 前端
-cd <bench>/apps/test/desk
+cd <bench>/apps/lims/desk
 yarn install
 yarn build      # 产物写入 ../test/public/lims
 

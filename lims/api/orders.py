@@ -6,8 +6,8 @@
 import frappe
 from frappe.utils import today
 
-from test.api.security import ALL_STAFF_ROLES, require_roles
-from test.integrations import erpnext_orders
+from lims.api.security import ALL_STAFF_ROLES, require_roles
+from lims.integrations import erpnext_orders
 
 
 def _as_dict(value):

@@ -21,7 +21,7 @@ def run_schema_cleanup():
 
 
 def backfill_parties():
-	from test.integrations.erpnext_party import backfill_parties as _backfill
+	from lims.integrations.erpnext_party import backfill_parties as _backfill
 
 	_backfill()
 

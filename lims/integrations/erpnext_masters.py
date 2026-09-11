@@ -228,7 +228,7 @@ def fixed_asset_item_options():
 def asset_calibration_state(asset):
 	"""设备校准状态:ok(有效)/ expired(过期)/ unknown(没登记校准)。
 
-	校准字段由 test.setup.install 以自定义字段的形式加到 ERPNext Asset 上。
+	校准字段由 lims.setup.install 以自定义字段的形式加到 ERPNext Asset 上。
 	"""
 	if not asset or not frappe.db.exists("Asset", asset):
 		return {"status": "unknown", "due_date": None}

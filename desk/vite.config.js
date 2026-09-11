@@ -27,9 +27,9 @@ export default defineConfig({
 			lucideIcons: true,
 			jinjaBootData: false,
 			buildConfig: {
-				outDir: "../test/public/lims",
+				outDir: "../lims/public/lims",
 				emptyOutDir: true,
-				indexHtmlPath: "../test/www/lims/index.html",
+				indexHtmlPath: "../lims/www/lims/index.html",
 			},
 		}),
 		vue(),

@@ -8,7 +8,7 @@ export async function initBoot() {
 	}
 	const res = await frappeRequest({
 		method: "GET",
-		url: "/api/method/test.www.lims.index.get_boot_data",
+		url: "/api/method/lims.www.lims.index.get_boot_data",
 	});
 	window.__boot = res.message;
 	window.csrf_token = res.message.csrf_token;

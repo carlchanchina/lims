@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import getdate
 
-from test.integrations.erpnext_masters import asset_calibration_state
+from lims.integrations.erpnext_masters import asset_calibration_state
 
 
 class EquipmentUsage(Document):

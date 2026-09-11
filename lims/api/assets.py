@@ -3,13 +3,13 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES, require_roles
-from test.integrations.erpnext_masters import (
+from lims.api.security import ALL_STAFF_ROLES, require_roles
+from lims.integrations.erpnext_masters import (
 	custodian_options,
 	fixed_asset_item_options,
 	location_options,
 )
-from test.integrations.erpnext_masters import create_asset as create_erpnext_asset
+from lims.integrations.erpnext_masters import create_asset as create_erpnext_asset
 
 ASSET_FIELDS = [
 	"name",

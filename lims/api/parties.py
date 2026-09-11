@@ -3,11 +3,11 @@
 
 import frappe
 
-from test.api.security import ALL_STAFF_ROLES, require_roles
-from test.integrations.erpnext_masters import create_contact as create_erpnext_contact
-from test.integrations.erpnext_masters import create_customer as create_erpnext_customer
-from test.integrations.erpnext_masters import default_customer_group, default_territory
-from test.integrations.erpnext_party import upsert_lims_contact, upsert_lims_customer
+from lims.api.security import ALL_STAFF_ROLES, require_roles
+from lims.integrations.erpnext_masters import create_contact as create_erpnext_contact
+from lims.integrations.erpnext_masters import create_customer as create_erpnext_customer
+from lims.integrations.erpnext_masters import default_customer_group, default_territory
+from lims.integrations.erpnext_party import upsert_lims_contact, upsert_lims_customer
 
 
 def _as_dict(value):
