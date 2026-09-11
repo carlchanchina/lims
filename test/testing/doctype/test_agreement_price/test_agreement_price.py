@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 
 
-class TestCatalog(Document):
+class TestAgreementPrice(Document):
 	def validate(self):
 		self.validate_scope()
 		self.validate_unique_scope()
@@ -24,7 +24,7 @@ class TestCatalog(Document):
 		if not self.enabled:
 			return
 		duplicate = frappe.db.exists(
-			"Test Catalog",
+			"Test Agreement Price",
 			{
 				"item": self.item,
 				"customer": self.customer or "",

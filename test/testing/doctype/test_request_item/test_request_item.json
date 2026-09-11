@@ -15,6 +15,8 @@
 		"equipment",
 		"hours",
 		"cycles",
+		"subcontracted",
+		"subcontractor",
 		"remarks"
 	],
 	"fields": [
@@ -95,6 +97,19 @@
 			"fieldname": "remarks",
 			"fieldtype": "Text",
 			"label": "备注"
+		},
+		{
+			"default": "0",
+			"fieldname": "subcontracted",
+			"fieldtype": "Check",
+			"label": "分包"
+		},
+		{
+			"depends_on": "subcontracted",
+			"fieldname": "subcontractor",
+			"fieldtype": "Link",
+			"label": "分包方",
+			"options": "Supplier"
 		}
 	],
 	"index_web_pages_for_search": 1,

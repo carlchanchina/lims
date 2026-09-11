@@ -37,19 +37,19 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | --- | --- | --- |
 | 标准编码 | `standard_code` | Data,必填,如 `GJB 150.4A` |
 | 标准名称 | `standard_name` | Data,必填 |
+| 版本/年份 | `version` | Data,如 2008 / 2023 |
 | 发布/归口单位 | `organization` | Data |
-| 标准状态 | `status` | 现行 / 废止 |
+| 实施日期 | `effective_date` | Date |
+| 被替代为 | `superseded_by` | Link `Test Standard` |
+| 标准状态 | `status` | 现行 / 废止 / 被替代 |
 
-**Equipment(设备)**
+**设备 = ERPNext Asset**
 
-| 字段 | Fieldname | 类型 |
-| --- | --- | --- |
-| 设备编码 | `equipment_code` | Data,必填 |
-| 设备名称 | `equipment_name` | Data,必填 |
-| 型号/规格 | `model` | Data |
-| 设备状态 | `status` | 可用 / 维修中 / 停用 |
+设备主数据直接用 ERPNext 的 `Asset`,LIMS 不再维护自己的设备表(原 `Equipment` 表已删除)。
+安装时会给 `Asset` 加三个自定义字段:`calibration_status` / `last_calibration_date` / `calibration_due_date`,
+校准过期的设备在登记使用记录时会被拦下。
 
-**Test Catalog(协议价)**
+**Test Agreement Price(协议价)**
 
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
@@ -75,11 +75,18 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | 客户 | `customer` | Link `Customer` | |
 | 联系人 | `contact` | Link `Contact` | |
 | 请求日期 | `transaction_date` | Date | |
+| 客户参考号 | `customer_reference` | Data | 委托方单号 / PO 号 |
+| 要求完成日期 | `required_by` | Date | 承诺交期 |
+| 委托方式 | `entrustment_mode` | Select | 送检 / 现场 / 抽样 / 其他 |
+| 试验后样品处置 | `sample_disposal` | Select | 退还 / 留样 / 销毁 / 按客户要求 |
 | 状态 | `status` | Select | 草稿 / 已报价 / 待检测 / 检测中 / 已完成 / 已取消 |
 | 公司 | `company` | Link `Company` | |
 | 报价单 | `quotation` | Link `Quotation` | 生成报价后自动回填,只读 |
 | 销售定单 | `sales_order` | Link `Sales Order` | 客户确认后人工关联 |
+| 报价/订单/报告状态 | `quotation_status` / `sales_order_status` / `report_status` | Data | 派生字段,只读,跟源单据自动刷新 |
+| 报价历史 | `quotations` | Table `Test Request Quotation` | 每次报价留一条 |
 | 测试项 | `items` | Table `Test Request Item` | |
+| 委托备注 | `remarks` | Text | |
 
 **Test Request Item(测试项,子表)**
 
@@ -87,9 +94,12 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | --- | --- | --- | --- |
 | 样品 | `sample` | Link `Sample` | 只能选择当前请求的样品 |
 | 检测项目 | `item` | Link `Item` | ERPNext 粗粒度项目 |
-| 检测标准 | `standard` | Link `Test Standard` | |
+| 检测标准 | `standard` | Link `Test Standard` | 可空,报告与报价描述用 |
 | 数量 | `qty` | Float | 默认 1 |
 | 单位 | `uom` | Link `UOM` | |
+| 设备 | `equipment` | Link `Asset` | |
+| 时长 / 循环 | `hours` / `cycles` | Float | |
+| 分包 / 分包方 | `subcontracted` / `subcontractor` | Check / Link `Supplier` | |
 | 备注 | `remarks` | Text | |
 
 > 不含 Rate / Amount / Equipment。
@@ -100,9 +110,14 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | --- | --- | --- |
 | 检测请求 | `test_request` | Link `Test Request`,必填 |
 | 样品名称 | `sample_name` | Data,必填 |
-| 收样日期 | `received_date` | Date |
+| 客户样品编号 | `client_sample_code` | Data |
+| 规格/型号 · 批号/序列号 | `specification` · `batch_no` | Data |
+| 外观描述 | `appearance` | Small Text |
+| 收样日期 / 收样人 | `received_date` / `received_by` | Date / Link `User` |
+| 留样期限 / 处置方式 | `retention_until` / `disposal` | Date / Select |
+| 附件 | `attachments` | Attach |
 | 样品状态 | `status` | 待收样 / 已收样 / 检测中 / 已检测 / 已退样 |
-| 客户 | `customer` | Link `Customer`,从请求带出 |
+| 客户 | `customer` | Link `Customer`,保存时从请求自动带出 |
 | 数量 / 单位 | `qty` / `uom` | |
 | 备注 | `remarks` | Text |
 
@@ -111,12 +126,47 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | 字段 | Fieldname | 类型 | 说明 |
 | --- | --- | --- | --- |
 | 检测请求 | `test_request` | Link `Test Request`,必填 | |
-| 样品 | `sample` | Link `Sample` | 只显示当前请求样品 |
+| 样品 | `sample` | Link `Sample` | 整单报告可留空 |
 | 报告日期 / 状态 | `report_date` / `status` | Date / Select | 待检测 / 检测中 / 已出具 / 已作废 |
-| 客户 | `customer` | Link `Customer` | 从请求带出 |
-| 检测项目 / 标准 / 设备 | `item` / `standard` / `equipment` | Link | 报告展示用 |
-| 检测结论 | `conclusion` | Text Editor | MVP 人工填写 |
+| 客户 | `customer` | Link `Customer` | 从请求带出,只读 |
+| 报告项 | `items` | Table `Test Report Item` | 一张报告覆盖多个试验项目 |
+| 检测结论 | `conclusion` | Text Editor | 整份报告的总结论 |
+| 检测/审核/批准人 | `tested_by` / `reviewed_by` / `approved_by` | Link `User` | |
+| 签发日期 | `issued_on` | Date | |
 | 备注 | `remarks` | Text | |
+
+**Test Report Item(报告项,子表)**
+
+| 字段 | Fieldname | 类型 | 说明 |
+| --- | --- | --- | --- |
+| 试验项目行 | `test_request_item` | Link `Test Request Item` | 指向请求里的哪一条 |
+| 检测项目 / 标准 / 条款 | `item` / `standard` / `standard_clause` | Link / Link / Data | |
+| 样品 / 设备 | `sample` / `equipment` | Link `Sample` / Link `Asset` | |
+| 技术要求 | `requirement` | Small Text | 判定依据 |
+| 实测结果 | `result` | Small Text | 实测值 / 试验现象 |
+| 判定 | `verdict` | Select | 待判定 / 合格 / 不合格 / 不适用 |
+| 检测人 / 日期 | `tested_by` / `tested_on` | Link `User` / Date | |
+
+**Test Nonconformance(异常/不符合)**
+
+| 字段 | Fieldname | 类型 | 说明 |
+| --- | --- | --- | --- |
+| 检测请求 / 试验项目行 / 报告 | `test_request` / `test_request_item` / `report` | Link | |
+| 来源 / 严重程度 / 状态 | `source` / `severity` / `status` | Select | 打开 / 处理中 / 已关闭 |
+| 问题描述 / 处理措施 | `description` / `action` | Text | |
+| 责任人 / 关闭日期 | `owner_user` / `closed_on` | Link `User` / Date | |
+
+**Equipment Usage(设备使用记录)**
+
+| 字段 | Fieldname | 类型 | 说明 |
+| --- | --- | --- | --- |
+| 设备 | `asset` | Link `Asset`,必填 | 校准过期会在保存时被拦 |
+| 起止时间 / 使用人 | `from_datetime` / `to_datetime` / `used_by` | Datetime / Link `User` | |
+| 关联 | `test_request` / `test_request_item` / `test_task` | Link | 用到哪个请求/项目/任务 |
+
+**Test Plan / Test Task(试验计划)**
+
+`Test Task` 增加了 `test_request_item`,让计划里的任务能对上委托请求里的具体试验项目。
 
 ---
 

@@ -8,12 +8,21 @@
 	"field_order": [
 		"test_request",
 		"sample_name",
+		"client_sample_code",
 		"received_date",
 		"status",
 		"column_break_1",
 		"customer",
 		"qty",
 		"uom",
+		"specification",
+		"batch_no",
+		"appearance",
+		"section_break_receive",
+		"received_by",
+		"retention_until",
+		"disposal",
+		"attachments",
 		"remarks"
 	],
 	"fields": [
@@ -82,6 +91,56 @@
 			"fieldname": "remarks",
 			"fieldtype": "Text",
 			"label": "备注"
+		},
+		{
+			"description": "委托方的样品编号",
+			"fieldname": "client_sample_code",
+			"fieldtype": "Data",
+			"label": "客户样品编号"
+		},
+		{
+			"fieldname": "specification",
+			"fieldtype": "Data",
+			"label": "规格/型号"
+		},
+		{
+			"fieldname": "batch_no",
+			"fieldtype": "Data",
+			"label": "批号/序列号"
+		},
+		{
+			"fieldname": "appearance",
+			"fieldtype": "Small Text",
+			"label": "外观描述"
+		},
+		{
+			"fieldname": "section_break_receive",
+			"fieldtype": "Section Break",
+			"label": "收样与留样"
+		},
+		{
+			"fieldname": "received_by",
+			"fieldtype": "Link",
+			"label": "收样人",
+			"options": "User"
+		},
+		{
+			"description": "留样到什么时候",
+			"fieldname": "retention_until",
+			"fieldtype": "Date",
+			"label": "留样期限"
+		},
+		{
+			"default": "待定",
+			"fieldname": "disposal",
+			"fieldtype": "Select",
+			"label": "处置方式",
+			"options": "待定\n退还\n留样\n销毁"
+		},
+		{
+			"fieldname": "attachments",
+			"fieldtype": "Attach",
+			"label": "附件"
 		}
 	],
 	"index_web_pages_for_search": 1,

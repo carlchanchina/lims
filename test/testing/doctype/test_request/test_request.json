@@ -10,15 +10,26 @@
 		"customer",
 		"contact",
 		"transaction_date",
+		"customer_reference",
 		"column_break_basic",
 		"status",
 		"company",
+		"required_by",
+		"entrustment_mode",
+		"sample_disposal",
 		"section_break_reference",
 		"quotation",
 		"column_break_reference",
 		"sales_order",
+		"quotation_status",
+		"sales_order_status",
+		"report_status",
 		"section_break_items",
-		"items"
+		"items",
+		"section_break_quotations",
+		"quotations",
+		"section_break_remarks",
+		"remarks"
 	],
 	"fields": [
 		{
@@ -107,6 +118,73 @@
 			"fieldtype": "Table",
 			"label": "测试项",
 			"options": "Test Request Item"
+		},
+		{
+			"fieldname": "customer_reference",
+			"fieldtype": "Data",
+			"label": "客户参考号",
+			"description": "对方的委托单号 / PO 号"
+		},
+		{
+			"fieldname": "required_by",
+			"fieldtype": "Date",
+			"label": "要求完成日期"
+		},
+		{
+			"default": "送检",
+			"fieldname": "entrustment_mode",
+			"fieldtype": "Select",
+			"label": "委托方式",
+			"options": "送检\n现场\n抽样\n其他"
+		},
+		{
+			"default": "退还",
+			"fieldname": "sample_disposal",
+			"fieldtype": "Select",
+			"label": "试验后样品处置",
+			"options": "退还\n留样\n销毁\n按客户要求"
+		},
+		{
+			"fieldname": "quotation_status",
+			"fieldtype": "Data",
+			"label": "报价状态",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "sales_order_status",
+			"fieldtype": "Data",
+			"label": "订单状态",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "report_status",
+			"fieldtype": "Data",
+			"label": "报告状态",
+			"read_only": 1,
+			"no_copy": 1
+		},
+		{
+			"fieldname": "section_break_quotations",
+			"fieldtype": "Section Break",
+			"label": "报价历史"
+		},
+		{
+			"fieldname": "quotations",
+			"fieldtype": "Table",
+			"label": "报价历史",
+			"options": "Test Request Quotation",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_break_remarks",
+			"fieldtype": "Section Break"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "委托备注"
 		}
 	],
 	"index_web_pages_for_search": 1,

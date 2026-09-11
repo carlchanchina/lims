@@ -9,7 +9,7 @@ LIMS -> ERPNext 的写入。事实源永远是 ERPNext:所以这里先建 ERPNex
 """
 
 import frappe
-from frappe.utils import flt, today
+from frappe.utils import flt, getdate, today
 
 
 def default_customer_group():
@@ -223,6 +223,24 @@ def fixed_asset_item_options():
 		order_by="item_name asc",
 		limit_page_length=200,
 	)
+
+
+def asset_calibration_state(asset):
+	"""设备校准状态:ok(有效)/ expired(过期)/ unknown(没登记校准)。
+
+	校准字段由 test.setup.install 以自定义字段的形式加到 ERPNext Asset 上。
+	"""
+	if not asset or not frappe.db.exists("Asset", asset):
+		return {"status": "unknown", "due_date": None}
+	if not frappe.db.has_column("Asset", "calibration_due_date"):
+		return {"status": "unknown", "due_date": None}
+
+	due_date = frappe.db.get_value("Asset", asset, "calibration_due_date")
+	if not due_date:
+		return {"status": "unknown", "due_date": None}
+	if getdate(due_date) < getdate(today()):
+		return {"status": "expired", "due_date": due_date}
+	return {"status": "ok", "due_date": due_date}
 
 
 def location_options():

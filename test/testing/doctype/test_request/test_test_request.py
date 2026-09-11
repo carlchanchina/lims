@@ -33,17 +33,17 @@ class TestTestRequest(IntegrationTestCase):
 	def tearDown(self):
 		frappe.db.rollback()
 
-	def test_catalog_scope_must_be_unique(self):
-		_create_catalog(self.item, price=100)
+	def test_agreement_price_scope_must_be_unique(self):
+		_create_agreement_price(self.item, price=100)
 		with self.assertRaises(frappe.ValidationError):
-			_create_catalog(self.item, price=80)
+			_create_agreement_price(self.item, price=80)
 
-	def test_catalog_rejects_customer_and_industry_together(self):
+	def test_agreement_price_rejects_customer_and_industry_together(self):
 		with self.assertRaises(frappe.ValidationError):
-			_create_catalog(self.item, price=100, customer=self.customer, industry=self.industry)
+			_create_agreement_price(self.item, price=100, customer=self.customer, industry=self.industry)
 
 	def test_create_quotation_from_request(self):
-		_create_catalog(self.item, price=100, customer=self.customer)
+		_create_agreement_price(self.item, price=100, customer=self.customer)
 
 		request = _create_request(
 			self.customer,
@@ -73,7 +73,7 @@ class TestTestRequest(IntegrationTestCase):
 
 	def test_industry_price_used_when_customer_has_no_own_price(self):
 		frappe.db.set_value("LIMS Customer", self.customer, "industry", self.industry)
-		_create_catalog(self.item, price=150, industry=self.industry)
+		_create_agreement_price(self.item, price=150, industry=self.industry)
 
 		request = _create_request(
 			self.customer,
@@ -86,8 +86,8 @@ class TestTestRequest(IntegrationTestCase):
 
 	def test_customer_price_wins_over_industry_price(self):
 		frappe.db.set_value("LIMS Customer", self.customer, "industry", self.industry)
-		_create_catalog(self.item, price=90, customer=self.customer)
-		_create_catalog(self.item, price=150, industry=self.industry)
+		_create_agreement_price(self.item, price=90, customer=self.customer)
+		_create_agreement_price(self.item, price=150, industry=self.industry)
 
 		request = _create_request(
 			self.customer,
@@ -99,7 +99,7 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(flt(quotation.items[0].rate), 90)
 
 	def test_generic_price_used_as_fallback(self):
-		_create_catalog(self.item, price=200)
+		_create_agreement_price(self.item, price=200)
 
 		request = _create_request(
 			self.customer,
@@ -110,7 +110,7 @@ class TestTestRequest(IntegrationTestCase):
 		quotation = frappe.get_doc("Quotation", create_quotation(request.name))
 		self.assertEqual(flt(quotation.items[0].rate), 200)
 
-	def test_quotation_fails_when_catalog_missing(self):
+	def test_quotation_fails_when_agreement_price_missing(self):
 		request = _create_request(
 			self.customer,
 			self.company,
@@ -134,20 +134,32 @@ class TestTestRequest(IntegrationTestCase):
 				"doctype": "Test Report",
 				"test_request": request.name,
 				"sample": sample,
-				"sample_name": "样品 A",
-				"item": self.item,
-				"standard": self.standard,
 				"status": "检测中",
 				"conclusion": "符合要求",
+				"items": [
+					{
+						"item": self.item,
+						"standard": self.standard,
+						"sample": sample,
+						"requirement": "低温 -40℃ 保持 2h",
+						"result": "外观正常,无裂纹",
+						"verdict": "合格",
+					}
+				],
 			}
 		).insert(ignore_permissions=True)
 
 		self.assertEqual(report.test_request, request.name)
 		self.assertEqual(report.sample, sample)
-		self.assertEqual(report.standard, self.standard)
+		self.assertEqual(report.items[0].standard, self.standard)
+		self.assertEqual(report.items[0].verdict, "合格")
+
+		# 请求上的报告状态由报告派生(Test Report 的 doc_events 刷新)
+		request.reload()
+		self.assertEqual(request.report_status, "部分出具(1)")
 
 	def test_request_action_guardrails(self):
-		_create_catalog(self.item, price=100, customer=self.customer)
+		_create_agreement_price(self.item, price=100, customer=self.customer)
 		request = _create_request(
 			self.customer,
 			self.company,
@@ -262,12 +274,12 @@ def _create_industry(name):
 	)
 
 
-def _create_catalog(item, price=100, customer=None, industry=None):
+def _create_agreement_price(item, price=100, customer=None, industry=None):
 	"""协议价:范围要么是客户,要么是行业,要么都留空(通用价)。"""
 	return (
 		frappe.get_doc(
 			{
-				"doctype": "Test Catalog",
+				"doctype": "Test Agreement Price",
 				"catalog_code": f"TC-{frappe.generate_hash(length=5)}",
 				"catalog_name": "试验协议价",
 				"item": item,

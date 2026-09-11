@@ -7,6 +7,7 @@
 	"engine": "InnoDB",
 	"field_order": [
 		"task_name",
+		"test_request_item",
 		"equipment",
 		"start_datetime",
 		"end_datetime",
@@ -28,6 +29,14 @@
 			"in_list_view": 1,
 			"label": "设备(Asset)",
 			"options": "Asset"
+		},
+		{
+			"description": "对应委托请求里的哪一条试验项目",
+			"fieldname": "test_request_item",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "试验项目",
+			"options": "Test Request Item"
 		},
 		{
 			"fieldname": "start_datetime",

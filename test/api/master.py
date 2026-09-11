@@ -33,10 +33,10 @@ def _save_doc(doctype, data):
 		"standard_name",
 		"organization",
 		"status",
+		"version",
+		"effective_date",
+		"superseded_by",
 		"remarks",
-		"equipment_code",
-		"equipment_name",
-		"model",
 		"catalog_code",
 		"catalog_name",
 		"item",
@@ -60,7 +60,17 @@ def get_standards(filters=None, page=0):
 		"Test Standard",
 		filters,
 		page,
-		fields=["name", "standard_code", "standard_name", "organization", "status", "remarks"],
+		fields=[
+			"name",
+			"standard_code",
+			"standard_name",
+			"version",
+			"organization",
+			"effective_date",
+			"superseded_by",
+			"status",
+			"remarks",
+		],
 	)
 
 
@@ -84,34 +94,6 @@ def delete_standard(name):
 
 
 @frappe.whitelist()
-def get_equipment_list(filters=None, page=0):
-	return _list_doctype(
-		"Equipment",
-		filters,
-		page,
-		fields=["name", "equipment_code", "equipment_name", "model", "status", "remarks"],
-	)
-
-
-@frappe.whitelist()
-def get_equipment(name):
-	return _get_doc("Equipment", name)
-
-
-@frappe.whitelist()
-def save_equipment(data):
-	return _save_doc("Equipment", data)
-
-
-@frappe.whitelist()
-def delete_equipment(name):
-	require_manager()
-	# 检测设备已改为 ERPNext Asset(见 api/assets.py),这张表只留历史数据。
-	frappe.delete_doc("Equipment", name)
-	return {"name": name}
-
-
-@frappe.whitelist()
 def get_industries(filters=None, page=0):
 	return _list_doctype(
 		"Industry",
@@ -129,7 +111,7 @@ def save_industry(data):
 @frappe.whitelist()
 def delete_industry(name):
 	require_manager()
-	if frappe.db.exists("Test Catalog", {"industry": name}):
+	if frappe.db.exists("Test Agreement Price", {"industry": name}):
 		frappe.throw("该行业已被协议价引用,不能删除")
 	if frappe.db.exists("LIMS Customer", {"industry": name}):
 		frappe.throw("该行业已被客户引用,不能删除")
@@ -138,9 +120,9 @@ def delete_industry(name):
 
 
 @frappe.whitelist()
-def get_catalog_list(filters=None, page=0):
+def get_agreement_prices(filters=None, page=0):
 	return _list_doctype(
-		"Test Catalog",
+		"Test Agreement Price",
 		filters,
 		page,
 		fields=[
@@ -160,23 +142,23 @@ def get_catalog_list(filters=None, page=0):
 
 
 @frappe.whitelist()
-def get_catalog(name):
-	return _get_doc("Test Catalog", name)
+def get_agreement_price(name):
+	return _get_doc("Test Agreement Price", name)
 
 
 @frappe.whitelist()
-def save_catalog(data):
-	return _save_doc("Test Catalog", data)
+def save_agreement_price(data):
+	return _save_doc("Test Agreement Price", data)
 
 
 @frappe.whitelist()
-def delete_catalog(name):
+def delete_agreement_price(name):
 	require_manager()
-	if frappe.db.has_column("Quotation Item", "test_catalog") and frappe.db.exists(
-		"Quotation Item", {"test_catalog": name}
+	if frappe.db.has_column("Quotation Item", "agreement_price") and frappe.db.exists(
+		"Quotation Item", {"agreement_price": name}
 	):
 		frappe.throw("该协议价已被报价单引用,不能删除,请改为停用(取消勾选启用)")
-	frappe.delete_doc("Test Catalog", name)
+	frappe.delete_doc("Test Agreement Price", name)
 	return {"name": name}
 
 

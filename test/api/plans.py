@@ -39,6 +39,7 @@ def save_plan(data):
 				"tasks",
 				{
 					"task_name": row.get("task_name"),
+					"test_request_item": row.get("test_request_item"),
 					"equipment": row.get("equipment"),
 					"start_datetime": row.get("start_datetime"),
 					"end_datetime": row.get("end_datetime"),
@@ -68,13 +69,13 @@ def generate_plan_from_request(test_request):
 	request = frappe.get_doc("Test Request", test_request)
 	plan = frappe.new_doc("Test Plan")
 	plan.test_request = request.name
-	plan.project = request.project
 	plan.status = "草稿"
 	for row in request.get("items", []):
 		plan.append(
 			"tasks",
 			{
 				"task_name": row.item_name or row.item,
+				"test_request_item": row.name,
 				"equipment": row.equipment,
 				"status": "待执行",
 			},

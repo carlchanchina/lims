@@ -41,10 +41,10 @@ def sync_custom_fields():
 		{
 			"Quotation Item": [
 				{
-					"fieldname": "test_catalog",
-					"label": "检测目录",
+					"fieldname": "agreement_price",
+					"label": "协议价",
 					"fieldtype": "Link",
-					"options": "Test Catalog",
+					"options": "Test Agreement Price",
 					"insert_after": "item_code",
 					"read_only": 1,
 					"no_copy": 1,
@@ -54,7 +54,7 @@ def sync_custom_fields():
 					"label": "设备(Asset)",
 					"fieldtype": "Link",
 					"options": "Asset",
-					"insert_after": "test_catalog",
+					"insert_after": "agreement_price",
 					"read_only": 1,
 					"no_copy": 1,
 				},
@@ -74,10 +74,43 @@ def sync_custom_fields():
 					"read_only": 1,
 					"no_copy": 1,
 				},
-			]
+			],
+			# 设备校准:没有这三项就没法校验证书有效期。
+			"Asset": [
+				{
+					"fieldname": "calibration_status",
+					"label": "校准状态",
+					"fieldtype": "Select",
+					"options": "未校准\n合格\n不合格\n停用",
+					"default": "未校准",
+					"insert_after": "status",
+				},
+				{
+					"fieldname": "last_calibration_date",
+					"label": "上次校准日期",
+					"fieldtype": "Date",
+					"insert_after": "calibration_status",
+				},
+				{
+					"fieldname": "calibration_due_date",
+					"label": "校准有效期至",
+					"fieldtype": "Date",
+					"insert_after": "last_calibration_date",
+				},
+			],
 		},
 		ignore_validate=True,
 	)
+	remove_legacy_quotation_item_field()
+
+
+def remove_legacy_quotation_item_field():
+	"""协议价改名后,清掉 Quotation Item 上遗留的 test_catalog 字段。"""
+	field_name = frappe.db.exists(
+		"Custom Field", {"dt": "Quotation Item", "fieldname": "test_catalog"}
+	)
+	if field_name:
+		frappe.delete_doc("Custom Field", field_name, force=1)
 
 
 def grant_erpnext_read_permissions():

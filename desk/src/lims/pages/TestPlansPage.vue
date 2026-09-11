@@ -53,6 +53,7 @@
 					<thead>
 						<tr>
 							<th class="text-start">任务</th>
+							<th class="text-start">试验项目</th>
 							<th class="text-start">设备(Asset)</th>
 							<th class="text-start">开始</th>
 							<th class="text-start">结束</th>
@@ -61,6 +62,14 @@
 					<tbody>
 						<tr v-for="(task, index) in plan.tasks" :key="index">
 							<td><input v-model="task.task_name" class="w-full rounded border px-2 py-1" /></td>
+							<td>
+								<select v-model="task.test_request_item" class="w-full rounded border px-2 py-1">
+									<option value="">—</option>
+									<option v-for="item in requestItems" :key="item.name" :value="item.name">
+										{{ item.item_name || item.item }}
+									</option>
+								</select>
+							</td>
 							<td>
 								<select v-model="task.equipment" class="w-full rounded border px-2 py-1">
 									<option value="">—</option>
@@ -96,6 +105,7 @@ const generate = ref(false);
 const selectedRequest = ref("");
 const plan = ref(null);
 const statuses = ["草稿", "待执行", "执行中", "已完成", "已取消"];
+const requestItems = ref([]);
 
 onMounted(async () => {
 	await load();
@@ -105,6 +115,13 @@ onMounted(async () => {
 
 async function load() {
 	rows.value = (await apiMethods.plansList()) || [];
+}
+
+async function loadRequestItems(test_request) {
+	requestItems.value = [];
+	if (!test_request) return;
+	const request = await apiMethods.requestGet(test_request);
+	requestItems.value = request?.items || [];
 }
 
 function generateFromRequest() {
@@ -117,11 +134,13 @@ async function doGenerate() {
 	await apiMethods.planGenerate(selectedRequest.value);
 	generate.value = false;
 	await load();
+	await loadRequestItems(selectedRequest.value);
 }
 
 async function editPlan(row) {
 	plan.value = await apiMethods.planGet(row.name);
 	plan.value.tasks = plan.value.tasks || [];
+	await loadRequestItems(plan.value.test_request);
 }
 
 async function savePlan() {

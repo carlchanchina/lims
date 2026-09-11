@@ -1,0 +1,115 @@
+{
+	"actions": [],
+	"creation": "2026-09-11 00:00:00.000000",
+	"description": "报告项:一条试验项目的结果、判定与用到的设备/人员。",
+	"doctype": "DocType",
+	"editable_grid": 1,
+	"engine": "InnoDB",
+	"field_order": [
+		"test_request_item",
+		"item",
+		"standard",
+		"standard_clause",
+		"sample",
+		"requirement",
+		"result",
+		"verdict",
+		"equipment",
+		"tested_by",
+		"tested_on",
+		"remarks"
+	],
+	"fields": [
+		{
+			"description": "关联委托请求里的试验项目",
+			"fieldname": "test_request_item",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "试验项目行",
+			"options": "Test Request Item"
+		},
+		{
+			"fieldname": "item",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "检测项目",
+			"options": "Item",
+			"reqd": 1
+		},
+		{
+			"fieldname": "standard",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "检测标准",
+			"options": "Test Standard"
+		},
+		{
+			"description": "如 5.2 / 试验条件表 2",
+			"fieldname": "standard_clause",
+			"fieldtype": "Data",
+			"label": "标准条款"
+		},
+		{
+			"fieldname": "sample",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "样品",
+			"options": "Sample"
+		},
+		{
+			"description": "技术要求 / 判定依据",
+			"fieldname": "requirement",
+			"fieldtype": "Small Text",
+			"label": "技术要求"
+		},
+		{
+			"description": "实测值或试验现象",
+			"fieldname": "result",
+			"fieldtype": "Small Text",
+			"in_list_view": 1,
+			"label": "实测结果"
+		},
+		{
+			"default": "待判定",
+			"fieldname": "verdict",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "判定",
+			"options": "待判定\n合格\n不合格\n不适用"
+		},
+		{
+			"fieldname": "equipment",
+			"fieldtype": "Link",
+			"label": "设备(Asset)",
+			"options": "Asset"
+		},
+		{
+			"fieldname": "tested_by",
+			"fieldtype": "Link",
+			"label": "检测人",
+			"options": "User"
+		},
+		{
+			"fieldname": "tested_on",
+			"fieldtype": "Date",
+			"label": "检测日期"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"istable": 1,
+	"links": [],
+	"modified": "2026-09-11 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Test Report Item",
+	"owner": "Administrator",
+	"permissions": [],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": []
+}

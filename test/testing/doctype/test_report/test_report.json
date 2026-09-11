@@ -1,33 +1,31 @@
 {
 	"actions": [],
-	"allow_import": 1,
+	"allow_import": 0,
 	"autoname": "format:TR-{YYYY}-{#####}",
-	"creation": "2026-09-09 00:00:00.000000",
+	"creation": "2026-09-10 00:00:00.000000",
+	"description": "检测报告:一张报告覆盖委托请求下的多个试验项目,项目结果写在报告项子表里。",
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
-		"section_break_basic",
 		"test_request",
 		"sample",
-		"sample_name",
 		"report_date",
+		"column_break_1",
 		"status",
-		"column_break_basic",
 		"customer",
-		"item",
-		"standard",
-		"equipment",
-		"tested_by",
+		"section_break_items",
+		"items",
 		"section_break_conclusion",
 		"conclusion",
+		"section_break_sign",
+		"tested_by",
+		"reviewed_by",
+		"approved_by",
+		"issued_on",
+		"section_break_remarks",
 		"remarks"
 	],
 	"fields": [
-		{
-			"fieldname": "section_break_basic",
-			"fieldtype": "Section Break",
-			"label": "报告信息"
-		},
 		{
 			"fieldname": "test_request",
 			"fieldtype": "Link",
@@ -35,28 +33,25 @@
 			"in_standard_filter": 1,
 			"label": "检测请求",
 			"options": "Test Request",
-			"reqd": 1,
-			"search_index": 1
+			"reqd": 1
 		},
 		{
+			"description": "整单报告可留空,只针对某个样品时填写",
 			"fieldname": "sample",
 			"fieldtype": "Link",
+			"in_list_view": 1,
 			"label": "样品",
 			"options": "Sample"
 		},
 		{
-			"fetch_from": "sample.sample_name",
-			"fieldname": "sample_name",
-			"fieldtype": "Data",
-			"label": "样品名称",
-			"read_only": 1
-		},
-		{
-			"default": "Today",
 			"fieldname": "report_date",
 			"fieldtype": "Date",
 			"in_list_view": 1,
 			"label": "报告日期"
+		},
+		{
+			"fieldname": "column_break_1",
+			"fieldtype": "Column Break"
 		},
 		{
 			"default": "待检测",
@@ -65,41 +60,42 @@
 			"in_list_view": 1,
 			"in_standard_filter": 1,
 			"label": "状态",
-			"no_copy": 1,
 			"options": "待检测\n检测中\n已出具\n已作废",
 			"reqd": 1
 		},
 		{
-			"fieldname": "column_break_basic",
-			"fieldtype": "Column Break"
-		},
-		{
-			"fetch_from": "test_request.customer",
-			"fetch_if_empty": 1,
 			"fieldname": "customer",
 			"fieldtype": "Link",
-			"in_standard_filter": 1,
 			"label": "客户",
 			"options": "Customer",
 			"read_only": 1
 		},
 		{
-			"fieldname": "item",
-			"fieldtype": "Link",
-			"label": "检测项目",
-			"options": "Item"
+			"fieldname": "section_break_items",
+			"fieldtype": "Section Break",
+			"label": "报告项"
 		},
 		{
-			"fieldname": "standard",
-			"fieldtype": "Link",
-			"label": "检测标准",
-			"options": "Test Standard"
+			"fieldname": "items",
+			"fieldtype": "Table",
+			"label": "报告项",
+			"options": "Test Report Item"
 		},
 		{
-			"fieldname": "equipment",
-			"fieldtype": "Link",
-			"label": "设备(Asset)",
-			"options": "Asset"
+			"fieldname": "section_break_conclusion",
+			"fieldtype": "Section Break",
+			"label": "结论"
+		},
+		{
+			"description": "整份报告的总结论",
+			"fieldname": "conclusion",
+			"fieldtype": "Text Editor",
+			"label": "检测结论"
+		},
+		{
+			"fieldname": "section_break_sign",
+			"fieldtype": "Section Break",
+			"label": "签署"
 		},
 		{
 			"fieldname": "tested_by",
@@ -108,14 +104,25 @@
 			"options": "User"
 		},
 		{
-			"fieldname": "section_break_conclusion",
-			"fieldtype": "Section Break",
-			"label": "检测结论"
+			"fieldname": "reviewed_by",
+			"fieldtype": "Link",
+			"label": "审核人",
+			"options": "User"
 		},
 		{
-			"fieldname": "conclusion",
-			"fieldtype": "Text Editor",
-			"label": "检测结论"
+			"fieldname": "approved_by",
+			"fieldtype": "Link",
+			"label": "批准人",
+			"options": "User"
+		},
+		{
+			"fieldname": "issued_on",
+			"fieldtype": "Date",
+			"label": "签发日期"
+		},
+		{
+			"fieldname": "section_break_remarks",
+			"fieldtype": "Section Break"
 		},
 		{
 			"fieldname": "remarks",
@@ -125,11 +132,11 @@
 	],
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-09-09 00:00:00.000000",
+	"modified": "2026-09-10 00:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
 	"name": "Test Report",
-	"naming_rule": "Expression",
+	"naming_rule": "Expression (old style)",
 	"owner": "Administrator",
 	"permissions": [
 		{
@@ -169,9 +176,10 @@
 		}
 	],
 	"row_format": "Dynamic",
-	"search_fields": "test_request,sample,status",
+	"search_fields": "test_request,sample",
 	"sort_field": "modified",
 	"sort_order": "DESC",
 	"states": [],
+	"title_field": "test_request",
 	"track_changes": 1
 }

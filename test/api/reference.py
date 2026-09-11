@@ -44,6 +44,31 @@ def company_options():
 
 
 @frappe.whitelist()
+def user_options(txt=None):
+	"""系统用户,给"检测人/审核人/批准人"这类 Link User 字段用。"""
+	require_roles(ALL_STAFF_ROLES)
+	txt = (txt or "").strip()
+	or_filters = None
+	if txt:
+		or_filters = [
+			["name", "like", f"%{txt}%"],
+			["full_name", "like", f"%{txt}%"],
+		]
+	docs = frappe.get_all(
+		"User",
+		filters={"enabled": 1},
+		or_filters=or_filters,
+		fields=["name", "full_name"],
+		order_by="full_name asc",
+		limit_page_length=100,
+	)
+	return [
+		{"value": d.name, "label": d.full_name and f"{d.full_name} ({d.name})" or d.name}
+		for d in docs
+	]
+
+
+@frappe.whitelist()
 def get_erpnext_url(doctype, name):
 	require_roles(ALL_STAFF_ROLES)
 	return f"/app/{doctype.replace(' ', '-').lower()}/{name}"

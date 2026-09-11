@@ -24,14 +24,14 @@ SEARCH_TARGETS = [
 	},
 	{
 		"doctype": "Test Report",
-		"fields": ["name", "test_request", "sample_name", "status"],
-		"search_fields": ["name", "test_request", "sample_name", "conclusion"],
+		"fields": ["name", "test_request", "sample", "status"],
+		"search_fields": ["name", "test_request", "sample", "conclusion"],
 		"route": "/lims/reports?report={name}",
 		"title_field": "name",
 		"subtitle_fields": ["test_request", "status"],
 	},
 	{
-		"doctype": "Test Catalog",
+		"doctype": "Test Agreement Price",
 		"fields": ["name", "catalog_code", "catalog_name", "price"],
 		"search_fields": ["name", "catalog_code", "catalog_name"],
 		"route": "/lims/catalog",

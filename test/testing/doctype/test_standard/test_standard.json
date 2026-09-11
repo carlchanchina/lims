@@ -9,6 +9,9 @@
 		"standard_code",
 		"standard_name",
 		"organization",
+		"version",
+		"effective_date",
+		"superseded_by",
 		"status",
 		"remarks"
 	],
@@ -35,11 +38,30 @@
 			"label": "发布/归口单位"
 		},
 		{
+			"description": "如 2008 / 2023,用于区分同名标准的不同版本",
+			"fieldname": "version",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "版本/年份"
+		},
+		{
+			"fieldname": "effective_date",
+			"fieldtype": "Date",
+			"label": "实施日期"
+		},
+		{
+			"description": "被哪个新版本替代",
+			"fieldname": "superseded_by",
+			"fieldtype": "Link",
+			"label": "被替代为",
+			"options": "Test Standard"
+		},
+		{
 			"default": "现行",
 			"fieldname": "status",
 			"fieldtype": "Select",
 			"label": "标准状态",
-			"options": "现行\n废止",
+			"options": "现行\n废止\n被替代",
 			"reqd": 1
 		},
 		{

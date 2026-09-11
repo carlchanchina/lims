@@ -20,9 +20,43 @@ def list_by_request(test_request):
 	return frappe.get_all(
 		"Sample",
 		filters={"test_request": test_request},
-		fields=["name", "sample_name", "received_date", "status", "qty", "uom", "remarks"],
+		fields=[
+			"name",
+			"sample_name",
+			"client_sample_code",
+			"specification",
+			"batch_no",
+			"appearance",
+			"received_date",
+			"received_by",
+			"retention_until",
+			"disposal",
+			"attachments",
+			"status",
+			"qty",
+			"uom",
+			"remarks",
+		],
 		order_by="sample_name asc",
 	)
+
+
+SAMPLE_FIELDS = (
+	"sample_name",
+	"client_sample_code",
+	"specification",
+	"batch_no",
+	"appearance",
+	"received_date",
+	"received_by",
+	"retention_until",
+	"disposal",
+	"attachments",
+	"status",
+	"qty",
+	"uom",
+	"remarks",
+)
 
 
 @frappe.whitelist()
@@ -35,11 +69,12 @@ def create_sample(data):
 	doc = frappe.new_doc("Sample")
 	doc.test_request = data["test_request"]
 	doc.sample_name = data.get("sample_name")
-	doc.received_date = data.get("received_date")
 	doc.status = data.get("status") or "待收样"
-	doc.qty = data.get("qty") or 1
-	doc.uom = data.get("uom")
-	doc.remarks = data.get("remarks")
+	for field in SAMPLE_FIELDS:
+		if field in data:
+			doc.set(field, data[field])
+	if not doc.qty:
+		doc.qty = 1
 	doc.insert()
 	return {"name": doc.name}
 
@@ -50,7 +85,7 @@ def update_sample(data):
 	data = data or {}
 	doc = frappe.get_doc("Sample", data["name"])
 	_require_editable_request(doc.test_request)
-	for field in ("sample_name", "received_date", "status", "qty", "uom", "remarks"):
+	for field in SAMPLE_FIELDS:
 		if field in data:
 			doc.set(field, data[field])
 	doc.save()

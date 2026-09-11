@@ -1,0 +1,136 @@
+{
+	"actions": [],
+	"allow_import": 0,
+	"autoname": "format:EU-{YYYY}-{#####}",
+	"creation": "2026-09-11 00:00:00.000000",
+	"description": "设备使用记录:哪台设备、哪个时间段、给哪个请求/项目用、谁操作。设备校准过期会被拦下。",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"asset",
+		"used_by",
+		"column_break_1",
+		"from_datetime",
+		"to_datetime",
+		"section_break_ref",
+		"test_request",
+		"test_request_item",
+		"test_task",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "asset",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "设备(Asset)",
+			"options": "Asset",
+			"reqd": 1
+		},
+		{
+			"fieldname": "used_by",
+			"fieldtype": "Link",
+			"label": "使用人",
+			"options": "User"
+		},
+		{
+			"fieldname": "column_break_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "from_datetime",
+			"fieldtype": "Datetime",
+			"in_list_view": 1,
+			"label": "开始时间",
+			"reqd": 1
+		},
+		{
+			"fieldname": "to_datetime",
+			"fieldtype": "Datetime",
+			"in_list_view": 1,
+			"label": "结束时间"
+		},
+		{
+			"fieldname": "section_break_ref",
+			"fieldtype": "Section Break"
+		},
+		{
+			"fieldname": "test_request",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "检测请求",
+			"options": "Test Request"
+		},
+		{
+			"fieldname": "test_request_item",
+			"fieldtype": "Link",
+			"label": "试验项目行",
+			"options": "Test Request Item"
+		},
+		{
+			"fieldname": "test_task",
+			"fieldtype": "Link",
+			"label": "试验任务",
+			"options": "Test Task"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-11 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Equipment Usage",
+	"naming_rule": "Expression (old style)",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Testing User",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "asset,test_request",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "asset",
+	"track_changes": 1
+}

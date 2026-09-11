@@ -158,6 +158,22 @@ doc_events = {
 		"after_rename": "test.integrations.erpnext_party.rename_contact",
 		"on_trash": "test.integrations.erpnext_party.delete_contact",
 	},
+	# 请求上的"报价/订单/报告"三个派生状态,跟着源单据动。
+	"Quotation": {
+		"on_update": "test.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_submit": "test.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_cancel": "test.testing.doctype.test_request.test_request.sync_request_quotation_status",
+	},
+	"Sales Order": {
+		"on_update": "test.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_submit": "test.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_cancel": "test.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+	},
+	"Test Report": {
+		"after_insert": "test.testing.doctype.test_request.test_request.sync_request_report_status",
+		"on_update": "test.testing.doctype.test_request.test_request.sync_request_report_status",
+		"on_trash": "test.testing.doctype.test_request.test_request.sync_request_report_status",
+	},
 }
 
 # Scheduled Tasks

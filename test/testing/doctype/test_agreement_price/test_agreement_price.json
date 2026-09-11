@@ -2,7 +2,7 @@
 	"actions": [],
 	"allow_import": 0,
 	"allow_rename": 1,
-	"autoname": "format:TC-{#####}",
+	"autoname": "format:AP-{#####}",
 	"creation": "2026-09-10 00:00:00.000000",
 	"description": "协议价:同一检测项目对某个客户或某个行业的约定价格,不是报价单用的目录。",
 	"doctype": "DocType",
@@ -112,7 +112,7 @@
 	"modified": "2026-09-10 00:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
-	"name": "Test Catalog",
+	"name": "Test Agreement Price",
 	"naming_rule": "Expression",
 	"owner": "Administrator",
 	"permissions": [

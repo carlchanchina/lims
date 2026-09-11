@@ -20,6 +20,33 @@ class TestRequest(Document):
 
 	def validate(self):
 		self.fill_missing_item_details()
+		self.validate_required_by()
+		self.sync_linked_statuses()
+
+	def validate_required_by(self):
+		if self.required_by and self.transaction_date and self.required_by < self.transaction_date:
+			frappe.throw(_("要求完成日期不能早于委托日期"), title=_("日期不正确"))
+
+	def sync_linked_statuses(self):
+		"""报价/订单/报告各自的状态独立记录,避免和主状态互相打架。"""
+		if self.quotation:
+			self.quotation_status = (
+				frappe.db.get_value("Quotation", self.quotation, "status")
+				or self.quotation_status
+			)
+		else:
+			self.quotation_status = None
+
+		if self.sales_order:
+			self.sales_order_status = (
+				frappe.db.get_value("Sales Order", self.sales_order, "status")
+				or self.sales_order_status
+			)
+		else:
+			self.sales_order_status = None
+
+		if not self.is_new():
+			self.report_status = _report_status(self.name)
 
 	def set_company_defaults(self):
 		if not self.company:
@@ -48,6 +75,41 @@ def get_default_company():
 		return company
 	companies = frappe.db.get_all("Company", pluck="name", limit=1)
 	return companies[0] if companies else None
+
+
+def _report_status(test_request):
+	"""报告整体进度:没有报告 / 部分出具 / 已出具(全作废则算没有)。"""
+	statuses = frappe.get_all(
+		"Test Report", filters={"test_request": test_request}, pluck="status"
+	)
+	statuses = [status for status in statuses if status != "已作废"]
+	if not statuses:
+		return "未出报告"
+	if all(status == "已出具" for status in statuses):
+		return f"已出具({len(statuses)})"
+	return f"部分出具({len(statuses)})"
+
+
+def sync_request_report_status(doc, method=None, *args, **kwargs):
+	"""报告新增/变更/删除后,刷新请求上的报告状态。"""
+	_refresh_request_status(doc, "report_status", _report_status)
+
+
+def sync_request_quotation_status(doc, method=None, *args, **kwargs):
+	for name in frappe.get_all("Test Request", filters={"quotation": doc.name}, pluck="name"):
+		frappe.db.set_value("Test Request", name, "quotation_status", doc.status)
+
+
+def sync_request_sales_order_status(doc, method=None, *args, **kwargs):
+	for name in frappe.get_all("Test Request", filters={"sales_order": doc.name}, pluck="name"):
+		frappe.db.set_value("Test Request", name, "sales_order_status", doc.status)
+
+
+def _refresh_request_status(doc, fieldname, compute):
+	test_request = doc.get("test_request") if hasattr(doc, "get") else None
+	if not test_request or not frappe.db.exists("Test Request", test_request):
+		return
+	frappe.db.set_value("Test Request", test_request, fieldname, compute(test_request))
 
 
 def _get_selling_price_list(customer, currency):
@@ -104,11 +166,11 @@ def get_customer_industry(customer):
 def _get_agreement_price(item, customer):
 	"""按 客户协议价 -> 行业协议价 -> 通用协议价 的顺序取价。
 
-	三种范围在 Test Catalog 上互斥(客户/行业二选一,都留空即通用),所以
+	三种范围在 Test Agreement Price 上互斥(客户/行业二选一,都留空即通用),所以
 	只要按优先级取第一条命中的记录即可。
 	"""
 	rows = frappe.get_all(
-		"Test Catalog",
+		"Test Agreement Price",
 		filters={"item": item, "enabled": 1},
 		fields=["name", "catalog_name", "price", "uom", "tat_days", "customer", "industry"],
 	)
@@ -168,7 +230,7 @@ def sample_query(doctype, txt, searchfield, start, page_len, filters):
 
 @frappe.whitelist()
 def create_quotation(name):
-	"""按 Test Catalog 价格为 Test Request 生成 ERPNext Quotation。"""
+	"""按协议价(Test Agreement Price)为 Test Request 生成 ERPNext Quotation。"""
 	request = frappe.get_doc("Test Request", name)
 	request.check_permission("write")
 
@@ -179,12 +241,12 @@ def create_quotation(name):
 		quotation_status = frappe.db.get_value(
 			"Quotation", request.quotation, "docstatus"
 		)
-		if quotation_status is not None and cint(quotation_status) != 2:
+		if quotation_status is not None and cint(quotation_status) == 1:
 			frappe.throw(
-				_("该请求已生成报价单 {0},如需重新报价请先取消/删除原报价单").format(
+				_("报价单 {0} 已提交,如需重新报价请先在 ERPNext 作废原报价单").format(
 					request.quotation
 				),
-				title=_("报价单已存在"),
+				title=_("报价单已提交"),
 			)
 
 	company = request.company or get_default_company()
@@ -256,7 +318,7 @@ def create_quotation(name):
 				"conversion_factor": 1.0,
 				"rate": flt(catalog.price),
 				"amount": flt(row.qty) * flt(catalog.price),
-				"test_catalog": catalog.name,
+				"agreement_price": catalog.name,
 				"equipment": row.equipment,
 				"hours": row.hours,
 				"cycles": row.cycles,
@@ -270,5 +332,33 @@ def create_quotation(name):
 		request.name,
 		{"status": STATUS_QUOTED, "quotation": quotation.name},
 	)
+	_record_quotation(request, quotation)
 
 	return quotation.name
+
+
+def _record_quotation(request, quotation):
+	"""把每次生成的报价单记进报价历史,当前这张标 is_current。"""
+	rows = [
+		{
+			"quotation": row.quotation,
+			"quotation_date": row.quotation_date,
+			"grand_total": row.grand_total,
+			"status": row.status,
+			"is_current": 0,
+		}
+		for row in request.get("quotations", [])
+	]
+	rows.append(
+		{
+			"quotation": quotation.name,
+			"quotation_date": quotation.transaction_date,
+			"grand_total": quotation.grand_total,
+			"status": quotation.status,
+			"is_current": 1,
+		}
+	)
+	request.reload()
+	request.set("quotations", rows)
+	request.flags.ignore_permissions = True
+	request.save(ignore_permissions=True)

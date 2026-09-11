@@ -18,9 +18,9 @@
 				'enabled',
 			]"
 			:fields="fields"
-			:load="apiMethods.catalogList"
-			:save="apiMethods.catalogSave"
-			:remove="apiMethods.catalogDelete"
+			:load="apiMethods.agreementPriceList"
+			:save="apiMethods.agreementPriceSave"
+			:remove="apiMethods.agreementPriceDelete"
 			:new-row="newRow"
 		/>
 	</div>
