@@ -7,7 +7,7 @@ from lims.api.security import ALL_STAFF_ROLES
 
 
 def has_app_permission():
-	"""Desk 应用面板是否显示「旭博检测中心OS」入口。"""
+	"""Desk 应用面板是否显示「检测中心LIMSOS」入口。"""
 	if frappe.session.user == "Guest":
 		return False
 	return bool(set(frappe.get_roles()) & ALL_STAFF_ROLES)

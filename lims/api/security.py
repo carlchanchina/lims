@@ -3,7 +3,7 @@
 
 import frappe
 
-# 旭博检测中心OS 的角色体系(见 lims/setup/install.py)。
+# 检测中心LIMSOS 的角色体系(见 lims/setup/install.py)。
 # 主数据(标准/方法/协议价/行业)的管理者与 DocType 权限矩阵保持一致。
 MANAGER_ROLES = {
 	"System Manager",

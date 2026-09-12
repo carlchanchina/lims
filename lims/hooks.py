@@ -1,7 +1,7 @@
 app_name = "lims"
-app_title = "旭博检测中心OS"
+app_title = "检测中心LIMSOS"
 app_publisher = "Carl"
-app_description = "旭博检测中心OS - 以 ERPNext 为事实源的检测中心一体化业务 App"
+app_description = "检测中心LIMSOS - 以 ERPNext 为事实源的检测中心一体化业务 App"
 app_email = "cowin3332@gmail.com"
 app_license = "mit"
 app_icon = "octicon octicon-checklist"
@@ -17,7 +17,7 @@ add_to_apps_screen = [
 	{
 		"name": "lims",
 		"logo": "/assets/lims/images/lims.svg",
-		"title": "旭博检测中心OS",
+		"title": "检测中心LIMSOS",
 		"route": "/desk/首页",
 		"has_permission": "lims.api.permission.has_app_permission",
 	}

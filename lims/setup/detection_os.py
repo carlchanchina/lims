@@ -1,7 +1,7 @@
 # Copyright (c) 2026, Carl and contributors
 # For license information, please see license.txt
 
-"""旭博检测中心OS 的站点级设置(幂等,每次 migrate 后执行)。
+"""检测中心LIMSOS 的站点级设置(幂等,每次 migrate 后执行)。
 
 - 把旧角色(Testing Manager / Testing User)的用户迁移到新角色并停用旧角色;
 - 清掉旧版本遗留的 Workspace / Workspace Sidebar / 应用图标;
@@ -131,7 +131,7 @@ def migrate_legacy_roles():
 
 
 def set_default_app():
-	"""登录后默认进入 lims(旭博检测中心OS)。"""
+	"""登录后默认进入 lims(检测中心LIMSOS)。"""
 	# System Settings 是 Single DocType(存在 tabSingles 里,没有自己的表),
 	# 所以只能用 meta 判断字段,用 set_single_value 写值。
 	if not frappe.get_meta("System Settings").has_field("default_app"):
