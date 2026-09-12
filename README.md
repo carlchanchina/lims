@@ -221,6 +221,19 @@ Customer/Company/币种/Selling Price List 等标准配置。
 旧角色 `Testing Manager` / `Testing User` 会在 migrate 时停用,并自动把已分配的用户
 迁移到「总经理 + 项目经理」/「检测工程师」。
 
+客服中心用 **Helpdesk** 的 `HD Ticket` 体系,而 Helpdesk 只认它自己的角色,
+所以 migrate 时会把我们的角色映射过去:`客服`/`销售` → `Agent`,`销售经理`/`总经理` → `Agent Manager`。
+
+### 运行依赖
+
+| 组件 | 用途 | 是否必须 |
+| --- | --- | --- |
+| frappe 16 + erpnext 16 | 事实源(客户/物料/单据/资产/项目) | 必须 |
+| lims(本 app) | 9 个中心的 Desk 结构与检测业务 | 必须 |
+| helpdesk + telephony | 客服中心工单(HD Ticket)、知识库 | 可选(不装则客服中心没有工单体系) |
+
+没有装 CRM app 也不需要:销售中心用的是 ERPNext 自带的 `Lead`/`Opportunity`/`Contract`。
+
 ### Desk 结构(文件即事实源)
 
 9 个中心的 Workspace、Workspace Sidebar、Number Card、Dashboard Chart 都以 JSON
@@ -276,7 +289,95 @@ DocType 分工(都在 `lims/testing/doctype/`):
 | 主数据 | Test Standard、Test Method、Industry、Test Agreement Price |
 | 实验室 | Calibration Record(校准记录,回写 Asset 校准快照) |
 | 质量 | Quality Document、Quality Document Standard(受控文件) |
-| 遗留(停用) | LIMS Customer、LIMS Contact(早期镜像表,仅 System Manager 可见) |
+| 系统 | LIMS Settings(检测机构名称、CNAS/CMA 编号、报告声明、默认报价条款) |
+
+### 打印模板
+
+三个 Jinja 打印格式随 app 交付,并已设为对应单据的默认打印格式:
+
+| 模板 | 单据 | 关键内容 |
+| --- | --- | --- |
+| 检测委托单 | Test Request | 机构抬头 + CNAS/CMA 编号、委托单位/发票抬头/报告抬头、样品清单、试验项目(样品/项目/标准/方法/数量/时长/循环,不出现价格与设备)、双方签署栏 |
+| 检测报价单 | Quotation | 机构抬头、客户与联系人、明细与合计、报价条款 |
+| 检测报告 | Test Report | 机构抬头 + CNAS/CMA、报告编号、报告抬头/委托单位、样品信息、检测结果表(项目/标准条款/技术要求/实测结果/判定/设备)、结论、检测-审核-批准三级签署与日期、页脚声明 |
+
+抬头与页脚内容来自 `LIMS Settings`(机构名称默认取公司名)。
+模板由 `dev_tools/build_print_formats.py` 生成,改版式改脚本再执行即可。
+
+### 检测报告三级签发
+
+`Test Report` 是可提交单据,状态机由 Frappe Workflow「检测报告签发」驱动:
+
+```text
+待检测 --开始检测--> 检测中 --提交审核--> 待审核 --审核通过--> 待批准 --批准签发--> 已出具(docstatus=1)
+                        ^                   |
+                        +----- 退回修改 -----+           已出具 --作废--> 已作废(docstatus=2)
+```
+
+- 角色:检测工程师/项目经理(开始检测、提交审核)、技术负责人(审核通过、退回)、质量负责人(批准签发、退回、作废)、总经理(作废)
+- 留痕:提交审核记 `检测人`;审核通过记 `审核人 + 审核日期`;批准签发记 `批准人 + 批准日期 + 签发日期`;
+  作废必须填 `作废原因`,并记 `作废人 + 作废日期`;另有 Frappe 的 Version 与 Workflow 时间线
+- 校验:没填作废原因不允许作废;已签发/已作废的报告不允许删除
+
+### 初始主数据
+
+安装时(以及调用 `lims.api.master.seed_starter_masters`)会补齐:
+
+- **14 条检测标准**:GB/T 2423.1/2/3/4/5/10/17、GJB 150.3A/4A/5A/9A/11A/16A/18A
+- **14 条检测方法**:每个标准一条常用方法(低温/高温/湿热/温度冲击/振动/冲击/盐雾,含军标)
+- **8 个检测项目(ERPNext Item)**:TEST-LOW-TEMP 等,按「服务型销售物料」建,可直接用于报价
+
+只补缺、不覆盖、不删除业务改过的记录。客户/联系人/设备的批量导入用
+`lims/data/import_templates/` 里的 CSV 模板(ERPNext 标准 Data Import 即可)。
+
+### 客户与联系人(中国企业约定)
+
+客户和联系人不另建表,直接用 ERPNext 的 `Customer` / `Contact` / `Address`,
+只在上面补中国企业常用的字段(由 `lims/setup/install.py` 创建):
+
+**企业(Customer)**
+
+| 用途 | 落点 |
+| --- | --- |
+| 工商全称 | `customer_name`(ERPNext 客户主键,`Selling Settings.cust_master_name = Customer Name`) |
+| 企业简称 | `lims_short_name`(列表/打印用,不改主键) |
+| 统一社会信用代码 / 纳税人识别号 | 原生 `tax_id`,18 位校验 + 同税号不允许重复建客户 |
+| 企业性质 | `lims_enterprise_nature`(军工集团/国有企业/民营企业/外资企业/高校与科研院所/政府机构/事业单位/其他) |
+| 客户分级 | `lims_customer_tier`(战略/重点/普通/潜在) |
+| 行业(驱动行业协议价) | `lims_industry` → LIMS 的 `Industry` |
+| 地区 | 原生 `Territory`:已初始化 `China`(组)→ 34 个省级行政区(叶子);地级市按需补,数据源见 `lims/data/china_regions.py` |
+| 客户分类 | 原生 `Customer Group`,已初始化:军工集团/国有企业/民营企业/外资企业/高校与科研院所/政府机构/同业分包 |
+| 法定代表人 / 注册地址 | `lims_legal_representative` / `lims_registered_address` |
+| 开票资料 | 名称=`customer_name`、税号=`tax_id`,地址电话用 `Address`(ERPNext 自带 China 地址模板),另补 `lims_invoice_phone` / `lims_bank_name` / `lims_bank_account` |
+| 账期 / 信用额度 | 原生 `payment_terms` / `credit_limit` |
+
+**联系人(Contact)**
+
+| 用途 | 落点 |
+| --- | --- |
+| 中文姓名 | 约定:整名写在 `first_name`(如「张三」),`last_name`/`middle_name` 留空,避免出现「张 三」 |
+| 职务 / 部门 | 原生 `designation` / `department` |
+| 手机 / 座机 / 分机 | 原生 `mobile_no`、`phone`(座机写 `010-88886666`),分机用 `lims_extension` |
+| 微信 | `lims_wechat` |
+| 角色 | `lims_role`(商务/技术/财务/收样/管理层/其他) |
+| 收报告 / 收发票 | `lims_receives_report` / `lims_receives_invoice` |
+| 一人对接多家企业 | 原生 `links`(Dynamic Link,一个联系人可挂多个 Customer,集团客户常见) |
+
+ERPNext 另有一个原生 `Customer.industry`(指向 `Industry Type`,用于销售分析),
+与本项目的 `lims_industry`(驱动行业协议价)互不影响,前者留空即可。
+
+### 委托单上的三个主体
+
+中国检测业务里「送检的、开票的、报告打给谁」经常不是同一个法人,所以 `Test Request` 上放了两个可选字段:
+
+| 字段 | 含义 | 不填时 |
+| --- | --- | --- |
+| `customer`(委托单位) | 谁送的样、跟谁谈的协议价 | 必填 |
+| `invoice_customer`(发票抬头) | 对外报价单/销售订单/发票开给谁 | 默认 = 委托单位 |
+| `report_customer`(报告抬头) | 检测报告出具给谁 | 默认 = 委托单位 |
+
+规则:**协议价始终按委托单位取**(谈价的是委托方),`发票抬头`只决定对外单据主体,
+`报告抬头`只决定报告抬头(Test Report 的「报告抬头」字段按它带出)。
 
 前端说明:早期版本的 Vue 单页应用(`desk/` + `/lims` 路由 + `lims/public/lims` 构建产物)
 已删除,现在业务界面完全由 Frappe Desk 的 9 个 Workspace 承载;

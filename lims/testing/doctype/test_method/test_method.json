@@ -42,7 +42,8 @@
 			"fieldtype": "Link",
 			"in_list_view": 1,
 			"label": "检测标准",
-			"options": "Test Standard"
+			"options": "Test Standard",
+			"search_index": 1
 		},
 		{
 			"fieldname": "clause",
@@ -61,7 +62,8 @@
 			"in_list_view": 1,
 			"label": "状态",
 			"options": "现行\n作废",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "superseded_by",

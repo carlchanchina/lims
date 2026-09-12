@@ -79,6 +79,8 @@ def save_request(data):
 
 	for field in (
 		"customer",
+		"invoice_customer",
+		"report_customer",
 		"contact",
 		"transaction_date",
 		"customer_reference",

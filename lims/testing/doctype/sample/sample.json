@@ -59,7 +59,8 @@
 			"label": "样品状态",
 			"no_copy": 1,
 			"options": "待收样\n已收样\n检测中\n已检测\n已退样",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "column_break_1",

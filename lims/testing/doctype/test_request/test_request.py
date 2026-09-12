@@ -167,14 +167,37 @@ def _get_conversion_rate(from_currency, to_currency, transaction_date=None):
 def get_customer_industry(customer):
 	"""客户所属行业,用来匹配行业协议价。
 
-	客户是 ERPNext 的事实源,行业写在 Customer 的定制字段 lims_industry 上
-	(LIMS Customer 镜像表已停用)。
+	客户是 ERPNext 的事实源,行业写在 Customer 的定制字段 lims_industry 上。
 	"""
 	if not customer:
 		return None
 	if not frappe.db.has_column("Customer", "lims_industry"):
 		return None
 	return frappe.db.get_value("Customer", customer, "lims_industry")
+
+
+def get_invoicing_customer(request):
+	"""对外单据主体(报价单/销售订单):发票抬头,不填就用委托单位。"""
+	return request.get("invoice_customer") or request.get("customer")
+
+
+def get_report_customer(request):
+	"""报告抬头:不填就用委托单位。"""
+	return request.get("report_customer") or request.get("customer")
+
+
+def _contact_of_party(contact, party):
+	"""联系人是否挂在指定客户名下(挂错了 ERPNext 会告警)。"""
+	if not contact or not party:
+		return None
+	return (
+		contact
+		if frappe.db.exists(
+			"Dynamic Link",
+			{"parent": contact, "parenttype": "Contact", "link_doctype": "Customer", "link_name": party},
+		)
+		else None
+	)
 
 
 def _get_agreement_price(item, customer):
@@ -274,7 +297,9 @@ def create_quotation(name):
 			title=_("缺少币种"),
 		)
 
-	price_list = _get_selling_price_list(request.customer, currency)
+	# 对外单据开给「发票抬头」(不填就是委托单位);协议价仍按委托单位谈好的价格取。
+	invoicing_party = get_invoicing_customer(request)
+	price_list = _get_selling_price_list(invoicing_party, currency)
 	price_list_currency = (
 		frappe.db.get_value("Price List", price_list, "currency") or currency
 	)
@@ -282,8 +307,8 @@ def create_quotation(name):
 	quotation = frappe.new_doc("Quotation")
 	quotation.naming_series = _get_naming_series("Quotation")
 	quotation.quotation_to = "Customer"
-	quotation.party_name = request.customer
-	quotation.contact_person = request.contact
+	quotation.party_name = invoicing_party
+	quotation.contact_person = _contact_of_party(request.contact, invoicing_party)
 	quotation.transaction_date = request.transaction_date or today()
 	quotation.company = company
 	quotation.order_type = "Sales"

@@ -35,7 +35,8 @@
 			"in_standard_filter": 1,
 			"label": "状态",
 			"options": "草稿\n待执行\n执行中\n已完成\n已取消",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "column_break_1",

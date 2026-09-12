@@ -156,6 +156,10 @@ after_migrate = [
 doc_events = {
 	# 方向约定:单向 LIMS → ERPNext。LIMS 不反向同步 ERPNext 主数据,
 	# 客户/联系人/报价/订单都直接以 ERPNext 为事实源(LIMS 只读 + 定制字段)。
+	# 客户校验:统一社会信用代码(税号)格式与唯一性,见 erpnext_masters.validate_customer。
+	"Customer": {
+		"validate": "lims.integrations.erpnext_masters.validate_customer",
+	},
 	# 委托请求保存后自动生成 ERPNext Project,测试项同步为 Project Task。
 	"Test Request": {
 		"after_insert": "lims.integrations.erpnext_projects.create_project_from_request",

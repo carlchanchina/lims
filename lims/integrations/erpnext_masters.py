@@ -1,39 +1,102 @@
 # Copyright (c) 2026, Carl and contributors
 # For license information, please see license.txt
 
-"""LIMS 里新建的主数据,直接写到 ERPNext,再同步回 LIMS 镜像表。
+"""在 LIMS 里新建的主数据,直接写到 ERPNext。
 
-和 erpnext_party.py 的分工:那边负责 ERPNext -> LIMS 的镜像同步,这里负责
-LIMS -> ERPNext 的写入。事实源永远是 ERPNext:所以这里先建 ERPNext 单据,
-镜像表由 Customer/Contact 的 doc_events 钩子(或调用方显式补一次)刷新。
+ERPNext 是唯一事实源:客户、联系人、检测项目、设备都落在 ERPNext 原生 DocType 上,
+LIMS 只通过定制字段补充检测业务需要的信息(见 lims/setup/install.py)。
 """
 
+import re
+
 import frappe
+from frappe import _
 from frappe.utils import flt, getdate, today
+
+# 统一社会信用代码(GB 32100-2015):18 位数字或大写字母,不含 I O S V Z
+USCC_PATTERN = re.compile(r"^[0-9A-HJ-NPQRTUWXY]{18}$")
+
+# 客户上允许写入的定制字段(数据字典里的 key -> 字段名)
+CUSTOMER_EXTRA_FIELDS = {
+	"short_name": "lims_short_name",
+	"enterprise_nature": "lims_enterprise_nature",
+	"customer_tier": "lims_customer_tier",
+	"legal_representative": "lims_legal_representative",
+	"registered_address": "lims_registered_address",
+	"invoice_phone": "lims_invoice_phone",
+	"bank_name": "lims_bank_name",
+	"bank_account": "lims_bank_account",
+	"industry": "lims_industry",
+}
+
+CONTACT_EXTRA_FIELDS = {
+	"role": "lims_role",
+	"wechat": "lims_wechat",
+	"extension": "lims_extension",
+	"receives_report": "lims_receives_report",
+	"receives_invoice": "lims_receives_invoice",
+}
+
+
+def set_extra_fields(doc, data, mapping):
+	"""写入定制字段前先确认字段存在(定制字段由 install.py 在 migrate 时创建)。"""
+	for key, fieldname in mapping.items():
+		if key in data and doc.meta.has_field(fieldname):
+			doc.set(fieldname, data[key])
+
+
+def validate_customer(doc, method=None):
+	"""中国企业客户校验:统一社会信用代码格式 + 同一税号不允许建两个客户。"""
+	raw = (doc.get("tax_id") or "").strip().replace(" ", "").upper()
+	if not raw:
+		return
+	doc.tax_id = raw
+
+	if len(raw) == 18:
+		if not USCC_PATTERN.match(raw):
+			frappe.throw(
+				_("统一社会信用代码格式不正确:应为 18 位数字/大写字母(不含 I、O、S、V、Z)"),
+				title=_("税号不正确"),
+			)
+		existing = frappe.db.exists("Customer", {"tax_id": raw, "name": ["!=", doc.name or ""]})
+		if existing:
+			frappe.throw(
+				_("统一社会信用代码 {0} 已经是客户「{1}」的税号,请直接使用该客户").format(raw, existing),
+				title=_("客户已存在"),
+			)
+	else:
+		frappe.msgprint(
+			_("税号「{0}」不是 18 位,确认是否为统一社会信用代码(个人客户可忽略)").format(raw),
+			indicator="orange",
+			alert=True,
+		)
 
 
 def default_customer_group():
-	"""默认客户分组:必须是叶子节点,组节点 ERPNext 不允许挂在客户上。"""
+	"""默认客户分组:必须是叶子节点,组节点 ERPNext 不允许挂在客户上。
+
+	优先级:Selling Settings 里配的叶子分组 → 民营企业(中国客户默认) →
+	Commercial(ERPNext 标准)→ 任意叶子分组。
+	"""
 	configured = frappe.db.get_single_value("Selling Settings", "customer_group")
 	if configured and not frappe.db.get_value("Customer Group", configured, "is_group"):
 		return configured
-	return (
-		frappe.db.get_value("Customer Group", {"is_group": 0}, "name")
-		or configured
-		or "All Customer Groups"
-	)
+	for preferred in ("民营企业", "Commercial"):
+		if frappe.db.get_value("Customer Group", preferred, "is_group") == 0:
+			return preferred
+	return frappe.db.get_value("Customer Group", {"is_group": 0}, "name") or configured
 
 
 def default_territory():
-	"""默认地区:同样必须是叶子节点。"""
+	"""默认地区:Selling Settings 里配了叶子就用它。
+
+	地区树建好后 China 是组节点(下面挂省级),不能再当叶子用,
+	所以这里没配就返回空,由用户在建客户时选到具体省市。
+	"""
 	configured = frappe.db.get_single_value("Selling Settings", "territory")
 	if configured and not frappe.db.get_value("Territory", configured, "is_group"):
 		return configured
-	return (
-		frappe.db.get_value("Territory", {"is_group": 0}, "name")
-		or configured
-		or "All Territories"
-	)
+	return None
 
 
 def create_customer(data):
@@ -53,6 +116,8 @@ def create_customer(data):
 	doc.customer_type = data.get("customer_type") or "Company"
 	doc.customer_group = data.get("customer_group") or default_customer_group()
 	doc.territory = data.get("territory") or default_territory()
+	doc.tax_id = (data.get("tax_id") or "").strip() or None
+	set_extra_fields(doc, data, CUSTOMER_EXTRA_FIELDS)
 	doc.insert(ignore_permissions=True)
 
 	contact = data.get("contact") or {}
@@ -101,6 +166,10 @@ def create_contact(data):
 		)
 	if customer:
 		doc.append("links", {"link_doctype": "Customer", "link_name": customer})
+
+	if data.get("department"):
+		doc.department = data["department"]
+	set_extra_fields(doc, data, CONTACT_EXTRA_FIELDS)
 
 	doc.insert(ignore_permissions=True)
 	return doc.name

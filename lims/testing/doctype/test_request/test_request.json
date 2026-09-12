@@ -8,6 +8,8 @@
 	"field_order": [
 		"section_break_basic",
 		"customer",
+		"invoice_customer",
+		"report_customer",
 		"contact",
 		"transaction_date",
 		"customer_reference",
@@ -21,6 +23,7 @@
 		"quotation",
 		"column_break_reference",
 		"sales_order",
+		"project",
 		"quotation_status",
 		"sales_order_status",
 		"report_status",
@@ -54,12 +57,27 @@
 			"options": "Contact"
 		},
 		{
+			"description": "不填默认与委托单位一致;用于对外报价单/销售订单的开票主体",
+			"fieldname": "invoice_customer",
+			"fieldtype": "Link",
+			"label": "发票抬头",
+			"options": "Customer"
+		},
+		{
+			"description": "不填默认与委托单位一致;报告出具给谁就看这里",
+			"fieldname": "report_customer",
+			"fieldtype": "Link",
+			"label": "报告抬头",
+			"options": "Customer"
+		},
+		{
 			"default": "Today",
 			"fieldname": "transaction_date",
 			"fieldtype": "Date",
 			"in_list_view": 1,
 			"label": "请求日期",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "column_break_basic",
@@ -74,7 +92,8 @@
 			"label": "状态",
 			"no_copy": 1,
 			"options": "草稿\n已报价\n待检测\n检测中\n已完成\n已取消",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "company",
@@ -94,7 +113,8 @@
 			"label": "报价单",
 			"no_copy": 1,
 			"options": "Quotation",
-			"read_only": 1
+			"read_only": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "column_break_reference",
@@ -106,7 +126,8 @@
 			"in_standard_filter": 1,
 			"label": "销售定单",
 			"no_copy": 1,
-			"options": "Sales Order"
+			"options": "Sales Order",
+			"search_index": 1
 		},
 		{
 			"fieldname": "project",
@@ -136,7 +157,8 @@
 		{
 			"fieldname": "required_by",
 			"fieldtype": "Date",
-			"label": "要求完成日期"
+			"label": "要求完成日期",
+			"search_index": 1
 		},
 		{
 			"default": "送检",

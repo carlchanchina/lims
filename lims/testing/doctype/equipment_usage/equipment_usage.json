@@ -26,7 +26,8 @@
 			"in_standard_filter": 1,
 			"label": "设备(Asset)",
 			"options": "Asset",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "used_by",
@@ -61,7 +62,8 @@
 			"in_list_view": 1,
 			"in_standard_filter": 1,
 			"label": "检测请求",
-			"options": "Test Request"
+			"options": "Test Request",
+			"search_index": 1
 		},
 		{
 			"fieldname": "test_request_item",

@@ -154,13 +154,10 @@ def search_contacts(txt=None, customer=None):
 
 @frappe.whitelist()
 def create_customer(data=None):
-	"""新建客户:直接写 ERPNext Customer;行业写在 ERPNext 定制字段 lims_industry 上。"""
+	"""新建客户:直接写 ERPNext Customer(含税号、企业性质、行业等定制字段)。"""
 	require_roles(ALL_STAFF_ROLES)
 	payload = _as_dict(data)
 	name = create_erpnext_customer(payload)
-	industry = payload.get("industry")
-	if industry and frappe.db.has_column("Customer", "lims_industry"):
-		frappe.db.set_value("Customer", name, "lims_industry", industry)
 	return _customer_option(name)
 
 
@@ -198,6 +195,18 @@ def party_form_options():
 		"industries": frappe.get_all(
 			"Industry", fields=["name"], order_by="name", limit_page_length=200
 		),
+		"enterprise_natures": [
+			"军工集团",
+			"国有企业",
+			"民营企业",
+			"外资企业",
+			"高校与科研院所",
+			"政府机构",
+			"事业单位",
+			"其他",
+		],
+		"customer_tiers": ["战略客户", "重点客户", "普通客户", "潜在客户"],
+		"contact_roles": ["商务", "技术", "财务", "收样", "管理层", "其他"],
 		"customer_groups": frappe.get_all(
 			"Customer Group", fields=["name"], order_by="name", limit_page_length=200
 		),

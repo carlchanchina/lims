@@ -1,7 +1,7 @@
 {
 	"app": "lims",
 	"charts": [],
-	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>客户服务</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+新建工单\", \"col\": 3}}, {\"id\": \"sp0003\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc0004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待处理工单\", \"col\": 3}}, {\"id\": \"nc0005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超时工单\", \"col\": 3}}, {\"id\": \"sp0006\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0007\", \"type\": \"card\", \"data\": {\"card_name\": \"工单\", \"col\": 4}}, {\"id\": \"cd0008\", \"type\": \"card\", \"data\": {\"card_name\": \"服务协议\", \"col\": 4}}, {\"id\": \"cd0009\", \"type\": \"card\", \"data\": {\"card_name\": \"售后\", \"col\": 4}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"客户\", \"col\": 4}}]",
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>客户服务</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+新建工单\", \"col\": 3}}, {\"id\": \"sp0003\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc0004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待处理工单\", \"col\": 3}}, {\"id\": \"nc0005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超时工单\", \"col\": 3}}, {\"id\": \"sp0006\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0007\", \"type\": \"card\", \"data\": {\"card_name\": \"工单\", \"col\": 4}}, {\"id\": \"cd0008\", \"type\": \"card\", \"data\": {\"card_name\": \"客服团队与 SLA\", \"col\": 4}}, {\"id\": \"cd0009\", \"type\": \"card\", \"data\": {\"card_name\": \"知识库\", \"col\": 4}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"售后与客户\", \"col\": 4}}]",
 	"creation": "2026-09-12 00:00:00.000000",
 	"custom_blocks": [],
 	"docstatus": 0,
@@ -25,9 +25,9 @@
 			"dependencies": "",
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "问题单",
+			"label": "工单",
 			"link_count": 0,
-			"link_to": "Issue",
+			"link_to": "HD Ticket",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -38,7 +38,7 @@
 			"is_query_report": 0,
 			"label": "问题类型",
 			"link_count": 0,
-			"link_to": "Issue Type",
+			"link_to": "HD Ticket Type",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -49,7 +49,18 @@
 			"is_query_report": 0,
 			"label": "优先级",
 			"link_count": 0,
-			"link_to": "Issue Priority",
+			"link_to": "HD Ticket Priority",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "工单状态",
+			"link_count": 0,
+			"link_to": "HD Ticket Status",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -57,7 +68,7 @@
 		{
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "服务协议",
+			"label": "客服团队与 SLA",
 			"link_count": 0,
 			"onboard": 0,
 			"type": "Card Break"
@@ -66,9 +77,31 @@
 			"dependencies": "",
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "SLA",
+			"label": "客服组",
 			"link_count": 0,
-			"link_to": "Service Level Agreement",
+			"link_to": "HD Team",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "服务协议",
+			"link_count": 0,
+			"link_to": "HD Service Level Agreement",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "服务日历",
+			"link_count": 0,
+			"link_to": "HD Service Holiday List",
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
@@ -76,7 +109,37 @@
 		{
 			"hidden": 0,
 			"is_query_report": 0,
-			"label": "售后",
+			"label": "知识库",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "知识文章",
+			"link_count": 0,
+			"link_to": "HD Article",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "文章分类",
+			"link_count": 0,
+			"link_to": "HD Article Category",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "售后与客户",
 			"link_count": 0,
 			"onboard": 0,
 			"type": "Card Break"
@@ -91,14 +154,6 @@
 			"link_type": "DocType",
 			"onboard": 0,
 			"type": "Link"
-		},
-		{
-			"hidden": 0,
-			"is_query_report": 0,
-			"label": "客户",
-			"link_count": 0,
-			"onboard": 0,
-			"type": "Card Break"
 		},
 		{
 			"dependencies": "",
@@ -123,7 +178,7 @@
 			"type": "Link"
 		}
 	],
-	"modified": "2026-09-12 11:50:52.133617",
+	"modified": "2026-09-12 12:56:30.106148",
 	"modified_by": "Administrator",
 	"module": "Testing",
 	"name": "客服中心",
@@ -160,7 +215,7 @@
 			"doc_view": "New",
 			"icon": "add",
 			"label": "+新建工单",
-			"link_to": "Issue",
+			"link_to": "HD Ticket",
 			"type": "DocType",
 			"url": ""
 		}

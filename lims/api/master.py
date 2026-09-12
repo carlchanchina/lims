@@ -75,6 +75,15 @@ def get_standards(filters=None, page=0):
 
 
 @frappe.whitelist()
+def seed_starter_masters():
+	"""导入初始主数据(常用检测标准/方法/检测项目);只补缺,不覆盖已有数据。"""
+	require_manager()
+	from lims.setup.install import ensure_starter_masters
+
+	return ensure_starter_masters()
+
+
+@frappe.whitelist()
 def get_standard(name):
 	return _get_doc("Test Standard", name)
 
@@ -116,8 +125,6 @@ def delete_industry(name):
 	if frappe.db.has_column("Customer", "lims_industry") and frappe.db.exists(
 		"Customer", {"lims_industry": name}
 	):
-		frappe.throw("该行业已被客户引用,不能删除")
-	if frappe.db.exists("LIMS Customer", {"industry": name}):
 		frappe.throw("该行业已被客户引用,不能删除")
 	frappe.delete_doc("Industry", name)
 	return {"name": name}

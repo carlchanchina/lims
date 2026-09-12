@@ -1,0 +1,181 @@
+{
+	"actions": [],
+	"creation": "2026-09-12 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"lab_name",
+		"company",
+		"column_break_main",
+		"cnas_no",
+		"cma_no",
+		"section_break_contact",
+		"address",
+		"phone",
+		"column_break_contact",
+		"email",
+		"website",
+		"section_break_report",
+		"report_disclaimer",
+		"report_terms"
+	],
+	"fields": [
+		{
+			"description": "显示在委托单/报价单/检测报告抬头,留空则用公司名",
+			"fieldname": "lab_name",
+			"fieldtype": "Data",
+			"label": "检测机构名称"
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"label": "对应公司",
+			"options": "Company"
+		},
+		{
+			"fieldname": "column_break_main",
+			"fieldtype": "Column Break"
+		},
+		{
+			"description": "打印在报告与委托单抬头",
+			"fieldname": "cnas_no",
+			"fieldtype": "Data",
+			"label": "CNAS 认可编号"
+		},
+		{
+			"fieldname": "cma_no",
+			"fieldtype": "Data",
+			"label": "CMA 编号"
+		},
+		{
+			"fieldname": "section_break_contact",
+			"fieldtype": "Section Break",
+			"label": "联系方式"
+		},
+		{
+			"fieldname": "address",
+			"fieldtype": "Small Text",
+			"label": "地址"
+		},
+		{
+			"fieldname": "phone",
+			"fieldtype": "Data",
+			"label": "电话"
+		},
+		{
+			"fieldname": "column_break_contact",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "email",
+			"fieldtype": "Data",
+			"options": "Email",
+			"label": "邮箱"
+		},
+		{
+			"fieldname": "website",
+			"fieldtype": "Data",
+			"label": "网站"
+		},
+		{
+			"fieldname": "section_break_report",
+			"fieldtype": "Section Break",
+			"label": "报告声明"
+		},
+		{
+			"description": "打印在所有单据页脚,如「本报告仅对来样负责」",
+			"fieldname": "report_disclaimer",
+			"fieldtype": "Text",
+			"label": "声明/免责条款"
+		},
+		{
+			"description": "报价单默认带出的条款(可被单张单据覆盖)",
+			"fieldname": "report_terms",
+			"fieldtype": "Text",
+			"label": "默认报价条款"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"issingle": 1,
+	"links": [],
+	"modified": "2026-09-12 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "LIMS Settings",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "总经理",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "质量负责人",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "技术负责人",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "项目经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "检测工程师",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "实验员",
+			"share": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

@@ -35,6 +35,7 @@ APP_NAME = "lims"
 def setup_detection_os():
 	remove_legacy_workspaces()
 	remove_legacy_sidebars()
+	remove_orphan_desktop_icons()
 	migrate_legacy_roles()
 	fix_app_desktop_icon()
 	set_default_app()
@@ -56,6 +57,14 @@ def remove_legacy_sidebars():
 			# 由 app 里的 JSON 文件管理,交给 migrate 处理。
 			continue
 		frappe.delete_doc("Workspace Sidebar", name, force=True, ignore_missing=True)
+
+
+def remove_orphan_desktop_icons():
+	"""删掉指向已卸载 app 的桌面图标(例如卸载 CRM 后残留的「Frappe CRM」)。"""
+	installed = set(frappe.get_installed_apps())
+	for icon in frappe.get_all("Desktop Icon", fields=["name", "app"], limit_page_length=0):
+		if icon.app and icon.app not in installed:
+			frappe.delete_doc("Desktop Icon", icon.name, force=True, ignore_missing=True)
 
 
 def fix_app_desktop_icon():

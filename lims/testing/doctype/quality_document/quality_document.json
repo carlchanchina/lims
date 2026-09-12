@@ -69,7 +69,8 @@
 			"in_standard_filter": 1,
 			"label": "文件状态",
 			"options": "草稿\n审批中\n受控\n已作废",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "revision_date",
@@ -80,7 +81,8 @@
 			"description": "到期前质量中心会提示复审",
 			"fieldname": "review_due_date",
 			"fieldtype": "Date",
-			"label": "复审日期"
+			"label": "复审日期",
+			"search_index": 1
 		},
 		{
 			"fieldname": "section_break_approval",

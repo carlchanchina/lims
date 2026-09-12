@@ -96,8 +96,9 @@ def link_quotation(name, quotation):
 		frappe.throw(f"报价单 {quotation} 不存在")
 	if details.docstatus == 2:
 		frappe.throw(f"报价单 {quotation} 已作废,不能关联")
-	if request.customer and details.party_name != request.customer:
-		frappe.throw("报价单的客户与委托请求的客户不一致")
+	allowed_parties = {request.customer, request.get("invoice_customer")} - {None, ""}
+	if allowed_parties and details.party_name not in allowed_parties:
+		frappe.throw("报价单的开票主体既不是委托单位也不是发票抬头,不能关联")
 
 	request.quotation = quotation
 	if request.status == "草稿":
@@ -118,8 +119,9 @@ def link_sales_order(name, sales_order):
 		frappe.throw(f"销售订单 {sales_order} 不存在")
 	if details.docstatus == 2:
 		frappe.throw(f"销售订单 {sales_order} 已作废,不能关联")
-	if request.customer and details.customer != request.customer:
-		frappe.throw("销售订单的客户与委托请求的客户不一致")
+	allowed_parties = {request.customer, request.get("invoice_customer")} - {None, ""}
+	if allowed_parties and details.customer not in allowed_parties:
+		frappe.throw("销售订单的开票主体既不是委托单位也不是发票抬头,不能关联")
 
 	request.sales_order = sales_order
 	request.save(ignore_permissions=True)

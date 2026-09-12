@@ -40,7 +40,6 @@ HEADER_FIELDS = (
 	"test_request",
 	"sample",
 	"report_date",
-	"status",
 	"tested_by",
 	"reviewed_by",
 	"approved_by",
@@ -48,6 +47,7 @@ HEADER_FIELDS = (
 	"conclusion",
 	"remarks",
 )
+# 说明:status 由工作流驱动,不给前端直接改,避免绕过三级签发。
 
 
 def _as_dict(value):
@@ -92,7 +92,15 @@ def save_report(data=None):
 			doc.set(field, data[field])
 
 	if doc.test_request:
-		doc.customer = frappe.db.get_value("Test Request", doc.test_request, "customer")
+		# 报告抬头:委托请求上填了「报告抬头」就用它,否则用委托单位。
+		parties = frappe.db.get_value(
+			"Test Request",
+			doc.test_request,
+			["report_customer", "customer"],
+			as_dict=True,
+		)
+		if parties:
+			doc.customer = parties.report_customer or parties.customer
 
 	if "items" in data:
 		doc.set("items", [])
@@ -109,6 +117,9 @@ def save_report(data=None):
 @frappe.whitelist()
 def delete_report(name):
 	require_roles(ALL_STAFF_ROLES)
+	docstatus = frappe.db.get_value("Test Report", name, "docstatus")
+	if docstatus:
+		frappe.throw("已签发或已作废的报告不能删除,请走作废流程")
 	frappe.delete_doc("Test Report", name)
 	return {"name": name}
 

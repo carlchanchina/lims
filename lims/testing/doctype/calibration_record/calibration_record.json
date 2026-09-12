@@ -27,7 +27,8 @@
 			"in_standard_filter": 1,
 			"label": "设备(Asset)",
 			"options": "Asset",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"default": "Today",
@@ -35,7 +36,8 @@
 			"fieldtype": "Date",
 			"in_list_view": 1,
 			"label": "校准日期",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"description": "留空时按 Asset 上的「校准周期(天)」推算",

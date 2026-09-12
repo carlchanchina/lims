@@ -42,7 +42,8 @@
 			"in_standard_filter": 1,
 			"label": "检测项目",
 			"options": "Item",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "column_break_scope",
@@ -55,7 +56,8 @@
 			"in_list_view": 1,
 			"in_standard_filter": 1,
 			"label": "客户",
-			"options": "Customer"
+			"options": "Customer",
+			"search_index": 1
 		},
 		{
 			"description": "留空表示通用协议价,与客户二选一",
@@ -64,7 +66,8 @@
 			"in_list_view": 1,
 			"in_standard_filter": 1,
 			"label": "行业",
-			"options": "Industry"
+			"options": "Industry",
+			"search_index": 1
 		},
 		{
 			"fieldname": "section_break_price",

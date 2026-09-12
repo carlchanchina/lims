@@ -62,7 +62,8 @@
 			"fieldtype": "Select",
 			"label": "标准状态",
 			"options": "现行\n废止\n被替代",
-			"reqd": 1
+			"reqd": 1,
+			"search_index": 1
 		},
 		{
 			"fieldname": "remarks",
