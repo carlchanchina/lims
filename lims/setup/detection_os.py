@@ -11,6 +11,10 @@ Workspace / Workspace Sidebar / Number Card / Dashboard Chart 都由
 `frappe/model/sync.py` 从 app 模块目录里的 JSON 文件同步,不在这里创建。
 """
 
+import glob
+import json
+import os
+
 import frappe
 
 HOME_WORKSPACE = "首页"
@@ -31,6 +35,13 @@ LEGACY_SIDEBARS = ("Testing",)
 
 APP_NAME = "lims"
 
+# app 级 Desk 结构:文件放在 `<app>/<folder>/<name>.json`,migrate 时由
+# frappe/model/sync.py 导入,再由 remove_orphan_entities() 删掉没有对应文件的。
+# 但那个孤儿判定会把名字 lower() 之后再拼路径(frappe/model/sync.py::
+# check_if_record_exists),「AI中心」因此被拼成 `ai中心.json`,找不到文件就误删,
+# Workspace 与同名 Sidebar 不成对,点进去左侧导航是空的。这里按 app 文件补回来。
+APP_LEVEL_DESK_DOCTYPES = (("Workspace Sidebar", "workspace_sidebar"),)
+
 
 def setup_detection_os():
 	remove_legacy_workspaces()
@@ -40,6 +51,7 @@ def setup_detection_os():
 	fix_app_desktop_icon()
 	set_default_app()
 	set_default_workspaces()
+	restore_app_level_docs()
 
 
 def remove_legacy_workspaces():
@@ -65,6 +77,32 @@ def remove_orphan_desktop_icons():
 	for icon in frappe.get_all("Desktop Icon", fields=["name", "app"], limit_page_length=0):
 		if icon.app and icon.app not in installed:
 			frappe.delete_doc("Desktop Icon", icon.name, force=True, ignore_missing=True)
+
+
+def restore_app_level_docs():
+	"""补回被 Frappe 孤儿清理误删的 app 级 Desk 结构(只补缺,不覆盖)。
+
+	判定见 frappe/model/sync.py::check_if_record_exists:它把名字 lower() 之后
+	拼成 `<app>/<doctype>/<name>.json`,所以名字里带大写字母的中心(「AI中心」)
+	每次 migrate 都会被当成孤儿删掉一次。删掉后 Workspace 找不到同名 Sidebar,
+	左侧导航就是空的 —— 正好是 AGENTS.md 里要求的「必须成对」。
+	"""
+	from frappe.modules.import_file import import_file_by_path
+
+	app_path = frappe.get_app_path(APP_NAME)
+	for doctype, folder in APP_LEVEL_DESK_DOCTYPES:
+		for path in sorted(glob.glob(os.path.join(app_path, folder, "*.json"))):
+			name = read_doc_name(path)
+			if not name or frappe.db.exists(doctype, name):
+				continue
+			print(f"Restoring {doctype} {name}")
+			import_file_by_path(path, force=True)
+
+
+def read_doc_name(path):
+	"""从 app 里的 JSON 文件读出 docname(migrate 补录时用)。"""
+	with open(path, encoding="utf-8") as handle:
+		return (json.load(handle) or {}).get("name")
 
 
 def fix_app_desktop_icon():
