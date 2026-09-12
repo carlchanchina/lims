@@ -28,6 +28,13 @@ add_to_apps_screen = [
 # under lims/testing/<doctype>/<name>/<name>.json.
 importable_doctypes = ["Number Card", "Dashboard Chart"]
 
+# 客户门户(erpnext-nuxt):客户联系人登录后,只能看自己公司的单据。
+has_website_permission = {
+	"Test Request": "lims.api.portal.website_permission_for_customer_doc",
+	"Test Report": "lims.api.portal.website_permission_for_customer_doc",
+	"Quotation": "lims.api.portal.website_permission_for_customer_doc",
+}
+
 # Includes in <head>
 # ------------------
 

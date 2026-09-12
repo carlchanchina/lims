@@ -18,6 +18,9 @@ DETECTION_OS_ROLES = (
 	"AI管理员",
 )
 
+# 客户门户(erpnext-nuxt)集成账号用;不是 Desk 角色。
+PORTAL_ROLE = "客户门户"
+
 # 旧版本的角色:保留记录但停用,避免历史 DocPerm / 用户角色引用直接断链。
 LEGACY_ROLES = ("Testing Manager", "Testing User")
 
@@ -61,6 +64,8 @@ HELPDESK_ROLE_MAP = {
 	"销售": "Agent",
 	"销售经理": "Agent Manager",
 	"总经理": "Agent Manager",
+	# 客户门户的集成账号要能"代客户建单",Helpdesk 只允许 Agent 这么做。
+	PORTAL_ROLE: "Agent",
 }
 
 
@@ -223,6 +228,12 @@ def create_roles():
 				{"doctype": "Role", "role_name": role, "desk_access": 1}
 			).insert(ignore_permissions=True)
 
+	# 客户门户集成账号:不是 Desk 角色
+	if not frappe.db.exists("Role", PORTAL_ROLE):
+		frappe.get_doc(
+			{"doctype": "Role", "role_name": PORTAL_ROLE, "desk_access": 0}
+		).insert(ignore_permissions=True)
+
 	for role in LEGACY_ROLES:
 		# 停用旧角色,已分配的用户由 lims.setup.detection_os 迁移到新角色。
 		if frappe.db.exists("Role", role) and not frappe.db.get_value("Role", role, "disabled"):
@@ -231,8 +242,7 @@ def create_roles():
 
 def sync_custom_fields():
 	"""LIMS 需要写回 ERPNext 的试验属性。"""
-	create_custom_fields(
-		{
+	custom_fields = {
 			# 客户是 ERPNext 的事实源,这里补中国企业常用的工商/开票/分类信息。
 			"Customer": [
 				{
@@ -354,6 +364,17 @@ def sync_custom_fields():
 					"fieldtype": "Link",
 					"options": "Test Request",
 					"insert_after": "transaction_date",
+					"read_only": 1,
+					"no_copy": 1,
+				},
+				{
+					"description": "客户在门户上确认报价后回写",
+					"fieldname": "lims_customer_ack",
+					"label": "客户确认",
+					"fieldtype": "Select",
+					"options": "待确认\n已接受\n已拒绝",
+					"default": "待确认",
+					"insert_after": "lims_test_request",
 					"read_only": 1,
 					"no_copy": 1,
 				},
@@ -483,9 +504,22 @@ def sync_custom_fields():
 					"insert_after": "frequency_range",
 				},
 			],
-		},
-		ignore_validate=True,
-	)
+	}
+
+	# Helpdesk 的工单要能回链到委托单(装了 Helpdesk 才有 HD Ticket)。
+	if frappe.db.exists("DocType", "HD Ticket"):
+		custom_fields["HD Ticket"] = [
+			{
+				"fieldname": "lims_test_request",
+				"label": "LIMS 委托请求",
+				"fieldtype": "Link",
+				"options": "Test Request",
+				"insert_after": "subject",
+				"no_copy": 1,
+			},
+		]
+
+	create_custom_fields(custom_fields, ignore_validate=True)
 	remove_legacy_quotation_item_field()
 
 

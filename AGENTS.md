@@ -224,6 +224,18 @@ Helpdesk 有自己的角色体系(它的 DocType 只认这些):`客服`/`销售`
 安装时自动补齐,老站点调 `lims.api.master.seed_starter_masters`;只补缺不覆盖。
 批量导入客户/联系人/设备用 `lims/data/import_templates/*.csv`。
 
+**客户门户(erpnext-nuxt)**:客户端门户是独立项目 `~/claude/erpnext-nuxt/nuxt-app`,
+通过 `lims/api/portal.py` 取数(契约与门户的 `shared/types/portal.ts` 一致)。
+
+- 身份两种:门户集成账号(角色 `客户门户` + Helpdesk `Agent`,必须显式传 `customer`);
+  客户联系人登录(Website User + Contact 关联客户,自动定位自己公司)。
+- 任何接口都先 `resolve_customer()` 再做单据归属校验,禁止跨客户读取;
+  hooks 里的 `has_website_permission` 覆盖 Test Request / Test Report / Quotation,
+  客户联系人用 Frappe 原生接口/打印视图也只能看到自己公司的单据。
+- 工单走 Helpdesk:`HD Customer` 由 ERPNext Customer 映射而来(带 HD Customer Member 联系人),
+  `HD Ticket.lims_test_request` 定制字段回链委托单;非 Agent 用户不能代客户建单,所以集成账号要给 `Agent`。
+- 对接步骤、门户 `.env`、状态映射、路由改造清单见 `docs/portal-api.md`。
+
 ---
 
 ## 6. 部署与性能
