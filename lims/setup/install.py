@@ -45,6 +45,22 @@ ERPNext_READ_GRANTS = {
 	# 客服中心用 Helpdesk 的 HD Ticket 体系(权限走 Agent / Agent Manager 角色),
 	# 这里只保留售后单据的只读权限。
 	"Warranty Claim": ("总经理", "销售", "客服"),
+	# 财务中心(ERPNext 财务模块,只读)。总经理在这个中心只看不改。
+	"Account": ("总经理",),
+	"Journal Entry": ("总经理",),
+	"GL Entry": ("总经理",),
+	"Sales Invoice": ("总经理",),
+	"Purchase Invoice": ("总经理",),
+	"Supplier": ("总经理",),
+	"Payment Entry": ("总经理",),
+	"Bank Account": ("总经理",),
+	"Bank Transaction": ("总经理",),
+	"Bank Reconciliation Tool": ("总经理",),
+	"Cost Center": ("总经理",),
+	"Period Closing Voucher": ("总经理",),
+	"Payment Terms Template": ("总经理",),
+	"Tax Category": ("总经理",),
+	"Accounts Settings": ("总经理",),
 }
 
 # 中国客户分类:挂在 All Customer Groups 下的叶子分组(ERPNext 原生客户分组树)。
@@ -68,6 +84,13 @@ HELPDESK_ROLE_MAP = {
 	PORTAL_ROLE: "Agent",
 }
 
+# ERPNext 财务模块的角色体系:财务报表(Balance Sheet / P&L / 总账 ...)只授权给
+# Accounts User / Accounts Manager / Auditor。总经理在财务中心只读,所以映射到
+# 只读的 Auditor,而不是有写权限的 Accounts User。
+ACCOUNTING_ROLE_MAP = {
+	"总经理": "Auditor",
+}
+
 
 def after_install():
 	"""Runs once after the app is installed on a site."""
@@ -82,6 +105,7 @@ def run_schema_cleanup():
 	ensure_customer_groups()
 	ensure_china_territories()
 	ensure_helpdesk_roles()
+	ensure_accounting_roles()
 	grant_erpnext_read_permissions()
 	remove_legacy_quotation_link_field()
 
@@ -98,14 +122,29 @@ def ensure_helpdesk_roles():
 	"""
 	if "helpdesk" not in frappe.get_installed_apps():
 		return
+	_ensure_mapped_roles(HELPDESK_ROLE_MAP)
 
+
+def ensure_accounting_roles():
+	"""装了 ERPNext 财务模块时,把总经理映射成只读的 Auditor。
+
+	ERPNext 的财务报表只授权给 Accounts User / Accounts Manager / Auditor,
+	不映射的话财务中心里「财务报表」那一组卡片会被静默隐藏。
+	"""
+	if "erpnext" not in frappe.get_installed_apps():
+		return
+	_ensure_mapped_roles(ACCOUNTING_ROLE_MAP)
+
+
+def _ensure_mapped_roles(role_map):
+	"""给持有源角色的用户补上目标角色(目标角色不存在时跳过)。"""
 	role_users = {}
 	for row in frappe.get_all(
 		"Has Role", filters={"parenttype": "User"}, fields=["parent", "role"], limit_page_length=0
 	):
 		role_users.setdefault(row.role, set()).add(row.parent)
 
-	for source_role, target_role in HELPDESK_ROLE_MAP.items():
+	for source_role, target_role in role_map.items():
 		if not frappe.db.exists("Role", target_role):
 			continue
 		target_users = role_users.get(target_role, set())

@@ -1,0 +1,354 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>财务概览</b></span>\", \"col\": 12}}, {\"id\": \"nc0002\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"本月开票\", \"col\": 3}}, {\"id\": \"nc0003\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"应收未收\", \"col\": 3}}, {\"id\": \"nc0004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"应付未付\", \"col\": 3}}, {\"id\": \"nc0005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"本月回款\", \"col\": 3}}, {\"id\": \"sp0006\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0007\", \"type\": \"card\", \"data\": {\"card_name\": \"凭证与总账\", \"col\": 4}}, {\"id\": \"cd0008\", \"type\": \"card\", \"data\": {\"card_name\": \"应收\", \"col\": 4}}, {\"id\": \"cd0009\", \"type\": \"card\", \"data\": {\"card_name\": \"应付\", \"col\": 4}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"资金与银行\", \"col\": 4}}, {\"id\": \"cd0011\", \"type\": \"card\", \"data\": {\"card_name\": \"财务报表\", \"col\": 4}}, {\"id\": \"cd0012\", \"type\": \"card\", \"data\": {\"card_name\": \"财务设置\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "accounting",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "财务中心",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "凭证与总账",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "会计科目",
+			"link_count": 0,
+			"link_to": "Account",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "日记账分录",
+			"link_count": 0,
+			"link_to": "Journal Entry",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "总账分录",
+			"link_count": 0,
+			"link_to": "GL Entry",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "期间结算凭证",
+			"link_count": 0,
+			"link_to": "Period Closing Voucher",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "应收",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "销售发票",
+			"link_count": 0,
+			"link_to": "Sales Invoice",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "收款单",
+			"link_count": 0,
+			"link_to": "Payment Entry",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "客户",
+			"link_count": 0,
+			"link_to": "Customer",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "应付",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "采购发票",
+			"link_count": 0,
+			"link_to": "Purchase Invoice",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "付款单",
+			"link_count": 0,
+			"link_to": "Payment Entry",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "供应商",
+			"link_count": 0,
+			"link_to": "Supplier",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "资金与银行",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "银行账户",
+			"link_count": 0,
+			"link_to": "Bank Account",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "银行交易",
+			"link_count": 0,
+			"link_to": "Bank Transaction",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "银行对账工具",
+			"link_count": 0,
+			"link_to": "Bank Reconciliation Tool",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "财务报表",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 1,
+			"label": "资产负债表",
+			"link_count": 0,
+			"link_to": "Balance Sheet",
+			"link_type": "Report",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 1,
+			"label": "利润表",
+			"link_count": 0,
+			"link_to": "Profit and Loss Statement",
+			"link_type": "Report",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 1,
+			"label": "试算平衡表",
+			"link_count": 0,
+			"link_to": "Trial Balance",
+			"link_type": "Report",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 1,
+			"label": "总账",
+			"link_count": 0,
+			"link_to": "General Ledger",
+			"link_type": "Report",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 1,
+			"label": "现金流量表",
+			"link_count": 0,
+			"link_to": "Cash Flow",
+			"link_type": "Report",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 1,
+			"label": "应付账款汇总",
+			"link_count": 0,
+			"link_to": "Accounts Payable Summary",
+			"link_type": "Report",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "财务设置",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "财务设置",
+			"link_count": 0,
+			"link_to": "Accounts Settings",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "成本中心",
+			"link_count": 0,
+			"link_to": "Cost Center",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "税种",
+			"link_count": 0,
+			"link_to": "Tax Category",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "付款条件模板",
+			"link_count": 0,
+			"link_to": "Payment Terms Template",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 21:04:07.468043",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "财务中心",
+	"number_cards": [
+		{
+			"label": "本月开票",
+			"number_card_name": "本月开票"
+		},
+		{
+			"label": "应收未收",
+			"number_card_name": "应收未收"
+		},
+		{
+			"label": "应付未付",
+			"number_card_name": "应付未付"
+		},
+		{
+			"label": "本月回款",
+			"number_card_name": "本月回款"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		}
+	],
+	"sequence_id": 8.0,
+	"shortcuts": [],
+	"title": "财务中心",
+	"type": "Workspace"
+}

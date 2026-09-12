@@ -2,10 +2,10 @@
 
 以 **Test Request(检测请求)** 为核心的 ERPNext 自定义 Frappe App,面向
 **GJB 150 / GB/T 2423** 环境试验场景。用户登录 Desk 后看到的是
-「旭博检测中心OS」的 9 个业务中心,而不是 ERPNext/LIMS 这些技术组件:
+「旭博检测中心OS」的 10 个业务中心,而不是 ERPNext/LIMS 这些技术组件:
 
 ```text
-首页 / 客户中心 / 销售中心 / 检测中心 / 实验室 / 质量中心 / 客服中心 / AI中心 / 系统管理
+首页 / 客户中心 / 销售中心 / 检测中心 / 实验室 / 质量中心 / 客服中心 / 财务中心 / AI中心 / 系统管理
 ```
 
 主流程:
@@ -227,19 +227,23 @@ Customer/Company/币种/Selling Price List 等标准配置。
 客服中心用 **Helpdesk** 的 `HD Ticket` 体系,而 Helpdesk 只认它自己的角色,
 所以 migrate 时会把我们的角色映射过去:`客服`/`销售` → `Agent`,`销售经理`/`总经理` → `Agent Manager`。
 
+财务中心用 **ERPNext 财务模块**(会计科目 / 日记账 / 销售发票 / 采购发票 / 收付款单 / 银行对账 /
+财务报表),只对 `总经理` 可见且只读;ERPNext 的财务报表只授权给 Accounts 角色,
+所以 migrate 时把 `总经理` 映射成只读的 `Auditor`。
+
 ### 运行依赖
 
 | 组件 | 用途 | 是否必须 |
 | --- | --- | --- |
 | frappe 16 + erpnext 16 | 事实源(客户/物料/单据/资产/项目) | 必须 |
-| lims(本 app) | 9 个中心的 Desk 结构与检测业务 | 必须 |
+| lims(本 app) | 10 个中心的 Desk 结构与检测业务 | 必须 |
 | helpdesk + telephony | 客服中心工单(HD Ticket)、知识库 | 可选(不装则客服中心没有工单体系) |
 
 没有装 CRM app 也不需要:销售中心用的是 ERPNext 自带的 `Lead`/`Opportunity`/`Contract`。
 
 ### Desk 结构(文件即事实源)
 
-9 个中心的 Workspace、Workspace Sidebar、Number Card、Dashboard Chart 都以 JSON
+10 个中心的 Workspace、Workspace Sidebar、Number Card、Dashboard Chart 都以 JSON
 文件形式放在 app 模块目录里,`bench migrate` 时会重新导入(界面上的手工改动会被覆盖):
 
 ```text
@@ -252,7 +256,7 @@ lims/testing/dashboard_chart/销售漏斗/销售漏斗.json
 两点维护约定(都是 Frappe 的同步机制决定的):
 
 - Workspace 的名字必须和它对应的 Workspace Sidebar 同名(Frappe 用工作区名去取侧边栏),
-  所以 9 个中心各有 1 个同名侧边栏文件;
+  所以 10 个中心各有 1 个同名侧边栏文件;
 - 手工改这些 JSON 时要把 `modified` 改成比数据库里更新的时间戳,否则 `bench migrate`
   会认为文件没有变化而跳过导入(`frappe/modules/import_file.py` 的时间戳/哈希判断);
 - Number Card / Dashboard Chart 的 `dynamic_filters_json` 是在**浏览器里 eval** 的,
@@ -275,8 +279,8 @@ lims/                              Frappe app(仓库根)
 │   ├── api/                       旧 Vue 前端用的接口(当前 Desk 用不到,保留待移动端复用)
 │   ├── testing/                   Testing 模块目录
 │   │   ├── doctype/               业务 DocType(见下)
-│   │   ├── workspace/<中心>/       9 个中心的 Desk 工作区定义
-│   │   ├── number_card/<指标卡>/   19 张指标卡
+│   │   ├── workspace/<中心>/       10 个中心的 Desk 工作区定义
+│   │   ├── number_card/<指标卡>/   23 张指标卡
 │   │   └── dashboard_chart/        销售漏斗等图表
 │   ├── workspace_sidebar/<中心>.json 每个中心对应的左侧导航
 │   └── public/images/lims.svg     app logo
@@ -384,7 +388,7 @@ ERPNext 另有一个原生 `Customer.industry`(指向 `Industry Type`,用于销�
 `报告抬头`只决定报告抬头(Test Report 的「报告抬头」字段按它带出)。
 
 前端说明:早期版本的 Vue 单页应用(`desk/` + `/lims` 路由 + `lims/public/lims` 构建产物)
-已删除,现在业务界面完全由 Frappe Desk 的 9 个 Workspace 承载;
+已删除,现在业务界面完全由 Frappe Desk 的 10 个 Workspace 承载;
 `lims/api/` 下的接口是那套 Vue 前端留下的,目前没有入口调用,保留是为了将来
 移动端/小程序复用同一批接口。
 

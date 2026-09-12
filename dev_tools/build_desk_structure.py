@@ -1,4 +1,4 @@
-"""生成旭博检测中心OS 的 Desk 结构(9 个中心 / 侧边栏 / 指标卡 / 图表)。
+"""生成旭博检测中心OS 的 Desk 结构(10 个中心 / 侧边栏 / 指标卡 / 图表)。
 
 用法:python dev_tools/build_desk_structure.py
 
@@ -65,7 +65,7 @@ def chart_block(name, i):
 
 
 # --------------------------------------------------------------------------------------
-# 9 个业务中心
+# 10 个业务中心
 # --------------------------------------------------------------------------------------
 
 ALL_STAFF = []  # 不设 roles = 所有登录用户可见
@@ -77,6 +77,7 @@ ROLE_GROUPS = {
 	"实验室": ["总经理", "检测工程师", "实验员", "技术负责人"],
 	"质量中心": ["总经理", "实验员", "技术负责人", "质量负责人"],
 	"客服中心": ["总经理", "销售", "客服"],
+	"财务中心": ["总经理"],
 	"系统管理": ["System Manager"],
 }
 
@@ -95,6 +96,21 @@ def link_entry(label, doctype, dependencies=""):
 	}
 
 
+def report_entry(label, report_name):
+	"""财务报表链接(link_type=Report,ERPNext 的 Query Report)。"""
+	return {
+		"dependencies": "",
+		"hidden": 0,
+		"is_query_report": 1,
+		"label": label,
+		"link_count": 0,
+		"link_to": report_name,
+		"link_type": "Report",
+		"onboard": 0,
+		"type": "Link",
+	}
+
+
 def card_break(label):
 	return {
 		"hidden": 0,
@@ -107,7 +123,8 @@ def card_break(label):
 
 
 def link_card(label, *links):
-	return [card_break(label), *[link_entry(link_label, dt) for link_label, dt in links]]
+	entries = [link if isinstance(link, dict) else link_entry(*link) for link in links]
+	return [card_break(label), *entries]
 
 
 def new_shortcut(label, doctype, icon="add"):
@@ -141,8 +158,9 @@ CENTERS = [
 	{"name": "实验室", "icon": "assets", "sequence": 5.0},
 	{"name": "质量中心", "icon": "review", "sequence": 6.0},
 	{"name": "客服中心", "icon": "support", "sequence": 7.0},
-	{"name": "AI中心", "icon": "integration", "sequence": 8.0},
-	{"name": "系统管理", "icon": "setting", "sequence": 9.0},
+	{"name": "财务中心", "icon": "accounting", "sequence": 8.0},
+	{"name": "AI中心", "icon": "integration", "sequence": 9.0},
+	{"name": "系统管理", "icon": "setting", "sequence": 10.0},
 ]
 
 HOME_CARDS = ["待报价委托", "检测中委托", "待出报告", "本月销售", "进行中项目", "本月报告"]
@@ -361,6 +379,66 @@ WORKSPACES = {
 			card_block("客服团队与 SLA", 4, 8),
 			card_block("知识库", 4, 9),
 			card_block("售后与客户", 4, 10),
+		],
+	},
+	"财务中心": {
+		"links": [
+			*link_card(
+				"凭证与总账",
+				("会计科目", "Account"),
+				("日记账分录", "Journal Entry"),
+				("总账分录", "GL Entry"),
+				("期间结算凭证", "Period Closing Voucher"),
+			),
+			*link_card(
+				"应收",
+				("销售发票", "Sales Invoice"),
+				("收款单", "Payment Entry"),
+				("客户", "Customer"),
+			),
+			*link_card(
+				"应付",
+				("采购发票", "Purchase Invoice"),
+				("付款单", "Payment Entry"),
+				("供应商", "Supplier"),
+			),
+			*link_card(
+				"资金与银行",
+				("银行账户", "Bank Account"),
+				("银行交易", "Bank Transaction"),
+				("银行对账工具", "Bank Reconciliation Tool"),
+			),
+			*link_card(
+				"财务报表",
+				report_entry("资产负债表", "Balance Sheet"),
+				report_entry("利润表", "Profit and Loss Statement"),
+				report_entry("试算平衡表", "Trial Balance"),
+				report_entry("总账", "General Ledger"),
+				report_entry("现金流量表", "Cash Flow"),
+				report_entry("应付账款汇总", "Accounts Payable Summary"),
+			),
+			*link_card(
+				"财务设置",
+				("财务设置", "Accounts Settings"),
+				("成本中心", "Cost Center"),
+				("税种", "Tax Category"),
+				("付款条件模板", "Payment Terms Template"),
+			),
+		],
+		"number_cards": ["本月开票", "应收未收", "应付未付", "本月回款"],
+		"content": [
+			header("财务概览", 1),
+			number_card_block("本月开票", 3, 2),
+			number_card_block("应收未收", 3, 3),
+			number_card_block("应付未付", 3, 4),
+			number_card_block("本月回款", 3, 5),
+			spacer(6),
+			card_block("凭证与总账", 4, 7),
+			card_block("应收", 4, 8),
+			card_block("应付", 4, 9),
+			card_block("资金与银行", 4, 10),
+			card_block("财务报表", 4, 11),
+			card_block("财务设置", 4, 12),
 		],
 	},
 	"AI中心": {
@@ -612,6 +690,45 @@ NUMBER_CARDS = {
 		"document_type": "HD Ticket",
 		"function": "Count",
 		"filters_json": filters(["HD Ticket", "agreement_status", "=", "Failed"]),
+	},
+	"本月开票": {
+		"document_type": "Sales Invoice",
+		"function": "Sum",
+		"aggregate_function_based_on": "grand_total",
+		"filters_json": filters(
+			["Sales Invoice", "docstatus", "=", 1],
+			["Sales Invoice", "posting_date", "Timespan", "this month"],
+		),
+		"show_percentage_stats": 1,
+	},
+	"应收未收": {
+		"document_type": "Sales Invoice",
+		"function": "Sum",
+		"aggregate_function_based_on": "outstanding_amount",
+		"filters_json": filters(
+			["Sales Invoice", "docstatus", "=", 1],
+			["Sales Invoice", "outstanding_amount", ">", 0],
+		),
+	},
+	"应付未付": {
+		"document_type": "Purchase Invoice",
+		"function": "Sum",
+		"aggregate_function_based_on": "outstanding_amount",
+		"filters_json": filters(
+			["Purchase Invoice", "docstatus", "=", 1],
+			["Purchase Invoice", "outstanding_amount", ">", 0],
+		),
+	},
+	"本月回款": {
+		"document_type": "Payment Entry",
+		"function": "Sum",
+		"aggregate_function_based_on": "paid_amount",
+		"filters_json": filters(
+			["Payment Entry", "docstatus", "=", 1],
+			["Payment Entry", "payment_type", "=", "Receive"],
+			["Payment Entry", "posting_date", "Timespan", "this month"],
+		),
+		"show_percentage_stats": 1,
 	},
 }
 

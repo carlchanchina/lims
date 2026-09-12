@@ -3,7 +3,7 @@
 	"creation": "2026-09-12 00:00:00.000000",
 	"docstatus": 0,
 	"doctype": "Workspace Sidebar",
-	"header_icon": "review",
+	"header_icon": "accounting",
 	"idx": 0,
 	"items": [
 		{
@@ -131,8 +131,8 @@
 	"modified_by": "Administrator",
 	"module": "Testing",
 	"module_onboarding": null,
-	"name": "质量中心",
+	"name": "财务中心",
 	"owner": "Administrator",
 	"standard": 1,
-	"title": "质量中心"
+	"title": "财务中心"
 }

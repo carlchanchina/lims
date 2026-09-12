@@ -25,7 +25,7 @@ LEGACY_ROLE_MAPPING = {
 	"Testing User": ("检测工程师",),
 }
 
-# 旧版本的单一 Workspace(带 /lims 入口),已被 9 个中心取代。
+# 旧版本的单一 Workspace(带 /lims 入口),已被 10 个中心取代。
 LEGACY_WORKSPACES = ("Testing",)
 
 # 旧版本存在库里、但 app 里已经没有对应文件的 Workspace Sidebar。

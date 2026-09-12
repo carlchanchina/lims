@@ -8,7 +8,7 @@
 ## 0. 一句话定位
 
 以 **ERPNext 为唯一事实源**的检测中心 SaaS:用户在 Frappe **Desk** 里看到的是
-「旭博检测中心OS」的 9 个业务中心(首页/客户/销售/检测/实验室/质量/客服/AI/系统管理),
+「旭博检测中心OS」的 10 个业务中心(首页/客户/销售/检测/实验室/质量/客服/财务/AI/系统管理),
 而不是 ERPNext、LIMS、Helpdesk 这些技术组件。
 
 app 名 `lims`,模块 `Testing`,包目录 `lims/`,Desk 入口 `/desk/首页`。
@@ -56,7 +56,7 @@ rsync -a --exclude='.git' --exclude='node_modules' <repo>/ \
 不要往 dev 站点留测试数据。每次改动至少跑:
 ① migrate 两次(幂等)② 端到端冒烟 ③ 角色可见性 ④ 工作区块解析(`unresolved=[]`)。
 
-批量维护 9 个中心的结构用 `dev_tools/build_desk_structure.py`
+批量维护 10 个中心的结构用 `dev_tools/build_desk_structure.py`
 (会重写那些 JSON 并自动盖新的 `modified` 时间戳)。
 
 ---
@@ -67,7 +67,7 @@ rsync -a --exclude='.git' --exclude='node_modules' <repo>/ \
 
 | 角色 | 可见中心 | 关键写权限 |
 | --- | --- | --- |
-| 总经理 | 全部(业务单据只读) | 无(全只读) |
+| 总经理 | 全部(含财务中心,业务单据只读) | 无(全只读) |
 | 销售经理 | 客户中心、销售中心 | Test Agreement Price、Industry(全权) |
 | 销售 | 客户中心、销售中心 | 无(只读) |
 | 项目经理 | 客户中心、检测中心、实验室 | Test Request/Sample/Test Plan/Test Report/Nonconformance/Equipment Usage(全权) |
@@ -84,17 +84,21 @@ rsync -a --exclude='.git' --exclude='node_modules' <repo>/ \
 Helpdesk 有自己的角色体系(它的 DocType 只认这些):`客服`/`销售` → `Agent`,
 `销售经理`/`总经理` → `Agent Manager`,由 `ensure_helpdesk_roles()` 在 migrate 时补齐。
 
+ERPNext 财务模块同理:财务报表只授权给 `Accounts User`/`Accounts Manager`/`Auditor`,
+所以 `ensure_accounting_roles()` 把 `总经理` 映射成只读的 `Auditor`(见 `ACCOUNTING_ROLE_MAP`),
+否则财务中心的「财务报表」整组卡片会被静默隐藏。
+
 ---
 
-## 4. 九大中心的开发要求
+## 4. 十大中心的开发要求
 
 > 每个中心的入口/快捷按钮/指标卡定义在 `lims/testing/workspace/<中心>/<中心>.json`,
-> 左侧导航在 `lims/workspace_sidebar/<中心>.json`(9 个中心条目一致)。
+> 左侧导航在 `lims/workspace_sidebar/<中心>.json`(10 个中心条目一致)。
 
 ### 4.1 首页(home)
 
 - 定位:登录落地页,回答「今天有什么要干」。
-- 内容:9 个中心入口(URL 快捷方式)+ 6 张指标卡(待报价、检测中、待出报告、本月销售、进行中项目、本月报告)。
+- 内容:10 个中心入口(URL 快捷方式)+ 6 张指标卡(待报价、检测中、待出报告、本月销售、进行中项目、本月报告)。
 - 数据来源:Test Request / Test Report / Sales Order / Project。
 - 验收:卡片数字与下钻列表口径一致。
 - 待办:今日待办 / 超期预警卡片。
@@ -177,14 +181,29 @@ Helpdesk 有自己的角色体系(它的 DocType 只认这些):`客服`/`销售`
 - 验收:客服角色能建单/看单,Desk 与 Helpdesk 门户都能看到同一批工单。
 - 待办:客户门户(自助提单/查进度)、满意度调查。
 
-### 4.8 AI中心(ai,规划中)
+### 4.8 财务中心(finance)
+
+- 定位:ERPNext 财务模块的只读视图,给总经理看账,不在 LIMS 里做账务录入。
+- 数据来源:ERPNext 会计模块的 Account / Journal Entry / GL Entry / Sales Invoice /
+  Purchase Invoice / Payment Entry / Bank Account / Bank Transaction /
+  Bank Reconciliation Tool / Cost Center / Tax Category,以及 ERPNext 财务报表
+  (Balance Sheet / Profit and Loss Statement / Trial Balance / General Ledger /
+  Cash Flow / Accounts Payable Summary,`link_type = Report`)。
+- 入口:会计科目、日记账分录、总账分录、期间结算凭证、销售发票、采购发票、收款单/付款单、
+  银行账户/银行交易/银行对账工具、财务报表、财务设置;
+  指标卡:本月开票、应收未收、应付未付、本月回款。
+- 权限:Workspace `roles = ["总经理"]`;总经理对财务单据只有 read(见
+  `install.py::ERPNext_READ_GRANTS`),报表可见性靠 `ACCOUNTING_ROLE_MAP`(总经理 → Auditor)。
+- 验收:总经理能打开财务中心、看到 4 张指标卡与全部卡片;其它角色看不到这个中心。
+
+### 4.9 AI中心(ai,规划中)
 
 - 现状:占位工作区,只放说明,**不放会 404 的链接**。
 - 规划:报价助手、标准助手、报告助手、实验室助手、销售助手;知识源 = 质量中心的标准/方法/受控文件。
 - 落地要求(做的时候):新增「AI 会话 / 提示词 / 技能」类 DocType(module=Testing);
   LLM 调用与配额必须走服务端;权限先给 AI管理员;AI 产出必须能追溯到来源文档。
 
-### 4.9 系统管理(settings)
+### 4.10 系统管理(settings)
 
 - 只对 System Manager 可见:用户、角色、角色档案、系统设置、表单定制、自定义字段、工作流、邮件账户、错误日志。
 - 验收:非 System Manager 看不到这个中心。
@@ -264,7 +283,7 @@ Helpdesk 有自己的角色体系(它的 DocType 只认这些):`客服`/`销售`
 1. ~~打印模板:检测委托单、报价单、检测报告 PDF~~ ✅ 已完成(`lims/testing/print_format/`)
 2. ~~报告三级签发与作废留痕~~ ✅ 已完成(Workflow「检测报告签发」)
 3. ~~初始主数据:标准/方法/检测项目~~ ✅ 已完成;客户/联系人/设备用 CSV 模板导入
-4. 生产环境部署 + gzip,并隐藏非本 app 的工作区(只留 9 个中心)。← 剩下的 P0
+4. 生产环境部署 + gzip,并隐藏非本 app 的工作区(只留 10 个中心)。← 剩下的 P0
 
 **P1(从「能跑」到「好用」)**
 
