@@ -133,6 +133,15 @@
 			"write": 1
 		},
 		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "总经理",
+			"share": 1
+		},
+		{
 			"create": 1,
 			"delete": 1,
 			"email": 1,
@@ -140,7 +149,7 @@
 			"print": 1,
 			"read": 1,
 			"report": 1,
-			"role": "Testing Manager",
+			"role": "项目经理",
 			"share": 1,
 			"write": 1
 		},
@@ -151,7 +160,36 @@
 			"print": 1,
 			"read": 1,
 			"report": 1,
-			"role": "Testing User",
+			"role": "检测工程师",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "实验员",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "技术负责人",
+			"share": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "质量负责人",
 			"share": 1,
 			"write": 1
 		}

@@ -1,0 +1,185 @@
+{
+	"app": "lims",
+	"charts": [
+		{
+			"chart_name": "销售漏斗",
+			"label": "销售漏斗"
+		}
+	],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>商机与成交</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+商机\", \"col\": 3}}, {\"id\": \"sc0003\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+报价\", \"col\": 3}}, {\"id\": \"sc0004\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+合同\", \"col\": 3}}, {\"id\": \"sp0005\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc0006\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待跟进商机\", \"col\": 3}}, {\"id\": \"nc0007\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待处理报价\", \"col\": 3}}, {\"id\": \"ch0008\", \"type\": \"chart\", \"data\": {\"chart_name\": \"销售漏斗\", \"col\": 12}}, {\"id\": \"sp0009\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"商机\", \"col\": 4}}, {\"id\": \"cd0011\", \"type\": \"card\", \"data\": {\"card_name\": \"成交\", \"col\": 4}}, {\"id\": \"cd0012\", \"type\": \"card\", \"data\": {\"card_name\": \"交付\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "sell",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "销售中心",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "商机",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "线索",
+			"link_count": 0,
+			"link_to": "Lead",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "商机",
+			"link_count": 0,
+			"link_to": "Opportunity",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "潜在客户",
+			"link_count": 0,
+			"link_to": "Prospect",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "成交",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "报价单",
+			"link_count": 0,
+			"link_to": "Quotation",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "销售订单",
+			"link_count": 0,
+			"link_to": "Sales Order",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "合同",
+			"link_count": 0,
+			"link_to": "Contract",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "交付",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "项目",
+			"link_count": 0,
+			"link_to": "Project",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "销售中心",
+	"number_cards": [
+		{
+			"label": "待跟进商机",
+			"number_card_name": "待跟进商机"
+		},
+		{
+			"label": "待处理报价",
+			"number_card_name": "待处理报价"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		},
+		{
+			"role": "销售经理"
+		},
+		{
+			"role": "销售"
+		}
+	],
+	"sequence_id": 3.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+商机",
+			"link_to": "Opportunity",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+报价",
+			"link_to": "Quotation",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+合同",
+			"link_to": "Contract",
+			"type": "DocType",
+			"url": ""
+		}
+	],
+	"title": "销售中心",
+	"type": "Workspace"
+}

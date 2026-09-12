@@ -136,7 +136,9 @@ def create_sales_order(name):
 	if request.sales_order and frappe.db.exists("Sales Order", request.sales_order):
 		frappe.throw(f"该请求已关联销售订单 {request.sales_order}")
 
-	sales_order = erpnext_orders.sales_order_from_quotation(request.quotation)
+	sales_order = erpnext_orders.sales_order_from_quotation(
+		request.quotation, delivery_date=request.required_by
+	)
 	request.sales_order = sales_order
 	request.save(ignore_permissions=True)
 	return {"name": request.name, "sales_order": sales_order}

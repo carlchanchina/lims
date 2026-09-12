@@ -1,0 +1,165 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>标准与受控文件</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+标准\", \"col\": 3}}, {\"id\": \"sc0003\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+方法\", \"col\": 3}}, {\"id\": \"sc0004\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+受控文件\", \"col\": 3}}, {\"id\": \"sp0005\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc0006\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"标准总数\", \"col\": 3}}, {\"id\": \"nc0007\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"受控文件数\", \"col\": 3}}, {\"id\": \"nc0008\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待复审文件\", \"col\": 3}}, {\"id\": \"sp0009\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"标准与方法\", \"col\": 4}}, {\"id\": \"cd0011\", \"type\": \"card\", \"data\": {\"card_name\": \"受控文件\", \"col\": 4}}, {\"id\": \"cd0012\", \"type\": \"card\", \"data\": {\"card_name\": \"质量记录\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "review",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "质量中心",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "标准与方法",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "检测标准",
+			"link_count": 0,
+			"link_to": "Test Standard",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "检测方法",
+			"link_count": 0,
+			"link_to": "Test Method",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "受控文件",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "质量文件",
+			"link_count": 0,
+			"link_to": "Quality Document",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "质量记录",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "不合格/异常",
+			"link_count": 0,
+			"link_to": "Test Nonconformance",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "检测报告",
+			"link_count": 0,
+			"link_to": "Test Report",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "质量中心",
+	"number_cards": [
+		{
+			"label": "标准总数",
+			"number_card_name": "标准总数"
+		},
+		{
+			"label": "受控文件数",
+			"number_card_name": "受控文件数"
+		},
+		{
+			"label": "待复审文件",
+			"number_card_name": "待复审文件"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		},
+		{
+			"role": "实验员"
+		},
+		{
+			"role": "技术负责人"
+		},
+		{
+			"role": "质量负责人"
+		}
+	],
+	"sequence_id": 6.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+标准",
+			"link_to": "Test Standard",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+方法",
+			"link_to": "Test Method",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+受控文件",
+			"link_to": "Quality Document",
+			"type": "DocType",
+			"url": ""
+		}
+	],
+	"title": "质量中心",
+	"type": "Workspace"
+}

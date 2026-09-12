@@ -1,0 +1,121 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>今日概览</b></span>\", \"col\": 12}}, {\"id\": \"nc0010\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待报价委托\", \"col\": 3}}, {\"id\": \"nc0011\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"检测中委托\", \"col\": 3}}, {\"id\": \"nc0012\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待出报告\", \"col\": 3}}, {\"id\": \"nc0013\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"本月销售\", \"col\": 3}}, {\"id\": \"nc0014\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"进行中项目\", \"col\": 3}}, {\"id\": \"nc0015\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"本月报告\", \"col\": 3}}, {\"id\": \"sp0020\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hd0002\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>业务中心</b></span>\", \"col\": 12}}, {\"id\": \"sc0030\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客户中心\", \"col\": 3}}, {\"id\": \"sc0031\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"销售中心\", \"col\": 3}}, {\"id\": \"sc0032\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"检测中心\", \"col\": 3}}, {\"id\": \"sc0033\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"实验室\", \"col\": 3}}, {\"id\": \"sc0034\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"质量中心\", \"col\": 3}}, {\"id\": \"sc0035\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"客服中心\", \"col\": 3}}, {\"id\": \"sc0036\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"AI中心\", \"col\": 3}}, {\"id\": \"sc0037\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"系统管理\", \"col\": 3}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "home",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "首页",
+	"links": [],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "首页",
+	"number_cards": [
+		{
+			"label": "待报价委托",
+			"number_card_name": "待报价委托"
+		},
+		{
+			"label": "检测中委托",
+			"number_card_name": "检测中委托"
+		},
+		{
+			"label": "待出报告",
+			"number_card_name": "待出报告"
+		},
+		{
+			"label": "本月销售",
+			"number_card_name": "本月销售"
+		},
+		{
+			"label": "进行中项目",
+			"number_card_name": "进行中项目"
+		},
+		{
+			"label": "本月报告",
+			"number_card_name": "本月报告"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [],
+	"sequence_id": 1.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"icon": "customer",
+			"label": "客户中心",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/客户中心"
+		},
+		{
+			"color": "",
+			"icon": "sell",
+			"label": "销售中心",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/销售中心"
+		},
+		{
+			"color": "",
+			"icon": "quality",
+			"label": "检测中心",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/检测中心"
+		},
+		{
+			"color": "",
+			"icon": "assets",
+			"label": "实验室",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/实验室"
+		},
+		{
+			"color": "",
+			"icon": "review",
+			"label": "质量中心",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/质量中心"
+		},
+		{
+			"color": "",
+			"icon": "support",
+			"label": "客服中心",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/客服中心"
+		},
+		{
+			"color": "",
+			"icon": "integration",
+			"label": "AI中心",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/AI中心"
+		},
+		{
+			"color": "",
+			"icon": "setting",
+			"label": "系统管理",
+			"link_to": null,
+			"type": "URL",
+			"url": "/desk/系统管理"
+		}
+	],
+	"title": "首页",
+	"type": "Workspace"
+}

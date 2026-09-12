@@ -1,0 +1,151 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>系统管理</b></span>\", \"col\": 12}}, {\"id\": \"cd0002\", \"type\": \"card\", \"data\": {\"card_name\": \"用户与权限\", \"col\": 4}}, {\"id\": \"cd0003\", \"type\": \"card\", \"data\": {\"card_name\": \"系统设置\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "setting",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "系统管理",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "用户与权限",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "用户",
+			"link_count": 0,
+			"link_to": "User",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "角色",
+			"link_count": 0,
+			"link_to": "Role",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "角色档案",
+			"link_count": 0,
+			"link_to": "Role Profile",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "系统设置",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "系统设置",
+			"link_count": 0,
+			"link_to": "System Settings",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "表单定制",
+			"link_count": 0,
+			"link_to": "Customize Form",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "自定义字段",
+			"link_count": 0,
+			"link_to": "Custom Field",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "工作流",
+			"link_count": 0,
+			"link_to": "Workflow",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "邮件账户",
+			"link_count": 0,
+			"link_to": "Email Account",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "错误日志",
+			"link_count": 0,
+			"link_to": "Error Log",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "系统管理",
+	"number_cards": [],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "System Manager"
+		}
+	],
+	"sequence_id": 9.0,
+	"shortcuts": [],
+	"title": "系统管理",
+	"type": "Workspace"
+}

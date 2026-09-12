@@ -3,8 +3,19 @@
 
 import frappe
 
-MANAGER_ROLES = {"System Manager", "Testing Manager"}
-ALL_STAFF_ROLES = {"System Manager", "Testing Manager", "Testing User"}
+# 旭博检测中心OS 的角色体系(见 lims/setup/install.py)。
+# 主数据(标准/方法/协议价/行业)的管理者与 DocType 权限矩阵保持一致。
+MANAGER_ROLES = {
+	"System Manager",
+	"总经理",
+	"项目经理",
+	"销售经理",
+	"技术负责人",
+	"质量负责人",
+}
+SALES_ROLES = {"总经理", "销售经理", "销售"}
+LAB_ROLES = {"总经理", "项目经理", "检测工程师", "实验员", "技术负责人", "质量负责人"}
+ALL_STAFF_ROLES = MANAGER_ROLES | SALES_ROLES | LAB_ROLES | {"客服", "AI管理员"}
 
 
 def require_login():

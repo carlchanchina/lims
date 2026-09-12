@@ -1,7 +1,14 @@
-### Testing / 环境试验 LIMS MVP
+### 旭博检测中心OS(app: `lims`)
 
 以 **Test Request(检测请求)** 为核心的 ERPNext 自定义 Frappe App,面向
-**GJB 150 / GB/T 2423** 环境试验场景优先跑通主流程:
+**GJB 150 / GB/T 2423** 环境试验场景。用户登录 Desk 后看到的是
+「旭博检测中心OS」的 9 个业务中心,而不是 ERPNext/LIMS 这些技术组件:
+
+```text
+首页 / 客户中心 / 销售中心 / 检测中心 / 实验室 / 质量中心 / 客服中心 / AI中心 / 系统管理
+```
+
+主流程:
 
 ```text
 Test Request(可直接新建,也可从 ERPNext Sales Order 带出客户与明细)
@@ -9,7 +16,7 @@ Test Request(可直接新建,也可从 ERPNext Sales Order 带出客户与明细
   └─ Test Request Item(测试项:样品 + 检测项目 Item + Test Standard[可选])
           │ 生成报价
           ▼
-协议价(Test Catalog)按 item 取价:客户协议价 → 行业协议价 → 通用协议价
+协议价(Test Agreement Price)按 item 取价:客户协议价 → 行业协议价 → 通用协议价
           ▼
 ERPNext Quotation(草稿,含价格但不暴露设备)
           ▼ 提交报价单后转单(也可关联ERPNext里已有的报价单/订单)
@@ -21,7 +28,7 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 **分工原则**
 
 - ERPNext 负责 `Item`(检测项目,如“低温试验”)、Customer、Contact、Asset、Quotation、Sales Order 等主数据与商务单据;
-- LIMS 侧只额外维护 `Test Standard`、`Industry`(行业)、`Test Catalog`(协议价)。客户/联系人/设备/检测项目都支持“选 ERPNext 里已有的,或从 LIMS 新建并写回 ERPNext”;
+- LIMS 侧只额外维护 `Test Standard`、`Test Method`、`Industry`(行业)、`Test Agreement Price`(协议价)、`Quality Document`(受控文件)。客户/联系人/设备/检测项目都支持“选 ERPNext 里已有的,或从 LIMS 新建并写回 ERPNext”;
 - Test Request 内不保存 Rate/Amount,也不向客户展示设备;
 - Sales Order 保持 ERPNext 原样,不做任何字段/流程改动。
 
@@ -174,7 +181,7 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 
 `Test Request` 工具栏提供 **生成报价**:
 
-1. 服务端逐行按 `item` 取协议价:先找该客户的协议价,再找客户所属行业的协议价,最后找通用协议价;三条都没有就明确报错,不会生成半张报价单;
+1. 服务端逐行按 `item` 取协议价:先找该客户的协议价,再找客户所属行业的协议价(客户行业取自 ERPNext Customer 的 `lims_industry` 字段),最后找通用协议价;三条都没有时价格留 0,由业务在 ERPNext 里手工填;
 2. 匹配成功后把 Quotation 明细写为:
    - `item_code = Test Request Item.item`
    - `description = 协议价名称 + 标准(填了才带) + 样品`
@@ -189,25 +196,92 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 
 ```bash
 bench get-app https://github.com/<your-org>/lims --branch <branch>
-bench --site <your-site> install-app test
+bench --site <your-site> install-app lims
 bench --site <your-site> migrate
-bench --site <your-site> run-tests --app test
+bench --site <your-site> run-tests --app lims
 ```
 
-用户需要 `Testing Manager` / `Testing User` 角色;生成报价依赖 ERPNext 的
+用户在 Desk 里按角色看到不同的中心,角色见下表;生成报价依赖 ERPNext 的
 Customer/Company/币种/Selling Price List 等标准配置。
 
-### Vue 前端(/lims)
+### 角色与中心
 
-前端源码位于仓库根目录 `desk/`,详见 `desk/README.md`。
+| 角色 | 能看到 |
+| --- | --- |
+| 总经理 | 全部中心(业务单据只读) |
+| 销售经理、销售 | 客户中心、销售中心 |
+| 项目经理、检测工程师 | 客户中心、检测中心、实验室 |
+| 实验员 | 检测中心、实验室、质量中心(只读) |
+| 技术负责人 | 实验室、质量中心 |
+| 质量负责人 | 检测中心、质量中心 |
+| 客服 | 客户中心、客服中心 |
+| AI管理员 | AI中心 |
 
-```bash
-cd desk
-yarn install
-yarn build
+`首页` 与 `AI中心` 对所有登录用户可见;`系统管理` 只对 System Manager 可见。
+旧角色 `Testing Manager` / `Testing User` 会在 migrate 时停用,并自动把已分配的用户
+迁移到「总经理 + 项目经理」/「检测工程师」。
+
+### Desk 结构(文件即事实源)
+
+9 个中心的 Workspace、Workspace Sidebar、Number Card、Dashboard Chart 都以 JSON
+文件形式放在 app 模块目录里,`bench migrate` 时会重新导入(界面上的手工改动会被覆盖):
+
+```text
+lims/testing/workspace/<中心>/<中心>.json
+lims/workspace_sidebar/<中心>.json
+lims/testing/number_card/<指标卡>/<指标卡>.json
+lims/testing/dashboard_chart/销售漏斗/销售漏斗.json
 ```
 
-构建后访问 `https://<your-site>/lims`,使用内部 Frappe 账号登录。
+两点维护约定(都是 Frappe 的同步机制决定的):
+
+- Workspace 的名字必须和它对应的 Workspace Sidebar 同名(Frappe 用工作区名去取侧边栏),
+  所以 9 个中心各有 1 个同名侧边栏文件;
+- 手工改这些 JSON 时要把 `modified` 改成比数据库里更新的时间戳,否则 `bench migrate`
+  会认为文件没有变化而跳过导入(`frappe/modules/import_file.py` 的时间戳/哈希判断);
+- Number Card / Dashboard Chart 的 `dynamic_filters_json` 是在**浏览器里 eval** 的,
+  只能用 JS 端可用的对象(如 `frappe.datetime.nowdate()`、`frappe.datetime.add_days(...)`、
+  `frappe.defaults.get_user_default("Company")`),写成 `frappe.utils.*` 会报
+  “Invalid expression set in filter”。
+
+### 项目结构
+
+```text
+lims/                              Frappe app(仓库根)
+├── lims/                          应用包(包名必须叫 lims,与 app_name 一致)
+│   ├── hooks.py                   应用清单:app 标题/入口、doc_events、importable_doctypes
+│   ├── modules.txt                模块列表(目前只有 Testing)
+│   ├── patches.txt + patches/     版本升级补丁(如旧角色迁移)
+│   ├── setup/
+│   │   ├── install.py             after_install / after_migrate:角色、自定义字段、ERPNext 只读权限
+│   │   └── detection_os.py        旭博OS 站点设置:旧数据清理、默认 app/落地页、图标修正
+│   ├── integrations/              ERPNext 侧写入与联动(客户/联系人/单据/Project)
+│   ├── api/                       旧 Vue 前端用的接口(当前 Desk 用不到,保留待移动端复用)
+│   ├── testing/                   Testing 模块目录
+│   │   ├── doctype/               业务 DocType(见下)
+│   │   ├── workspace/<中心>/       9 个中心的 Desk 工作区定义
+│   │   ├── number_card/<指标卡>/   19 张指标卡
+│   │   └── dashboard_chart/        销售漏斗等图表
+│   ├── workspace_sidebar/<中心>.json 每个中心对应的左侧导航
+│   └── public/images/lims.svg     app logo
+├── docs/                          设计与计划文档(历史记录)
+└── pyproject.toml                 依赖声明(frappe/erpnext 16.x)
+```
+
+DocType 分工(都在 `lims/testing/doctype/`):
+
+| 分组 | DocType |
+| --- | --- |
+| 检测业务 | Test Request、Test Request Item、Sample、Test Report、Test Report Item、Test Nonconformance、Equipment Usage、Test Plan、Test Task |
+| 主数据 | Test Standard、Test Method、Industry、Test Agreement Price |
+| 实验室 | Calibration Record(校准记录,回写 Asset 校准快照) |
+| 质量 | Quality Document、Quality Document Standard(受控文件) |
+| 遗留(停用) | LIMS Customer、LIMS Contact(早期镜像表,仅 System Manager 可见) |
+
+前端说明:早期版本的 Vue 单页应用(`desk/` + `/lims` 路由 + `lims/public/lims` 构建产物)
+已删除,现在业务界面完全由 Frappe Desk 的 9 个 Workspace 承载;
+`lims/api/` 下的接口是那套 Vue 前端留下的,目前没有入口调用,保留是为了将来
+移动端/小程序复用同一批接口。
 
 ### License
 

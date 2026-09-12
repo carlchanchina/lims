@@ -1,7 +1,7 @@
 app_name = "lims"
-app_title = "Testing"
+app_title = "旭博检测中心OS"
 app_publisher = "Carl"
-app_description = "环境试验 LIMS - 以 ERPNext 为事实源的自定义业务 App"
+app_description = "旭博检测中心OS - 以 ERPNext 为事实源的检测中心一体化业务 App"
 app_email = "cowin3332@gmail.com"
 app_license = "mit"
 app_icon = "octicon octicon-checklist"
@@ -17,11 +17,16 @@ add_to_apps_screen = [
 	{
 		"name": "lims",
 		"logo": "/assets/lims/images/lims.svg",
-		"title": "环境试验 LIMS",
-		"route": "/lims",
+		"title": "旭博检测中心OS",
+		"route": "/desk/首页",
 		"has_permission": "lims.api.permission.has_app_permission",
 	}
 ]
+
+# DocTypes whose documents live in this app's module folders and are re-imported
+# on every migrate. Number Cards / Dashboard Charts for the desks ship as files
+# under lims/testing/<doctype>/<name>/<name>.json.
+importable_doctypes = ["Number Card", "Dashboard Chart"]
 
 # Includes in <head>
 # ------------------
@@ -88,7 +93,10 @@ add_to_apps_screen = [
 # ------------
 
 after_install = "lims.setup.install.after_install"
-after_migrate = ["lims.setup.install.run_schema_cleanup"]
+after_migrate = [
+	"lims.setup.install.run_schema_cleanup",
+	"lims.setup.detection_os.setup_detection_os",
+]
 
 # Uninstallation
 # ------------
@@ -159,69 +167,31 @@ doc_events = {
 		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
 		"on_trash": "lims.testing.doctype.test_request.test_request.sync_request_report_status",
 	},
+	# 请求上的「报价/订单」派生状态跟着 ERPNext 源单据走。
+	"Quotation": {
+		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_submit": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_cancel": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
+		"on_trash": "lims.testing.doctype.test_request.test_request.sync_request_quotation_status",
+	},
+	"Sales Order": {
+		"on_update": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_submit": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_cancel": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+		"on_trash": "lims.testing.doctype.test_request.test_request.sync_request_sales_order_status",
+	},
+	# 校准记录回写 Asset 上的校准快照(设备使用登记据此拦截过期设备)。
+	"Calibration Record": {
+		"after_insert": "lims.testing.doctype.calibration_record.calibration_record.sync_asset_calibration",
+		"on_update": "lims.testing.doctype.calibration_record.calibration_record.sync_asset_calibration",
+		"on_trash": "lims.testing.doctype.calibration_record.calibration_record.sync_asset_calibration",
+	},
 }
 
 # Custom Fields
 # -------------
-# LIMS 与 ERPNext 共用同一张表:ERPNext DocType 上加 lims_* 定制字段,
-# 安装/migrate 时由 Frappe 自动同步,不需要镜像表。
-
-custom_fields = {
-	"Customer": [
-		{
-			"fieldname": "lims_industry",
-			"label": "LIMS 行业",
-			"fieldtype": "Link",
-			"options": "Industry",
-			"insert_after": "customer_group",
-			"no_copy": 1,
-		},
-	],
-	"Quotation": [
-		{
-			"fieldname": "lims_test_request",
-			"label": "LIMS 委托请求",
-			"fieldtype": "Link",
-			"options": "Test Request",
-			"insert_after": "transaction_date",
-			"read_only": 1,
-			"no_copy": 1,
-		},
-	],
-	"Sales Order": [
-		{
-			"fieldname": "lims_test_request",
-			"label": "LIMS 委托请求",
-			"fieldtype": "Link",
-			"options": "Test Request",
-			"insert_after": "transaction_date",
-			"read_only": 1,
-			"no_copy": 1,
-		},
-	],
-	"Project": [
-		{
-			"fieldname": "lims_test_request",
-			"label": "LIMS 委托请求",
-			"fieldtype": "Link",
-			"options": "Test Request",
-			"insert_after": "project_name",
-			"read_only": 1,
-			"no_copy": 1,
-		},
-	],
-	"Task": [
-		{
-			"fieldname": "lims_test_request_item",
-			"label": "LIMS 测试项",
-			"fieldtype": "Link",
-			"options": "Test Request Item",
-			"insert_after": "subject",
-			"read_only": 1,
-			"no_copy": 1,
-		},
-	],
-}
+# ERPNext DocType 上的 lims_* 定制字段由 lims.setup.install.create_custom_fields 创建
+# (Frappe 不会读取 hooks 里的 custom_fields,详见 lims/setup/install.py)。
 
 # Scheduled Tasks
 # ---------------

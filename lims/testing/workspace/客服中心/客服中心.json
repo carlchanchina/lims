@@ -1,0 +1,170 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>客户服务</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+新建工单\", \"col\": 3}}, {\"id\": \"sp0003\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc0004\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待处理工单\", \"col\": 3}}, {\"id\": \"nc0005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超时工单\", \"col\": 3}}, {\"id\": \"sp0006\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0007\", \"type\": \"card\", \"data\": {\"card_name\": \"工单\", \"col\": 4}}, {\"id\": \"cd0008\", \"type\": \"card\", \"data\": {\"card_name\": \"服务协议\", \"col\": 4}}, {\"id\": \"cd0009\", \"type\": \"card\", \"data\": {\"card_name\": \"售后\", \"col\": 4}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"客户\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "support",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "客服中心",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "工单",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "问题单",
+			"link_count": 0,
+			"link_to": "Issue",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "问题类型",
+			"link_count": 0,
+			"link_to": "Issue Type",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "优先级",
+			"link_count": 0,
+			"link_to": "Issue Priority",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "服务协议",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "SLA",
+			"link_count": 0,
+			"link_to": "Service Level Agreement",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "售后",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "保修索赔",
+			"link_count": 0,
+			"link_to": "Warranty Claim",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "客户",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "客户",
+			"link_count": 0,
+			"link_to": "Customer",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "联系人",
+			"link_count": 0,
+			"link_to": "Contact",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "客服中心",
+	"number_cards": [
+		{
+			"label": "待处理工单",
+			"number_card_name": "待处理工单"
+		},
+		{
+			"label": "超时工单",
+			"number_card_name": "超时工单"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		},
+		{
+			"role": "销售"
+		},
+		{
+			"role": "客服"
+		}
+	],
+	"sequence_id": 7.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+新建工单",
+			"link_to": "Issue",
+			"type": "DocType",
+			"url": ""
+		}
+	],
+	"title": "客服中心",
+	"type": "Workspace"
+}

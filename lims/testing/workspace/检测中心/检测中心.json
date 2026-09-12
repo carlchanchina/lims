@@ -1,0 +1,218 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>检测委托</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+检测委托\", \"col\": 3}}, {\"id\": \"sc0003\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+样品登记\", \"col\": 3}}, {\"id\": \"sc0004\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+试验计划\", \"col\": 3}}, {\"id\": \"sc0005\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+检测报告\", \"col\": 3}}, {\"id\": \"sp0006\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hd0007\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>进度</b></span>\", \"col\": 12}}, {\"id\": \"nc0008\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待受理委托\", \"col\": 3}}, {\"id\": \"nc0009\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"检测中委托\", \"col\": 3}}, {\"id\": \"nc0010\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待审核报告\", \"col\": 3}}, {\"id\": \"nc0011\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"已完成委托\", \"col\": 3}}, {\"id\": \"nc0012\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"超期委托\", \"col\": 3}}, {\"id\": \"sp0013\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0014\", \"type\": \"card\", \"data\": {\"card_name\": \"委托与样品\", \"col\": 4}}, {\"id\": \"cd0015\", \"type\": \"card\", \"data\": {\"card_name\": \"执行\", \"col\": 4}}, {\"id\": \"cd0016\", \"type\": \"card\", \"data\": {\"card_name\": \"交付\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "quality",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "检测中心",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "委托与样品",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "检测委托",
+			"link_count": 0,
+			"link_to": "Test Request",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "样品",
+			"link_count": 0,
+			"link_to": "Sample",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "执行",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "试验计划",
+			"link_count": 0,
+			"link_to": "Test Plan",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "设备使用记录",
+			"link_count": 0,
+			"link_to": "Equipment Usage",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "项目",
+			"link_count": 0,
+			"link_to": "Project",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "试验任务",
+			"link_count": 0,
+			"link_to": "Task",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "交付",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "检测报告",
+			"link_count": 0,
+			"link_to": "Test Report",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "不合格/异常",
+			"link_count": 0,
+			"link_to": "Test Nonconformance",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "检测中心",
+	"number_cards": [
+		{
+			"label": "待受理委托",
+			"number_card_name": "待受理委托"
+		},
+		{
+			"label": "检测中委托",
+			"number_card_name": "检测中委托"
+		},
+		{
+			"label": "待审核报告",
+			"number_card_name": "待审核报告"
+		},
+		{
+			"label": "已完成委托",
+			"number_card_name": "已完成委托"
+		},
+		{
+			"label": "超期委托",
+			"number_card_name": "超期委托"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		},
+		{
+			"role": "项目经理"
+		},
+		{
+			"role": "检测工程师"
+		},
+		{
+			"role": "实验员"
+		},
+		{
+			"role": "质量负责人"
+		}
+	],
+	"sequence_id": 4.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+检测委托",
+			"link_to": "Test Request",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+样品登记",
+			"link_to": "Sample",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+试验计划",
+			"link_to": "Test Plan",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+检测报告",
+			"link_to": "Test Report",
+			"type": "DocType",
+			"url": ""
+		}
+	],
+	"title": "检测中心",
+	"type": "Workspace"
+}

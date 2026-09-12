@@ -1,0 +1,21 @@
+{
+	"creation": "2026-09-12 00:00:00.000000",
+	"docstatus": 0,
+	"doctype": "Number Card",
+	"document_type": "Quality Document",
+	"dynamic_filters_json": "[[\"Quality Document\", \"review_due_date\", \"<=\", \"frappe.datetime.add_days(frappe.datetime.nowdate(), 30).slice(0, 10)\"]]",
+	"filters_json": "[[\"Quality Document\", \"status\", \"=\", \"受控\"], [\"Quality Document\", \"review_due_date\", \"is\", \"set\"]]",
+	"function": "Count",
+	"idx": 0,
+	"is_public": 1,
+	"is_standard": 1,
+	"label": "待复审文件",
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "待复审文件",
+	"owner": "Administrator",
+	"show_percentage_stats": 0,
+	"stats_time_interval": "Monthly",
+	"type": "Document Type"
+}

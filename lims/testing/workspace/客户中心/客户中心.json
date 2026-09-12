@@ -1,0 +1,130 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>客户与联系人</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+新建客户\", \"col\": 3}}, {\"id\": \"sc0003\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+新建联系人\", \"col\": 3}}, {\"id\": \"sp0004\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0005\", \"type\": \"card\", \"data\": {\"card_name\": \"客户与联系人\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "customer",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "客户中心",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "客户与联系人",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "客户",
+			"link_count": 0,
+			"link_to": "Customer",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "联系人",
+			"link_count": 0,
+			"link_to": "Contact",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "客户分组",
+			"link_count": 0,
+			"link_to": "Customer Group",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "地区",
+			"link_count": 0,
+			"link_to": "Territory",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "地址",
+			"link_count": 0,
+			"link_to": "Address",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "客户中心",
+	"number_cards": [],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		},
+		{
+			"role": "销售经理"
+		},
+		{
+			"role": "销售"
+		},
+		{
+			"role": "项目经理"
+		},
+		{
+			"role": "客服"
+		}
+	],
+	"sequence_id": 2.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+新建客户",
+			"link_to": "Customer",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+新建联系人",
+			"link_to": "Contact",
+			"type": "DocType",
+			"url": ""
+		}
+	],
+	"title": "客户中心",
+	"type": "Workspace"
+}

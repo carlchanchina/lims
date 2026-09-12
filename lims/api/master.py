@@ -113,6 +113,10 @@ def delete_industry(name):
 	require_manager()
 	if frappe.db.exists("Test Agreement Price", {"industry": name}):
 		frappe.throw("该行业已被协议价引用,不能删除")
+	if frappe.db.has_column("Customer", "lims_industry") and frappe.db.exists(
+		"Customer", {"lims_industry": name}
+	):
+		frappe.throw("该行业已被客户引用,不能删除")
 	if frappe.db.exists("LIMS Customer", {"industry": name}):
 		frappe.throw("该行业已被客户引用,不能删除")
 	frappe.delete_doc("Industry", name)

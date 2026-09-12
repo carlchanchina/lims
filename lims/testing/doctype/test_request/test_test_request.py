@@ -72,7 +72,7 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(request.status, STATUS_QUOTED)
 
 	def test_industry_price_used_when_customer_has_no_own_price(self):
-		frappe.db.set_value("LIMS Customer", self.customer, "industry", self.industry)
+		frappe.db.set_value("Customer", self.customer, "lims_industry", self.industry)
 		_create_agreement_price(self.item, price=150, industry=self.industry)
 
 		request = _create_request(
@@ -85,7 +85,7 @@ class TestTestRequest(IntegrationTestCase):
 		self.assertEqual(flt(quotation.items[0].rate), 150)
 
 	def test_customer_price_wins_over_industry_price(self):
-		frappe.db.set_value("LIMS Customer", self.customer, "industry", self.industry)
+		frappe.db.set_value("Customer", self.customer, "lims_industry", self.industry)
 		_create_agreement_price(self.item, price=90, customer=self.customer)
 		_create_agreement_price(self.item, price=150, industry=self.industry)
 

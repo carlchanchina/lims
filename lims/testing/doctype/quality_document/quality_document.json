@@ -1,0 +1,234 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:QD-{YYYY}-{#####}",
+	"creation": "2026-09-12 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"doc_type",
+		"title",
+		"doc_number",
+		"column_break_main",
+		"version",
+		"status",
+		"revision_date",
+		"review_due_date",
+		"section_break_approval",
+		"owner_user",
+		"approved_by",
+		"approval_date",
+		"section_break_relation",
+		"related_standards",
+		"section_break_detail",
+		"change_summary",
+		"attachments",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "doc_type",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "文件类型",
+			"options": "质量手册\n程序文件\n作业指导书\n记录模板\n外来文件",
+			"reqd": 1
+		},
+		{
+			"fieldname": "title",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "文件名称",
+			"reqd": 1
+		},
+		{
+			"description": "受控编号,如 QP-01 / WI-03",
+			"fieldname": "doc_number",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "文件编号"
+		},
+		{
+			"fieldname": "column_break_main",
+			"fieldtype": "Column Break"
+		},
+		{
+			"default": "1.0",
+			"fieldname": "version",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "版本"
+		},
+		{
+			"default": "草稿",
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "文件状态",
+			"options": "草稿\n审批中\n受控\n已作废",
+			"reqd": 1
+		},
+		{
+			"fieldname": "revision_date",
+			"fieldtype": "Date",
+			"label": "修订日期"
+		},
+		{
+			"description": "到期前质量中心会提示复审",
+			"fieldname": "review_due_date",
+			"fieldtype": "Date",
+			"label": "复审日期"
+		},
+		{
+			"fieldname": "section_break_approval",
+			"fieldtype": "Section Break",
+			"label": "审批"
+		},
+		{
+			"fieldname": "owner_user",
+			"fieldtype": "Link",
+			"label": "文件责任人",
+			"options": "User"
+		},
+		{
+			"fieldname": "approved_by",
+			"fieldtype": "Link",
+			"label": "批准人",
+			"options": "User"
+		},
+		{
+			"fieldname": "approval_date",
+			"fieldtype": "Date",
+			"label": "批准日期"
+		},
+		{
+			"fieldname": "section_break_relation",
+			"fieldtype": "Section Break",
+			"label": "关联"
+		},
+		{
+			"fieldname": "related_standards",
+			"fieldtype": "Table",
+			"label": "关联标准",
+			"options": "Quality Document Standard"
+		},
+		{
+			"fieldname": "section_break_detail",
+			"fieldtype": "Section Break"
+		},
+		{
+			"fieldname": "change_summary",
+			"fieldtype": "Small Text",
+			"label": "变更说明"
+		},
+		{
+			"fieldname": "attachments",
+			"fieldtype": "Attach",
+			"label": "文件"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Small Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-12 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Quality Document",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "总经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "项目经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "检测工程师",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "实验员",
+			"share": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "技术负责人",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "质量负责人",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "AI管理员",
+			"share": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "title,doc_number",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "title",
+	"track_changes": 1
+}

@@ -68,7 +68,7 @@ function setup_sample_query(frm) {
 		return;
 	}
 	frm.set_query("sample", "items", () => ({
-		query: "test.testing.doctype.test_request.test_request.sample_query",
+		query: "lims.testing.doctype.test_request.test_request.sample_query",
 		filters: { test_request: frm.doc.name },
 	}));
 }
@@ -78,7 +78,7 @@ function create_quotation(frm) {
 		__("将按 Test Catalog 价格生成 ERPNext 报价单,是否继续?"),
 		() => {
 			frappe.xcall(
-				"test.testing.doctype.test_request.test_request.create_quotation",
+				"lims.testing.doctype.test_request.test_request.create_quotation",
 				{ name: frm.doc.name }
 			).then((quotation) => {
 				frappe.show_alert({

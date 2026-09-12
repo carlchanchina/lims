@@ -1,0 +1,186 @@
+{
+	"actions": [],
+	"allow_import": 1,
+	"autoname": "format:CR-{YYYY}-{#####}",
+	"creation": "2026-09-12 00:00:00.000000",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"asset",
+		"calibration_date",
+		"due_date",
+		"column_break_main",
+		"certificate_no",
+		"provider",
+		"result",
+		"uncertainty",
+		"standard",
+		"section_break_detail",
+		"attachment",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "asset",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"label": "设备(Asset)",
+			"options": "Asset",
+			"reqd": 1
+		},
+		{
+			"default": "Today",
+			"fieldname": "calibration_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "校准日期",
+			"reqd": 1
+		},
+		{
+			"description": "留空时按 Asset 上的「校准周期(天)」推算",
+			"fieldname": "due_date",
+			"fieldtype": "Date",
+			"in_list_view": 1,
+			"label": "下次校准日期",
+			"reqd": 1
+		},
+		{
+			"fieldname": "column_break_main",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "certificate_no",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "证书编号"
+		},
+		{
+			"fieldname": "provider",
+			"fieldtype": "Link",
+			"label": "校准机构",
+			"options": "Supplier"
+		},
+		{
+			"default": "合格",
+			"fieldname": "result",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "校准结果",
+			"options": "合格\n不合格\n限制使用",
+			"reqd": 1
+		},
+		{
+			"fieldname": "uncertainty",
+			"fieldtype": "Data",
+			"label": "不确定度"
+		},
+		{
+			"fieldname": "standard",
+			"fieldtype": "Link",
+			"label": "校准依据",
+			"options": "Test Standard"
+		},
+		{
+			"fieldname": "section_break_detail",
+			"fieldtype": "Section Break"
+		},
+		{
+			"fieldname": "attachment",
+			"fieldtype": "Attach",
+			"label": "校准证书"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Small Text",
+			"label": "备注"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-09-12 00:00:00.000000",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "Calibration Record",
+	"naming_rule": "Expression",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "总经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "项目经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "检测工程师",
+			"share": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "实验员",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "技术负责人",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "质量负责人",
+			"share": 1
+		}
+	],
+	"row_format": "Dynamic",
+	"search_fields": "asset,certificate_no",
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"title_field": "certificate_no",
+	"track_changes": 1
+}

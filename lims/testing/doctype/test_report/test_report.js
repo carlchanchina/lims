@@ -23,7 +23,7 @@ frappe.ui.form.on("Test Report", {
 
 function setup_sample_query(frm) {
 	frm.set_query("sample", () => ({
-		query: "test.testing.doctype.test_report.test_report.request_sample_query",
+		query: "lims.testing.doctype.test_report.test_report.request_sample_query",
 		filters: { test_request: frm.doc.test_request || "" },
 	}));
 }

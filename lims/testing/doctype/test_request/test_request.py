@@ -96,20 +96,28 @@ def sync_request_report_status(doc, method=None, *args, **kwargs):
 
 
 def sync_request_quotation_status(doc, method=None, *args, **kwargs):
+	# 派生状态不推进 Test Request 的 modified,否则正在保存请求的调用方
+	# 会碰到 TimestampMismatchError(例如报价→销售订单时回填 sales_order)。
 	for name in frappe.get_all("Test Request", filters={"quotation": doc.name}, pluck="name"):
-		frappe.db.set_value("Test Request", name, "quotation_status", doc.status)
+		frappe.db.set_value(
+			"Test Request", name, "quotation_status", doc.status, update_modified=False
+		)
 
 
 def sync_request_sales_order_status(doc, method=None, *args, **kwargs):
 	for name in frappe.get_all("Test Request", filters={"sales_order": doc.name}, pluck="name"):
-		frappe.db.set_value("Test Request", name, "sales_order_status", doc.status)
+		frappe.db.set_value(
+			"Test Request", name, "sales_order_status", doc.status, update_modified=False
+		)
 
 
 def _refresh_request_status(doc, fieldname, compute):
 	test_request = doc.get("test_request") if hasattr(doc, "get") else None
 	if not test_request or not frappe.db.exists("Test Request", test_request):
 		return
-	frappe.db.set_value("Test Request", test_request, fieldname, compute(test_request))
+	frappe.db.set_value(
+		"Test Request", test_request, fieldname, compute(test_request), update_modified=False
+	)
 
 
 def _get_selling_price_list(customer, currency):
@@ -157,10 +165,16 @@ def _get_conversion_rate(from_currency, to_currency, transaction_date=None):
 
 
 def get_customer_industry(customer):
-	"""客户所属行业,用来匹配行业协议价(取 LIMS 客户镜像上的设置)。"""
+	"""客户所属行业,用来匹配行业协议价。
+
+	客户是 ERPNext 的事实源,行业写在 Customer 的定制字段 lims_industry 上
+	(LIMS Customer 镜像表已停用)。
+	"""
 	if not customer:
 		return None
-	return frappe.db.get_value("LIMS Customer", customer, "industry")
+	if not frappe.db.has_column("Customer", "lims_industry"):
+		return None
+	return frappe.db.get_value("Customer", customer, "lims_industry")
 
 
 def _get_agreement_price(item, customer):

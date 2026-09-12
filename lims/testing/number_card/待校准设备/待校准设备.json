@@ -1,0 +1,21 @@
+{
+	"creation": "2026-09-12 00:00:00.000000",
+	"docstatus": 0,
+	"doctype": "Number Card",
+	"document_type": "Asset",
+	"dynamic_filters_json": "[[\"Asset\", \"calibration_due_date\", \"<=\", \"frappe.datetime.add_days(frappe.datetime.nowdate(), 30).slice(0, 10)\"]]",
+	"filters_json": "[[\"Asset\", \"calibration_due_date\", \"is\", \"set\"]]",
+	"function": "Count",
+	"idx": 0,
+	"is_public": 1,
+	"is_standard": 1,
+	"label": "待校准设备",
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "待校准设备",
+	"owner": "Administrator",
+	"show_percentage_stats": 0,
+	"stats_time_interval": "Monthly",
+	"type": "Document Type"
+}

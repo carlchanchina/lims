@@ -10,6 +10,7 @@
 		"item",
 		"item_name",
 		"standard",
+		"test_method",
 		"qty",
 		"uom",
 		"equipment",
@@ -53,6 +54,13 @@
 			"in_list_view": 1,
 			"label": "检测标准",
 			"options": "Test Standard"
+		},
+		{
+			"description": "可选:具体到某个检测方法(质量中心的方法库)",
+			"fieldname": "test_method",
+			"fieldtype": "Link",
+			"label": "检测方法",
+			"options": "Test Method"
 		},
 		{
 			"columns": 1,

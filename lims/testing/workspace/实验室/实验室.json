@@ -1,0 +1,186 @@
+{
+	"app": "lims",
+	"charts": [],
+	"content": "[{\"id\": \"hd0001\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>设备台账与校准</b></span>\", \"col\": 12}}, {\"id\": \"sc0002\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+设备\", \"col\": 3}}, {\"id\": \"sc0003\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"+校准记录\", \"col\": 3}}, {\"id\": \"sp0004\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"nc0005\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"待校准设备\", \"col\": 3}}, {\"id\": \"nc0006\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"维修中设备\", \"col\": 3}}, {\"id\": \"nc0007\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"停机设备\", \"col\": 3}}, {\"id\": \"sp0008\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"cd0009\", \"type\": \"card\", \"data\": {\"card_name\": \"设备台账\", \"col\": 4}}, {\"id\": \"cd0010\", \"type\": \"card\", \"data\": {\"card_name\": \"校准\", \"col\": 4}}, {\"id\": \"cd0011\", \"type\": \"card\", \"data\": {\"card_name\": \"维护\", \"col\": 4}}, {\"id\": \"cd0012\", \"type\": \"card\", \"data\": {\"card_name\": \"使用\", \"col\": 4}}]",
+	"creation": "2026-09-12 00:00:00.000000",
+	"custom_blocks": [],
+	"docstatus": 0,
+	"doctype": "Workspace",
+	"for_user": "",
+	"hide_custom": 0,
+	"icon": "assets",
+	"idx": 0,
+	"is_hidden": 0,
+	"label": "实验室",
+	"links": [
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "设备台账",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "设备",
+			"link_count": 0,
+			"link_to": "Asset",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "实验室/位置",
+			"link_count": 0,
+			"link_to": "Location",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "校准",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "校准记录",
+			"link_count": 0,
+			"link_to": "Calibration Record",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "维护",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "维护计划",
+			"link_count": 0,
+			"link_to": "Asset Maintenance",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "维护记录",
+			"link_count": 0,
+			"link_to": "Asset Maintenance Log",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "维修",
+			"link_count": 0,
+			"link_to": "Asset Repair",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		},
+		{
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "使用",
+			"link_count": 0,
+			"onboard": 0,
+			"type": "Card Break"
+		},
+		{
+			"dependencies": "",
+			"hidden": 0,
+			"is_query_report": 0,
+			"label": "设备使用记录",
+			"link_count": 0,
+			"link_to": "Equipment Usage",
+			"link_type": "DocType",
+			"onboard": 0,
+			"type": "Link"
+		}
+	],
+	"modified": "2026-09-12 11:50:52.133617",
+	"modified_by": "Administrator",
+	"module": "Testing",
+	"name": "实验室",
+	"number_cards": [
+		{
+			"label": "待校准设备",
+			"number_card_name": "待校准设备"
+		},
+		{
+			"label": "维修中设备",
+			"number_card_name": "维修中设备"
+		},
+		{
+			"label": "停机设备",
+			"number_card_name": "停机设备"
+		}
+	],
+	"owner": "Administrator",
+	"parent_page": "",
+	"public": 1,
+	"quick_lists": [],
+	"restrict_to_domain": "",
+	"roles": [
+		{
+			"role": "总经理"
+		},
+		{
+			"role": "检测工程师"
+		},
+		{
+			"role": "实验员"
+		},
+		{
+			"role": "技术负责人"
+		}
+	],
+	"sequence_id": 5.0,
+	"shortcuts": [
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+设备",
+			"link_to": "Asset",
+			"type": "DocType",
+			"url": ""
+		},
+		{
+			"color": "",
+			"doc_view": "New",
+			"icon": "add",
+			"label": "+校准记录",
+			"link_to": "Calibration Record",
+			"type": "DocType",
+			"url": ""
+		}
+	],
+	"title": "实验室",
+	"type": "Workspace"
+}

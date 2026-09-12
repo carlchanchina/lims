@@ -9,6 +9,7 @@
 
 import frappe
 from frappe import _
+from frappe.utils import getdate, today
 
 QUOTATION_FIELDS = [
 	"name",
@@ -80,11 +81,15 @@ def sales_order_option(row):
 	}
 
 
-def sales_order_from_quotation(quotation_name, submit_quotation=True):
+def sales_order_from_quotation(quotation_name, submit_quotation=True, delivery_date=None):
 	"""把报价单转成 ERPNext 销售订单。
 
 	ERPNext 的映射要求报价单已提交(docstatus=1),所以草稿报价单会先提交;
 	新订单保持草稿状态,是否提交由业务在 ERPNext 决定。
+
+	ERPNext v16 的 Sales Order 必须有 delivery_date(报价单上没有这个字段),
+	所以这里用委托请求的「要求完成日期」兜底,否则 insert 会报
+	"Please enter Delivery Date"。
 	"""
 	from erpnext.selling.doctype.quotation.quotation import make_sales_order
 
@@ -102,6 +107,11 @@ def sales_order_from_quotation(quotation_name, submit_quotation=True):
 		quotation.submit()
 
 	order = make_sales_order(quotation_name)
+	if not order.get("delivery_date"):
+		order.delivery_date = getdate(delivery_date or order.transaction_date or today())
+	for row in order.get("items") or []:
+		if not row.get("delivery_date"):
+			row.delivery_date = order.delivery_date
 	order.flags.ignore_permissions = True
 	order.insert(ignore_permissions=True)
 	return order.name

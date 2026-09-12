@@ -112,9 +112,9 @@
 			"fieldname": "project",
 			"fieldtype": "Link",
 			"label": "项目(Project)",
+			"no_copy": 1,
 			"options": "Project",
-			"read_only": 1,
-			"no_copy": 1
+			"read_only": 1
 		},
 		{
 			"fieldname": "section_break_items",
@@ -128,10 +128,10 @@
 			"options": "Test Request Item"
 		},
 		{
+			"description": "对方的委托单号 / PO 号",
 			"fieldname": "customer_reference",
 			"fieldtype": "Data",
-			"label": "客户参考号",
-			"description": "对方的委托单号 / PO 号"
+			"label": "客户参考号"
 		},
 		{
 			"fieldname": "required_by",
@@ -156,22 +156,22 @@
 			"fieldname": "quotation_status",
 			"fieldtype": "Data",
 			"label": "报价状态",
-			"read_only": 1,
-			"no_copy": 1
+			"no_copy": 1,
+			"read_only": 1
 		},
 		{
 			"fieldname": "sales_order_status",
 			"fieldtype": "Data",
 			"label": "订单状态",
-			"read_only": 1,
-			"no_copy": 1
+			"no_copy": 1,
+			"read_only": 1
 		},
 		{
 			"fieldname": "report_status",
 			"fieldtype": "Data",
 			"label": "报告状态",
-			"read_only": 1,
-			"no_copy": 1
+			"no_copy": 1,
+			"read_only": 1
 		},
 		{
 			"fieldname": "section_break_quotations",
@@ -228,6 +228,33 @@
 			"write": 1
 		},
 		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "总经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "销售经理",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "销售",
+			"share": 1
+		},
+		{
 			"create": 1,
 			"delete": 1,
 			"email": 1,
@@ -235,7 +262,7 @@
 			"print": 1,
 			"read": 1,
 			"report": 1,
-			"role": "Testing Manager",
+			"role": "项目经理",
 			"share": 1,
 			"write": 1
 		},
@@ -246,9 +273,45 @@
 			"print": 1,
 			"read": 1,
 			"report": 1,
-			"role": "Testing User",
+			"role": "检测工程师",
 			"share": 1,
 			"write": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "实验员",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "技术负责人",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "质量负责人",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "客服",
+			"share": 1
 		}
 	],
 	"row_format": "Dynamic",

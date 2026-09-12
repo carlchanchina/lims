@@ -129,6 +129,15 @@
 			"write": 1
 		},
 		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "总经理",
+			"share": 1
+		},
+		{
 			"create": 1,
 			"delete": 1,
 			"email": 1,
@@ -136,20 +145,27 @@
 			"print": 1,
 			"read": 1,
 			"report": 1,
-			"role": "Testing Manager",
+			"role": "销售经理",
 			"share": 1,
 			"write": 1
 		},
 		{
-			"create": 1,
 			"email": 1,
 			"export": 1,
 			"print": 1,
 			"read": 1,
 			"report": 1,
-			"role": "Testing User",
-			"share": 1,
-			"write": 1
+			"role": "销售",
+			"share": 1
+		},
+		{
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "项目经理",
+			"share": 1
 		}
 	],
 	"row_format": "Dynamic",

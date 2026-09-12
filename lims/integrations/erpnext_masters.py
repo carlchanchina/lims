@@ -13,15 +13,25 @@ from frappe.utils import flt, getdate, today
 
 
 def default_customer_group():
+	"""默认客户分组:必须是叶子节点,组节点 ERPNext 不允许挂在客户上。"""
+	configured = frappe.db.get_single_value("Selling Settings", "customer_group")
+	if configured and not frappe.db.get_value("Customer Group", configured, "is_group"):
+		return configured
 	return (
-		frappe.db.get_single_value("Selling Settings", "customer_group")
+		frappe.db.get_value("Customer Group", {"is_group": 0}, "name")
+		or configured
 		or "All Customer Groups"
 	)
 
 
 def default_territory():
+	"""默认地区:同样必须是叶子节点。"""
+	configured = frappe.db.get_single_value("Selling Settings", "territory")
+	if configured and not frappe.db.get_value("Territory", configured, "is_group"):
+		return configured
 	return (
-		frappe.db.get_single_value("Selling Settings", "territory")
+		frappe.db.get_value("Territory", {"is_group": 0}, "name")
+		or configured
 		or "All Territories"
 	)
 
@@ -157,6 +167,9 @@ def create_asset(data):
 	doc.purchase_date = purchase_date
 	doc.available_for_use_date = data.get("available_for_use_date") or purchase_date
 	doc.gross_purchase_amount = gross_purchase_amount
+	# ERPNext v16 的 Asset 必须有 net_purchase_amount(否则 Asset.validate 直接拦下)。
+	doc.net_purchase_amount = gross_purchase_amount
+	doc.purchase_amount = gross_purchase_amount
 	doc.is_existing_asset = 1
 	doc.calculate_depreciation = 0
 	doc.insert(ignore_permissions=True)
