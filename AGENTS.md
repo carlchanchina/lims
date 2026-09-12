@@ -141,6 +141,9 @@ Helpdesk 有自己的角色体系(它的 DocType 只认这些):`客服`/`销售`
   - 委托单里不出现 Rate/Amount,也不向客户展示设备;
   - Test Report 的「报告抬头」按 `report_customer or customer` 带出,报告状态回写到委托单 `report_status`;
   - 状态机:草稿 → 已报价 → 待检测 → 检测中 → 已完成 / 已取消;取消前必须先取消关联报价单。
+  - 试验任务只有一份,存在 ERPNext:委托单保存后自动建 Project,每个 Test Request Item
+    同步成一条 Project Task(`Task.lims_test_request_item` 回链);Test Plan 只存计划头
+    (检测请求/项目/计划起止/状态/备注),没有 tasks 子表。
 - 验收:委托 → 报价 → 转单 → 报告 → 状态回写全链路。
 
 ### 4.5 实验室(lab)
@@ -192,7 +195,8 @@ Helpdesk 有自己的角色体系(它的 DocType 只认这些):`客服`/`销售`
 
 | 分组 | DocType |
 | --- | --- |
-| 检测业务 | Test Request、Test Request Item、Sample、Test Report、Test Report Item、Test Nonconformance、Equipment Usage、Test Plan、Test Task |
+| 检测业务 | Test Request、Test Request Item、Sample、Test Report、Test Report Item、Test Nonconformance、Equipment Usage、Test Plan |
+| 任务 | ERPNext 原生 Task(委托单测试项自动同步,挂在自动创建的 Project 下) |
 | 主数据 | Test Standard、Test Method、Industry、Test Agreement Price |
 | 实验室 | Calibration Record |
 | 质量 | Quality Document、Quality Document Standard |

@@ -169,11 +169,14 @@ Test Report(人工填写结论,关联 Test Request / Sample)
 | --- | --- | --- | --- |
 | 设备 | `asset` | Link `Asset`,必填 | 校准过期会在保存时被拦 |
 | 起止时间 / 使用人 | `from_datetime` / `to_datetime` / `used_by` | Datetime / Link `User` | |
-| 关联 | `test_request` / `test_request_item` / `test_task` | Link | 用到哪个请求/项目/任务 |
+| 关联 | `test_request` / `test_request_item` / `task` | Link | 用到哪个请求/项目/任务(`task` 指向 ERPNext Task) |
 
-**Test Plan / Test Task(试验计划)**
+**Test Plan(试验计划)**
 
-`Test Task` 增加了 `test_request_item`,让计划里的任务能对上委托请求里的具体试验项目。
+计划只保留计划头(检测请求 / 项目 / 计划起止 / 状态 / 备注)。具体任务不在这里维护:
+委托单保存时每个测试项已经同步成一条 ERPNext Task(挂在自动创建的 Project 下,
+`Task.lims_test_request_item` 回链到 Test Request Item),执行状态、负责人、时间都在
+ERPNext Task 上改,检测中心工作区的「试验任务」入口也直接进 ERPNext 的 Task 列表。
 
 ---
 
@@ -285,7 +288,8 @@ DocType 分工(都在 `lims/testing/doctype/`):
 
 | 分组 | DocType |
 | --- | --- |
-| 检测业务 | Test Request、Test Request Item、Sample、Test Report、Test Report Item、Test Nonconformance、Equipment Usage、Test Plan、Test Task |
+| 检测业务 | Test Request、Test Request Item、Sample、Test Report、Test Report Item、Test Nonconformance、Equipment Usage、Test Plan |
+| 任务 | ERPNext 原生 Task(委托单测试项自动同步,挂在自动创建的 Project 下) |
 | 主数据 | Test Standard、Test Method、Industry、Test Agreement Price |
 | 实验室 | Calibration Record(校准记录,回写 Asset 校准快照) |
 | 质量 | Quality Document、Quality Document Standard(受控文件) |

@@ -32,22 +32,6 @@ def save_plan(data):
 	for field in ("test_request", "status", "project", "start_date", "end_date", "remarks"):
 		if field in data:
 			doc.set(field, data[field])
-	if "tasks" in data:
-		doc.set("tasks", [])
-		for row in data["tasks"] or []:
-			doc.append(
-				"tasks",
-				{
-					"task_name": row.get("task_name"),
-					"test_request_item": row.get("test_request_item"),
-					"equipment": row.get("equipment"),
-					"start_datetime": row.get("start_datetime"),
-					"end_datetime": row.get("end_datetime"),
-					"owner_user": row.get("owner_user"),
-					"status": row.get("status") or "待执行",
-					"remarks": row.get("remarks"),
-				},
-			)
 	if name:
 		doc.save()
 	else:
@@ -57,7 +41,11 @@ def save_plan(data):
 
 @frappe.whitelist()
 def generate_plan_from_request(test_request):
-	"""按 Test Request 的测试项生成一份默认试验计划与设备任务。"""
+	"""按 Test Request 生成一份默认试验计划(只建计划头)。
+
+	执行任务不在这里建:委托单保存时 `lims.integrations.erpnext_projects`
+	已经把每个测试项同步成 Project 下的 ERPNext Task,计划只负责排期与备注。
+	"""
 	require_roles(ALL_STAFF_ROLES)
 	if not frappe.db.exists("Test Request", test_request):
 		frappe.throw("检测请求不存在")
@@ -70,16 +58,7 @@ def generate_plan_from_request(test_request):
 	plan = frappe.new_doc("Test Plan")
 	plan.test_request = request.name
 	plan.status = "草稿"
-	for row in request.get("items", []):
-		plan.append(
-			"tasks",
-			{
-				"task_name": row.item_name or row.item,
-				"test_request_item": row.name,
-				"equipment": row.equipment,
-				"status": "待执行",
-			},
-		)
+	plan.project = request.get("project")
 	plan.flags.ignore_permissions = True
 	plan.insert(ignore_permissions=True)
 	return {"name": plan.name}

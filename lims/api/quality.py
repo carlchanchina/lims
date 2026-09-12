@@ -17,7 +17,7 @@ USAGE_FIELDS = [
 	"to_datetime",
 	"test_request",
 	"test_request_item",
-	"test_task",
+	"task",
 	"remarks",
 ]
 

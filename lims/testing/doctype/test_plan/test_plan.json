@@ -12,8 +12,6 @@
 		"project",
 		"start_date",
 		"end_date",
-		"section_break_tasks",
-		"tasks",
 		"remarks"
 	],
 	"fields": [
@@ -59,17 +57,6 @@
 			"label": "计划结束"
 		},
 		{
-			"fieldname": "section_break_tasks",
-			"fieldtype": "Section Break",
-			"label": "试验任务"
-		},
-		{
-			"fieldname": "tasks",
-			"fieldtype": "Table",
-			"label": "试验任务",
-			"options": "Test Task"
-		},
-		{
 			"fieldname": "remarks",
 			"fieldtype": "Text",
 			"label": "备注"
@@ -77,7 +64,7 @@
 	],
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-09-10 00:00:00.000000",
+	"modified": "2026-09-12 20:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
 	"name": "Test Plan",

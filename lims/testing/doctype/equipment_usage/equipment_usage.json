@@ -15,7 +15,7 @@
 		"section_break_ref",
 		"test_request",
 		"test_request_item",
-		"test_task",
+		"task",
 		"remarks"
 	],
 	"fields": [
@@ -72,10 +72,10 @@
 			"options": "Test Request Item"
 		},
 		{
-			"fieldname": "test_task",
+			"fieldname": "task",
 			"fieldtype": "Link",
 			"label": "试验任务",
-			"options": "Test Task"
+			"options": "Task"
 		},
 		{
 			"fieldname": "remarks",
@@ -85,7 +85,7 @@
 	],
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-09-11 00:00:00.000000",
+	"modified": "2026-09-12 20:00:00.000000",
 	"modified_by": "Administrator",
 	"module": "Testing",
 	"name": "Equipment Usage",

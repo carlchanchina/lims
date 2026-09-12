@@ -42,10 +42,17 @@ APP_NAME = "lims"
 # Workspace 与同名 Sidebar 不成对,点进去左侧导航是空的。这里按 app 文件补回来。
 APP_LEVEL_DESK_DOCTYPES = (("Workspace Sidebar", "workspace_sidebar"),)
 
+# 旧版本的子表:Test Plan.tasks 里的 Test Task。
+# 委托单的每个测试项现在同步成 ERPNext 的 Project Task(见
+# lims/integrations/erpnext_projects.py),Test Task 已删除。
+# frappe 的 remove_orphan_doctypes() 只删 DocType 记录、不 drop 表,这里补一刀。
+LEGACY_CHILD_TABLES = ("Test Task",)
+
 
 def setup_detection_os():
 	remove_legacy_workspaces()
 	remove_legacy_sidebars()
+	drop_legacy_child_tables()
 	remove_orphan_desktop_icons()
 	migrate_legacy_roles()
 	fix_app_desktop_icon()
@@ -97,6 +104,21 @@ def restore_app_level_docs():
 				continue
 			print(f"Restoring {doctype} {name}")
 			import_file_by_path(path, force=True)
+
+
+def drop_legacy_child_tables():
+	"""删掉旧子表 DocType 与它的物理表(有数据时只提示、不动表)。"""
+	for doctype in LEGACY_CHILD_TABLES:
+		table = f"tab{doctype}"
+		if frappe.db.table_exists(doctype):
+			rows = frappe.db.sql(f"select count(*) from `{table}`")[0][0]
+			if rows:
+				print(f"{doctype} 还有 {rows} 行数据,保留表 {table},请人工确认后再删")
+				continue
+			frappe.db.sql_ddl(f"drop table `{table}`")
+			print(f"Dropped empty legacy table {table}")
+		if frappe.db.exists("DocType", doctype):
+			frappe.delete_doc("DocType", doctype, force=True, ignore_missing=True)
 
 
 def read_doc_name(path):
